@@ -405,6 +405,41 @@ main{max-width:1120px;margin:0 auto;padding-block:28px 64px;
   .tonly{display:inline-flex}
 }
 
+/* QCM sans propositions */
+.free-box{padding:18px;display:flex;flex-direction:column;gap:14px;border-color:color-mix(in srgb,var(--tc) 45%,var(--line))}
+.free-box .ic{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;flex:none;background:color-mix(in srgb,var(--tc) 15%,transparent)}
+.free-box .ic svg{width:24px;height:24px;stroke:var(--tc);fill:none;stroke-width:2}
+.free-ta{width:100%;min-height:96px;resize:vertical;border:1.5px solid var(--line);border-radius:12px;padding:12px 14px;font:16px/1.5 var(--f-body);background:var(--surface2);color:var(--ink)}
+.free-ta:focus{outline:none;border-color:var(--accent);background:var(--surface)}
+.free-ta[readonly]{opacity:.8}
+.qcard label.qtext{display:block}
+.grades{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.grades .btn{padding:12px 8px;font-size:14.5px}
+.gr-ok{background:var(--ok-bg);border-color:var(--ok);color:var(--ok)}
+.gr-half{background:var(--warn-bg);border-color:var(--warn);color:var(--warn)}
+.gr-no{background:var(--bad-bg);border-color:var(--bad);color:var(--bad)}
+@media (max-width:420px){.grades{grid-template-columns:1fr}}
+
+/* vocabulaire */
+.toc a.toc-vocab{border-top:1px dashed var(--line);margin-top:4px;padding-top:12px}
+@media (max-width:900px){.toc a.toc-vocab{border-top:0;margin-top:0;padding-top:10px;border-left:1px dashed var(--line)}}
+.vtabs{align-self:flex-start;flex-wrap:wrap}
+.vtabs .mono{opacity:.6;font-size:12px}
+.vgroup{margin-bottom:22px}
+.vgroup h3{margin-bottom:10px}
+.vlist{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.vrow{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:4px 16px;align-items:baseline;padding:11px 14px;border:0;border-bottom:1px solid var(--line);background:var(--surface);color:var(--ink);text-align:left;font:inherit;width:100%}
+.vlist .vrow:last-child{border-bottom:0}
+.vlist .vrow:nth-child(even){background:var(--surface2)}
+.vfr b{font-weight:700}
+.vfr small{display:block;color:var(--muted);font-size:12px;margin-top:2px}
+.vtr{color:var(--muted)}
+.vex{grid-column:1/-1;font-size:13.5px;font-style:italic;color:var(--muted)}
+button.vrow{cursor:pointer}
+.vrow.hid .vtr{color:transparent;background:var(--line);border-radius:6px;user-select:none;min-height:1.2em}
+.vrow.hid.shown .vtr{color:var(--ink);background:none}
+@media (max-width:560px){.vrow{grid-template-columns:1fr}.vtr{font-size:14.5px}}
+
 /* analyse */
 .ana{display:flex;flex-direction:column;gap:30px}
 .ana-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
@@ -936,6 +971,98 @@ const TEXTS = [
 ];
 const TEXT_Q_N=TEXTS.reduce((n,x)=>n+x.q.length,0);
 
+/* ================= VOCABULAIRE ================= */
+/* verbs: [infinitive, present 3sg · past participle, Russian, example from the course] */
+const VOCAB={
+verbs:[
+["gérer","il gère · géré","управлять (ресурсами), вести","La gestion consiste à gérer les ressources disponibles."],
+["diriger","il dirige · dirigé","руководить","Tony Schuster confie la direction à un ingénieur qui dirige l'entreprise."],
+["manager","il manage · managé","руководить людьми","Elle manage une équipe de dix personnes."],
+["planifier","il planifie · planifié","планировать","Tous les managers planifient, même sans plan écrit."],
+["prévoir","il prévoit · prévu","предусматривать, прогнозировать","Planifier, c'est définir les objectifs et prévoir les actions."],
+["organiser","il organise · organisé","организовывать","Le responsable organise le travail de l'équipe."],
+["coordonner","il coordonne · coordonné","координировать","Il faut coordonner les équipes pour éviter les doublons."],
+["contrôler","il contrôle · contrôlé","контролировать","Le manager contrôle les résultats et corrige les écarts."],
+["corriger","il corrige · corrigé","исправлять","Le contrôle permet de corriger les écarts."],
+["mesurer","il mesure · mesuré","измерять","On mesure la performance avec des indicateurs."],
+["évaluer","il évalue · évalué","оценивать","Le manager forme, motive et évalue ses collaborateurs."],
+["fixer (des objectifs)","il fixe · fixé","ставить (цели)","Le nouveau dirigeant fixe des objectifs chiffrés."],
+["atteindre (un objectif)","il atteint · atteint","достигать (цели)","L'efficacité, c'est atteindre ses objectifs."],
+["mettre en œuvre","il met en œuvre · mis en œuvre","реализовывать, внедрять","Le manager opérationnel met en œuvre les décisions stratégiques."],
+["répartir","il répartit · réparti","распределять","Organiser, c'est répartir les tâches et les responsabilités."],
+["allouer","il alloue · alloué","выделять (ресурсы)","Le responsable alloue les ressources nécessaires."],
+["attribuer","il attribue · attribué","поручать, присваивать","Il attribue les responsabilités à chacun."],
+["déléguer","il délègue · délégué","делегировать","Claire Morel doit apprendre à déléguer."],
+["motiver","il motive · motivé","мотивировать","Le management cherche à motiver les équipes."],
+["animer","il anime · animé","вести, воодушевлять (команду)","Animer une équipe, c'est former, communiquer et motiver."],
+["mobiliser","il mobilise · mobilisé","мобилизовать","Le manager mobilise les collaborateurs autour d'une vision."],
+["fédérer","il fédère · fédéré","объединять","Le leadership permet de fédérer un groupe autour d'un but commun."],
+["influencer","il influence · influencé","влиять","Le leader influence le groupe sans pouvoir hiérarchique."],
+["décider","il décide · décidé","решать, принимать решения","Steve Jobs décidait seul."],
+["superviser","il supervise · supervisé","надзирать, курировать","Le conseil d'administration supervise la direction."],
+["piloter","il pilote · piloté","управлять, вести (компанию, проект)","Le directoire pilote l'entreprise."],
+["encadrer","il encadre · encadré","руководить (персоналом)","Le chef d'équipe encadre les ouvriers."],
+["former","il forme · formé","обучать","Le manager forme les nouveaux salariés."],
+["recruter","il recrute · recruté","нанимать","L'entreprise recrute un ingénieur expérimenté."],
+["licencier","il licencie · licencié","увольнять (сокращать)","Musk a licencié la moitié des salariés."],
+["négocier","il négocie · négocié","вести переговоры","Le directeur négocie avec les représentants du personnel."],
+["s'adapter (à)","il s'adapte · adapté","адаптироваться","L'entreprise doit s'adapter à son environnement."],
+["externaliser","il externalise · externalisé","передавать на аутсорсинг","Lafuma externalise une grande partie de sa production."],
+["sous-traiter","il sous-traite · sous-traité","отдавать на субподряд","62 % de la production est sous-traitée."],
+["investir","il investit · investi","инвестировать","Richard Schuster investit dans des machines."],
+["absorber","il absorbe · absorbé","поглощать (компанию)","Le dirigeant absorbe deux entreprises concurrentes."],
+["céder","il cède · cédé","продавать (бизнес, марку)","Le groupe a cédé la marque Eider en 2020."],
+["justifier","il justifie · justifié","обосновывать","Justifiez votre réponse."],
+["qualifier","il qualifie · qualifié","характеризовать","Comment qualifiez-vous le style de management de Steve Jobs ?"],
+["illustrer","il illustre · illustré","иллюстрировать, показывать","Cette attitude illustre le leadership situationnel."]
+],
+lex:[
+{fr:"Gestion et performance",ru:"Управление и результаты",items:[
+ ["la gestion","управление (ресурсами)"],["le management","менеджмент"],["une organisation","организация"],["une entreprise","предприятие, компания"],["les ressources (f)","ресурсы"],["un objectif","цель"],["la performance","результативность"],["l'efficacité (f)","результативность (достижение цели)"],["l'efficience (f)","эффективность (цель при минимуме ресурсов)"],["la productivité","производительность"],["la rentabilité","рентабельность"],["la compétitivité","конкурентоспособность"],["la pérennité","долговечность, устойчивость"],["le chiffre d'affaires (CA)","оборот, выручка"],["le résultat d'exploitation","операционная прибыль"],["un indicateur","показатель"],["un écart","отклонение"],["le budget","бюджет"],["les stocks (m)","запасы"],["les coûts (m)","затраты"]]},
+{fr:"Acteurs et gouvernance",ru:"Участники и корпоративное управление",items:[
+ ["le dirigeant","руководитель"],["un manager","менеджер"],["un salarié, une salariée","сотрудник, сотрудница"],["un collaborateur","сотрудник, коллега"],["le chef d'équipe","бригадир, руководитель группы"],["un actionnaire","акционер"],["les parties prenantes (f)","заинтересованные стороны"],["la gouvernance","корпоративное управление"],["le conseil d'administration","совет директоров"],["le directoire","правление"],["le conseil de surveillance","наблюдательный совет"],["les représentants du personnel","представители персонала"],["le droit d'alerte","право на тревожное уведомление"],["un fournisseur","поставщик"],["un sous-traitant","субподрядчик"],["un concurrent","конкурент"]]},
+{fr:"Leadership et styles",ru:"Лидерство и стили",items:[
+ ["le leadership","лидерство"],["un leader","лидер"],["le style de management","стиль менеджмента"],["autoritaire, directif","авторитарный, директивный"],["persuasif","убеждающий"],["participatif","партисипативный (с участием команды)"],["délégatif","делегирующий"],["le leadership situationnel","ситуационное лидерство"],["la confiance","доверие"],["la motivation","мотивация"],["l'autonomie (f)","самостоятельность"],["la hiérarchie","иерархия"],["le pouvoir","власть"],["un conflit","конфликт"],["la résistance au changement","сопротивление изменениям"]]},
+{fr:"Structures et stratégie",ru:"Структуры и стратегия",items:[
+ ["la structure simple","простая структура"],["la structure fonctionnelle","функциональная структура"],["la structure divisionnelle","дивизиональная структура"],["la structure matricielle","матричная структура"],["l'organigramme (m)","оргсхема"],["un niveau hiérarchique","уровень иерархии"],["la polyvalence","универсальность (работника)"],["la croissance externe","внешний рост (покупка компаний)"],["la délocalisation","перенос производства за рубеж"],["la sous-traitance","субподряд"],["la chaîne de valeur","цепочка ценности"],["la part de marché","доля рынка"],["la distribution","сбыт, дистрибуция"],["le bilan","баланс"],["le compte de résultat","отчёт о прибылях и убытках"],["une étude de cas","разбор кейса"]]}
+],
+phr:[
+{fr:"Définir",ru:"Дать определение",items:[
+ ["La gestion consiste à utiliser les ressources pour atteindre les objectifs.","Gestion заключается в использовании ресурсов для достижения целей."],
+ ["On entend par management l'ensemble des techniques qui permettent de…","Под менеджментом понимают совокупность техник, которые позволяют…"],
+ ["Le leadership se définit comme la capacité à…","Лидерство определяется как способность…"],
+ ["Il s'agit de…","Речь идёт о…"]]},
+{fr:"Qualifier et s'appuyer sur le texte",ru:"Охарактеризовать и опереться на текст",items:[
+ ["Le style de management de Steve Jobs est autoritaire, car il décide seul.","Стиль менеджмента Стива Джобса авторитарный, потому что он решает сам."],
+ ["Comme le montre le texte, …","Как показывает текст, …"],
+ ["Selon le document, …","Согласно документу, …"],
+ ["Cela se traduit par…","Это выражается в…"],
+ ["Par exemple, …","Например, …"]]},
+{fr:"Argumenter",ru:"Аргументировать",items:[
+ ["D'une part…, d'autre part…","С одной стороны…, с другой стороны…"],
+ ["En effet, …","Действительно, … / Ведь…"],
+ ["De plus, … / En outre, …","Кроме того, …"],
+ ["Cependant, … / En revanche, …","Однако, … / Напротив, …"],
+ ["C'est pourquoi…","Вот почему…"],
+ ["Ainsi, …","Таким образом, …"]]},
+{fr:"Avantages et inconvénients",ru:"Плюсы и минусы",items:[
+ ["Ce style présente plusieurs avantages : …","У этого стиля несколько преимуществ: …"],
+ ["Il comporte aussi des limites : …","У него есть и ограничения: …"],
+ ["L'avantage principal est que…","Главное преимущество в том, что…"],
+ ["Le principal inconvénient est…","Главный недостаток — …"]]},
+{fr:"Conclure et proposer",ru:"Сделать вывод и предложить",items:[
+ ["On peut en conclure que…","Можно сделать вывод, что…"],
+ ["En conclusion, … / En somme, …","В заключение, … / В итоге, …"],
+ ["Il est à la fois un leader et un manager, car…","Он одновременно и лидер, и менеджер, потому что…"],
+ ["Je propose de…","Я предлагаю…"],
+ ["Il serait pertinent de…","Было бы уместно…"],
+ ["Il faudrait…","Следовало бы…"]]}
+]};
+/* flashcards for the vocabulary deck: same shape as CARDS plus an example */
+const VOCAB_CARDS=VOCAB.verbs.map(v=>["vocab",v[0],v[2],v[0],v[2],v[1]+" — "+v[3]])
+  .concat(...VOCAB.lex.map(g=>g.items.map(it=>["vocab",it[0],it[1],it[0],it[1],""])));
+const VOCAB_N=VOCAB.verbs.length+VOCAB.lex.reduce((n,g)=>n+g.items.length,0)+VOCAB.phr.reduce((n,g)=>n+g.items.length,0);
+
 /* topic of each VF statement (same order as VF) */
 const VF_T="gm gm gm podc podc podc podc podc manager manager manager manager manager leader leader leader gouv gouv gouv gouv gm gm gm gm leader cas cas cas cas cas gm manager gouv manager".split(" ");
 const PAIR_T={fonctions:"podc",competences:"manager",notions:"gm",lafuma:"cas",structures:"cas"};
@@ -1002,6 +1129,13 @@ fr:{home:"Accueil",cours:"Cours",qcm:"QCM",jeux:"Jeux",examen:"Examen",
  pairsT:"Associer",pairsP:"Touche une notion à gauche, puis sa définition à droite.",mistakes:"erreurs",pairsDone:"Série terminée",
  sortT:"Trier",sortP:"Dans quelle case va cet élément ?",correct:"Correct",wrongIs:"Non, c'est :",sortDone:"Série terminée",
  analyse:"Analyse",marathon:"Marathon",textes:"Textes",compte:"Compte",
+ vocabT:"Vocabulaire",vocabS:"Les verbes, le lexique et les phrases à connaître pour le contrôle, tirés du TD et des textes.",vVerbs:"Verbes",vLex:"Lexique",vPhr:"Phrases utiles",
+ hideTr:"Masquer la traduction",showTr:"Afficher la traduction",tapReveal:"Touche une ligne pour voir la traduction.",learnCards:"Apprendre en cartes",
+ vVerbsP:"Les verbes d'action du management, avec leur forme au présent, leur participe passé et un exemple.",vLexP:"Les mots qui reviennent dans les questions et les textes. Retiens l'article : il donne le genre.",vPhrP:"Des tournures prêtes à l'emploi pour rédiger les réponses aux questions ouvertes.",
+ libreT:"QCM sans propositions",libreP:"Les mêmes questions, mais sans choix de réponses. Écris ta réponse de mémoire, compare avec la bonne réponse, puis note-toi.",
+ libreAll:"Tout le TD",libreMix:"Mélange",libreErr:"Mes erreurs",freePh:"Ta réponse, de mémoire…",reveal:"Voir la bonne réponse",noIdea:"Je ne sais pas",
+ correctIs:"Bonne réponse",match:"Mots clés en commun avec la bonne réponse : {p} %",gradeQ:"Ta réponse était…",gOk:"✓ Juste",gHalf:"≈ À moitié",gNo:"✗ Fausse",
+ vfHint:"Vrai ou faux ? Justifie en une phrase.",kbdFree:"Ctrl + Entrée : voir la réponse",freeTag:"Sans choix",
  accT:"Mon compte",accP:"Avec un compte, ta progression est sauvegardée en ligne : niveau et XP, réponses aux QCM, examens, marathons, textes et brouillons, analyse. Tu la retrouves sur n'importe quel appareil, même après avoir vidé le navigateur.",
  tabIn:"Se connecter",tabUp:"Créer un compte",loginL:"Identifiant",passL:"Mot de passe",pass2L:"Répète le mot de passe",loginRules:"3 à 30 caractères : lettres latines, chiffres, point, tiret, tiret bas.",passRules:"6 caractères minimum. Garde-le bien : il n'y a pas de récupération par e-mail.",
  signIn:"Se connecter",signUp:"Créer mon compte",busy:"Un instant…",
@@ -1062,6 +1196,13 @@ ru:{home:"Главная",cours:"Курс",qcm:"QCM",jeux:"Игры",examen:"Э�
  pairsT:"Пары",pairsP:"Нажми понятие слева, затем его определение справа.",mistakes:"ошибок",pairsDone:"Серия пройдена",
  sortT:"Сортировка",sortP:"В какую группу относится этот элемент?",correct:"Верно",wrongIs:"Нет, правильно:",sortDone:"Серия пройдена",
  analyse:"Анализ",marathon:"Марафон",textes:"Тексты",compte:"Аккаунт",
+ vocabT:"Лексика",vocabS:"Глаголы, слова и фразы, которые нужно выучить к контролю. Собраны из TD и текстов.",vVerbs:"Глаголы",vLex:"Слова",vPhr:"Фразы",
+ hideTr:"Скрыть перевод",showTr:"Показать перевод",tapReveal:"Нажми на строку, чтобы увидеть перевод.",learnCards:"Учить карточками",
+ vVerbsP:"Глаголы действия в менеджменте: форма настоящего времени (il …), причастие прошедшего времени и пример.",vLexP:"Слова, которые постоянно встречаются в вопросах и текстах. Учи вместе с артиклем: он показывает род.",vPhrP:"Готовые обороты, чтобы писать ответы на открытые вопросы.",
+ libreT:"QCM без вариантов",libreP:"Те же вопросы, но без вариантов ответа. Напиши ответ по памяти, сравни с правильным и оцени себя.",
+ libreAll:"Весь TD",libreMix:"Микс",libreErr:"Мои ошибки",freePh:"Твой ответ по памяти…",reveal:"Показать правильный ответ",noIdea:"Не знаю",
+ correctIs:"Правильный ответ",match:"Совпадение ключевых слов с правильным ответом: {p}%",gradeQ:"Твой ответ был…",gOk:"✓ Верным",gHalf:"≈ Частично верным",gNo:"✗ Неверным",
+ vfHint:"Верно или неверно? Объясни одним предложением.",kbdFree:"Ctrl + Enter — показать ответ",freeTag:"Без вариантов",
  accT:"Мой аккаунт",accP:"С аккаунтом прогресс сохраняется онлайн: уровень и XP, ответы QCM, экзамены, марафоны, тексты и черновики, анализ. Его можно открыть на любом устройстве, даже после очистки браузера.",
  tabIn:"Войти",tabUp:"Создать аккаунт",loginL:"Логин",passL:"Пароль",pass2L:"Повтори пароль",loginRules:"3–30 символов: латинские буквы, цифры, точка, дефис, подчёркивание.",passRules:"Минимум 6 символов. Запомни его: восстановления по почте нет.",
  signIn:"Войти",signUp:"Создать аккаунт",busy:"Секунду…",
@@ -1223,13 +1364,13 @@ function hud(){const l=level();$("#xp").innerHTML=`★ ${S.xp||0}<span class="xp
 function isDark(){if(S.theme)return S.theme==="dark";return window.matchMedia&&matchMedia("(prefers-color-scheme: dark)").matches}
 function applyTheme(){if(S.theme)document.documentElement.setAttribute("data-theme",S.theme);else document.documentElement.removeAttribute("data-theme")}
 function themeIcon(){$("#theme-btn").innerHTML=isDark()?IC.sun:IC.moon}
-function curRoute(){const h=(location.hash||"#home").slice(1);const n=h.split("-")[0];const valid=["home","compte","cours","qcm","textes","jeux","examen","analyse","marathon","cartes","eclair","associer","trier"];const m=valid.includes(n)?n:"home";return ["cartes","eclair","associer","trier","marathon"].includes(m)?"jeux":m}
+function curRoute(){const h=(location.hash||"#home").slice(1);const n=h.split("-")[0];const valid=["home","compte","cours","qcm","libre","textes","jeux","examen","analyse","marathon","cartes","eclair","associer","trier"];const m=valid.includes(n)?n:"home";return ["cartes","eclair","associer","trier","marathon"].includes(m)?"jeux":m==="libre"?"qcm":m}
 
 function route(){
   clearTimers();
   const h=(location.hash||"#home").slice(1);
   const i=h.indexOf("-");const name=i<0?h:h.slice(0,i);const arg=i<0?"":h.slice(i+1);
-  const views={home:viewHome,cours:viewCours,qcm:viewQcm,jeux:viewJeux,examen:viewExamen,analyse:viewAnalyse,marathon:viewMarathon,textes:viewTextes,compte:viewCompte,cartes:viewCartes,eclair:viewEclair,associer:viewAssocier,trier:viewTrier};
+  const views={home:viewHome,cours:viewCours,qcm:viewQcm,libre:a=>{if(a)startQuiz(a,true);else viewQcm("")},jeux:viewJeux,examen:viewExamen,analyse:viewAnalyse,marathon:viewMarathon,textes:viewTextes,compte:viewCompte,cartes:viewCartes,eclair:viewEclair,associer:viewAssocier,trier:viewTrier};
   (views[name]||viewHome)(arg);
   shell();
   window.scrollTo(0,0);
@@ -1277,10 +1418,41 @@ function viewHome(){CUR=viewHome;
 
 /* ================= COURS ================= */
 let coursMode="full";
+const tocHTML=cur=>TOPICS.map(x=>`<a href="#cours-${x.id}" class="${x.id===cur?"on":""}" style="--tc:var(--c-${x.id})"><i></i>${esc(L(x).t)}</a>`).join("")
+  +`<a href="#cours-vocab" class="toc-vocab ${cur==="vocab"?"on":""}" style="--tc:var(--c-gouv)"><i></i>Aa · ${t("vocabT")}</a>`;
+function scrollToc(){const tocEl=$(".toc"),on=$(".toc a.on");if(tocEl&&on&&tocEl.scrollWidth>tocEl.clientWidth)tocEl.scrollLeft=on.offsetLeft-tocEl.offsetLeft-12}
+let vocabTab="verbs",vocabHide=false;
+function viewVocab(){CUR=viewVocab;
+  const tabs=[["verbs",t("vVerbs"),VOCAB.verbs.length],["lex",t("vLex"),VOCAB.lex.reduce((n,g)=>n+g.items.length,0)],["phr",t("vPhr"),VOCAB.phr.reduce((n,g)=>n+g.items.length,0)]];
+  const row=(main,sub,tr,ex)=>{const inner=`<span class="vfr"><b>${esc(main)}</b>${sub?`<small class="mono">${esc(sub)}</small>`:""}</span><span class="vtr">${esc(tr)}</span>${ex?`<span class="vex">${esc(ex)}</span>`:""}`;
+    return vocabHide?`<button type="button" class="vrow hid" data-act="vrev">${inner}</button>`:`<div class="vrow">${inner}</div>`};
+  let body;
+  if(vocabTab==="verbs")body=`<p class="muted" style="margin:0 0 12px">${t("vVerbsP")}</p><div class="vlist">${VOCAB.verbs.map(v=>row(v[0],v[1],v[2],v[3])).join("")}</div>`;
+  else{const groups=vocabTab==="lex"?VOCAB.lex:VOCAB.phr;
+    body=`<p class="muted" style="margin:0 0 12px">${vocabTab==="lex"?t("vLexP"):t("vPhrP")}</p>`+groups.map(g=>`<section class="vgroup"><h3 class="h3">${esc(L(g))}</h3><div class="vlist">${g.items.map(it=>row(it[0],"",it[1],"")).join("")}</div></section>`).join("");}
+  render(`<div class="cours" style="--tc:var(--c-gouv)">
+    <nav class="toc sheet" aria-label="${t("cours")}">${tocHTML("vocab")}</nav>
+    <article class="art sheet">
+      <div class="art-h">
+        <span class="chip">${VOCAB_N} · FR → RU</span>
+        <h1 class="h2">${t("vocabT")}</h1>
+        <p class="muted" style="margin:0">${t("vocabS")}</p>
+        <div class="seg vtabs" role="group">${tabs.map(x=>`<button class="${vocabTab===x[0]?"on":""}" data-act="vtab" data-v="${x[0]}" aria-pressed="${vocabTab===x[0]}">${x[1]} <span class="mono">${x[2]}</span></button>`).join("")}</div>
+        <div class="row" style="justify-content:space-between">
+          <button class="btn sm ${vocabHide?"pri":""}" data-act="vhide" aria-pressed="${vocabHide}">${vocabHide?t("showTr"):t("hideTr")}</button>
+          ${vocabTab==="phr"?"":`<button class="btn sm" data-act="vcards">${t("learnCards")} →</button>`}
+        </div>
+        ${vocabHide?`<p class="muted" style="margin:0;font-size:14px">${t("tapReveal")}</p>`:""}
+      </div>
+      ${body}
+    </article></div>`);
+  scrollToc();
+}
 function viewCours(arg){
+  if(arg==="vocab")return viewVocab();
   const tp=topic(arg)||TOPICS[0];CUR=()=>viewCours(tp.id);
   const idx=TOPICS.indexOf(tp),prev=TOPICS[idx-1],next=TOPICS[idx+1];
-  const toc=TOPICS.map(x=>`<a href="#cours-${x.id}" class="${x===tp?"on":""}" style="--tc:var(--c-${x.id})"><i></i>${esc(L(x).t)}</a>`).join("");
+  const toc=tocHTML(tp.id);
   const secs=L(tp.body).map((s,i)=>`<section><h3><small>${String(i+1).padStart(2,"0")}</small>${s.h}</h3>${s.x}</section>`).join("");
   const facts=`<div class="facts"><h3>★ ${t("facts")}</h3><ol>${L(tp.facts).map(f=>`<li><span>${esc(f)}</span></li>`).join("")}</ol></div>`;
   const traps=`<div class="traps"><h3>⚠ ${t("traps")}</h3><ul>${L(tp.traps).map(f=>`<li>${esc(f)}</li>`).join("")}</ul></div>`;
@@ -1299,11 +1471,10 @@ function viewCours(arg){
       ${coursMode==="ess"?facts+traps:secs+facts+traps}
       <div class="art-nav">
         ${prev?`<a class="btn sm" href="#cours-${prev.id}">← ${esc(L(prev).t)}</a>`:"<span></span>"}
-        ${next?`<a class="btn sm" href="#cours-${next.id}">${esc(L(next).t)} →</a>`:`<a class="btn sm pri" href="#examen">${t("examT")} →</a>`}
+        ${next?`<a class="btn sm" href="#cours-${next.id}">${esc(L(next).t)} →</a>`:`<a class="btn sm pri" href="#cours-vocab">${t("vocabT")} →</a>`}
       </div>
     </article></div>`);
-  const tocEl=$(".toc"),on=$(".toc a.on");
-  if(tocEl&&on&&tocEl.scrollWidth>tocEl.clientWidth)tocEl.scrollLeft=on.offsetLeft-tocEl.offsetLeft-12;
+  scrollToc();
 }
 
 /* ================= QCM ================= */
@@ -1315,12 +1486,17 @@ function viewQcm(arg){
   const special=[["all",t("allTD"),t("allTDd"),43],["mix",t("mix"),t("mixD"),QS.length],["bonus",t("bonus"),t("bonusD"),QS.filter(q=>q.id>100).length],["err",t("errs"),nErr?t("errsD"):t("noErr"),nErr]];
   const sp=special.map((s,i)=>`<button class="pick sheet ${i===0?"special":""}" data-act="startq" data-v="${s[0]}" ${s[0]==="err"&&!nErr?"disabled":""}><span class="h3">${s[1]}</span><span class="muted">${s[2]}</span><span class="mono muted">${s[3]} ${t("questions")}</span></button>`).join("");
   const tps=TOPICS.map(x=>{const m=mastery(x.id);return `<button class="pick sheet" style="--tc:var(--c-${x.id})" data-act="startq" data-v="${x.id}"><span class="chip">${m.n} ${t("questions")}</span><span class="h3">${esc(L(x).t)}</span><span class="bar"><i style="width:${m.p}%"></i></span><span class="mono muted" style="font-size:13px">${m.p}% ${t("mastery")}</span></button>`}).join("");
+  const fr=[["all",t("libreAll")],["mix",t("libreMix")]].concat(nErr?[["err",t("libreErr")+" ("+nErr+")"]]:[]).concat(TOPICS.map(x=>[x.id,L(x).t]))
+    .map(f=>`<button class="tagbtn" data-act="startf" data-v="${f[0]}">${esc(f[1])}</button>`).join("");
   render(`<div style="display:flex;flex-direction:column;gap:18px">
     <div><h1 class="h2">${t("qcmT")}</h1><p class="lead" style="margin:8px 0 0">${t("qcmP")}</p></div>
     <div class="grid-cards">${sp}</div>
-    <div class="grid-cards">${tps}</div></div>`);
+    <div class="grid-cards">${tps}</div>
+    <section class="free-box sheet" style="--tc:var(--c-gouv)">
+      <div class="row" style="gap:12px;align-items:flex-start"><span class="ic">${IC.textes}</span><div style="flex:1;min-width:0"><h2 class="h3" style="font-size:19px">${t("libreT")}</h2><p class="muted" style="margin:4px 0 0">${t("libreP")}</p></div></div>
+      <div class="tag-row">${fr}</div></section></div>`);
 }
-function startQuiz(tp){
+function startQuiz(tp,free){
   let pool;
   if(tp==="all")pool=QS.filter(q=>q.id<100);
   else if(tp==="bonus")pool=shuffle(QS.filter(q=>q.id>100));
@@ -1329,13 +1505,65 @@ function startQuiz(tp){
   else if(topic(tp))pool=shuffle(QS.filter(q=>q.t===tp));
   else pool=[];
   if(!pool.length){location.hash="#qcm";return}
-  Q={tp,list:pool,i:0,score:0,picked:null,wrongs:[],order:pool.map(q=>q.fr[1].length>2?shuffle(range(q.fr[1].length)):range(q.fr[1].length))};
-  CUR=renderQuiz;renderQuiz();
+  Q={tp,free:!!free,list:pool,i:0,score:0,picked:null,wrongs:[],order:pool.map(q=>q.fr[1].length>2?shuffle(range(q.fr[1].length)):range(q.fr[1].length))};
+  freeReset();CUR=renderQuiz;renderQuiz();
+}
+function freeReset(){if(Q){Q.text="";Q.revealed=false;Q.grade=null;Q.sim=0}}
+/* free answer: share of the correct option's key stems found in the student's answer (best of FR / RU) */
+const STOP=new Set(("les des une le la de du et ou en au aux par pour avec dans sur que qui son sa ses leur leurs est sont pas plus tout tous toute toutes cette ces elle il ils elles nous vous on ce se ne mais donc car comme entre afin sans sous tres etre avoir fait faire meme aussi uniquement seulement "+
+  "и в во на с со по к ко у о об от до за из для не что как это его ее их он она они мы вы а но или же ли бы то так при над под без через который которая которые которых только также чтобы быть").split(" "));
+function stems(s){return norm(s).replace(/[^a-zа-я0-9 ]/g," ").split(" ").filter(w=>(w.length>=4||/^\d+$/.test(w))&&!STOP.has(w)).map(w=>w.slice(0,5))}
+function simScore(ans,q){
+  if(!String(ans).trim())return 0;const A=new Set(stems(ans));
+  const best=["fr","ru"].map(l=>{const k=[...new Set(stems(q[l][1][q.a]))];return k.length?k.filter(s=>A.has(s)).length/k.length:0});
+  return Math.round(Math.max(...best)*100);
+}
+function renderFree(){
+  const q=Q.list[Q.i],d=L(q),fr=q.fr,n=Q.list.length,tp=topic(q.t),showO=S.lang==="ru"&&S.orig,vf=q.fr[1].length===2;
+  let after="";
+  if(Q.revealed){
+    after=`<div class="expl" role="status"><span class="eyebrow">${t("correctIs")}</span>
+      <p style="margin:6px 0 4px"><b>${esc(d[1][q.a])}</b>${showO?`<span class="orig">${esc(fr[1][q.a])}</span>`:""}</p>
+      <p class="muted" style="margin:0">${esc(d[2])}</p></div>
+      ${Q.text?`<p class="mono muted" style="margin:0;font-size:13px">${t("match").replace("{p}",Q.sim)}</p>`:""}
+      ${Q.grade==null?`<div><p class="h3" style="margin:0 0 8px">${t("gradeQ")}</p><div class="grades">
+        <button class="btn gr-ok" data-act="fgrade" data-v="1">${t("gOk")}</button><button class="btn gr-half" data-act="fgrade" data-v="0.5">${t("gHalf")}</button><button class="btn gr-no" data-act="fgrade" data-v="0">${t("gNo")}</button></div></div>`:""}`;
+  }
+  render(`<div class="quiz" style="--tc:var(--c-${q.t})">
+    <div class="qtop"><a class="btn sm ghost" href="#qcm">← ${t("back")}</a><span class="mono">${Q.i+1}/${n}</span><div class="bar"><i style="width:${(Q.i+(Q.grade!=null?1:0))/n*100}%"></i></div><span class="mono">★ ${fmtNum(Q.score)}</span></div>
+    <div class="qcard sheet">
+      <div class="qmeta"><span class="row" style="gap:6px"><span class="chip">${esc(L(tp).t)}</span><span class="chip" style="--tc:var(--muted)">${qTag(q)}</span><span class="chip" style="--tc:var(--c-gouv)">${t("freeTag")}</span></span>
+        ${S.lang==="ru"?`<button class="btn sm ghost" data-act="orig">${S.orig?t("origOff"):t("origOn")}</button>`:""}</div>
+      <label class="qtext" for="free-ans">${esc(d[0])}${showO?`<span class="orig">${esc(fr[0])}</span>`:""}</label>
+      ${vf?`<p class="muted" style="margin:-6px 0 0;font-size:14.5px">${t("vfHint")}</p>`:""}
+      <textarea id="free-ans" class="free-ta" rows="3" placeholder="${t("freePh")}" ${Q.revealed?"readonly":""}>${esc(Q.text)}</textarea>
+      ${Q.revealed?"":`<div class="row"><button class="btn pri" data-act="freveal">${t("reveal")}</button><button class="btn ghost" data-act="freveal" data-v="skip">${t("noIdea")}</button></div>`}
+      ${after}
+      <div class="qfoot"><span class="kbd">${Q.revealed?"":t("kbdFree")}</span>${Q.grade!=null?`<button class="btn pri" data-act="nextq" id="nextq">${Q.i+1<n?t("nextQ"):t("finish")} →</button>`:""}</div>
+    </div></div>`);
+  if(Q.grade!=null){const b=$("#nextq");if(b)b.focus({preventScroll:true})}
+  else if(!Q.revealed){const ta=$("#free-ans");if(ta&&window.matchMedia&&matchMedia("(hover:hover)").matches)ta.focus({preventScroll:true})}
+}
+function freeReveal(skip){
+  if(!Q||!Q.free||Q.revealed)return;
+  const ta=$("#free-ans");Q.text=skip?"":(ta?ta.value:Q.text).trim();
+  Q.sim=simScore(Q.text,Q.list[Q.i]);Q.revealed=true;
+  if(skip){freeGrade(0);return}
+  renderQuiz();
+}
+function freeGrade(v){
+  if(!Q||!Q.free||!Q.revealed||Q.grade!=null)return;
+  const q=Q.list[Q.i];v=+v;Q.grade=v;const ok=v===1;
+  S.res[q.id]=ok;rec("q"+q.id,q.t,ok);Q.score+=v;
+  if(v<1)Q.wrongs.push(q);
+  if(v>0)addXP(v===1?12:5);else save();
+  renderQuiz();
 }
 function qTag(q){return q.id<100?t("td")+q.id:t("bonusTag")}
 function renderQuiz(){
   if(!Q)return viewQcm("");
   if(Q.i>=Q.list.length)return renderQuizEnd();
+  if(Q.free)return renderFree();
   const q=Q.list[Q.i],d=L(q),fr=q.fr,ord=Q.order[Q.i],n=Q.list.length,tp=topic(q.t);
   const showO=S.lang==="ru"&&S.orig;
   const opts=ord.map((oi,k)=>{let c="";if(Q.picked!==null){c=oi===q.a?"ok":oi===Q.picked?"bad":"dim"}
@@ -1360,18 +1588,18 @@ function pickQ(v){
   S.res[q.id]=ok;rec("q"+q.id,q.t,ok);if(ok){Q.score++;addXP(10)}else{Q.wrongs.push(q);save()}
   renderQuiz();
 }
-function nextQ(){if(!Q||Q.picked===null)return;Q.i++;Q.picked=null;renderQuiz();window.scrollTo(0,0)}
+function nextQ(){if(!Q||(Q.free?Q.grade==null:Q.picked===null))return;Q.i++;Q.picked=null;freeReset();renderQuiz();window.scrollTo(0,0)}
 function ring(p,label){const r=62,c=2*Math.PI*r;return `<div class="ring"><svg viewBox="0 0 150 150"><circle class="bg" cx="75" cy="75" r="${r}"/><circle class="fg" cx="75" cy="75" r="${r}" stroke-dasharray="${c.toFixed(1)}" stroke-dashoffset="${(c*(1-p)).toFixed(1)}"/></svg><b>${label}</b></div>`}
 function verdict(p){return p>=1?t("r100"):p>=.75?t("r75"):p>=.5?t("r50"):t("r0")}
 function renderQuizEnd(){
   const n=Q.list.length,p=Q.score/n;
   const rv=Q.wrongs.map(q=>{const d=L(q);return `<div class="rv"><div class="q">${qTag(q)} · ${esc(d[0])}</div><div class="a-ok">✓ ${esc(d[1][q.a])}</div><div class="muted" style="margin-top:4px">${esc(d[2])}</div></div>`}).join("");
   render(`<div class="result sheet">
-    <span class="eyebrow">${t("score")}</span>${ring(p,Q.score+"/"+n)}<p class="h3">${verdict(p)}</p>
-    <div class="row" style="justify-content:center">${Q.wrongs.length?`<button class="btn pri" data-act="retryw">${t("retryErr")} (${Q.wrongs.length})</button>`:""}<button class="btn" data-act="startq" data-v="${Q.tp}">${t("again")}</button><a class="btn ghost" href="#qcm">${t("other")}</a></div>
+    <span class="eyebrow">${Q.free?t("libreT"):t("score")}</span>${ring(p,fmtNum(Q.score)+"/"+n)}<p class="h3">${verdict(p)}</p>
+    <div class="row" style="justify-content:center">${Q.wrongs.length?`<button class="btn pri" data-act="retryw">${t("retryErr")} (${Q.wrongs.length})</button>`:""}<button class="btn" data-act="${Q.free?"startf":"startq"}" data-v="${Q.tp}">${t("again")}</button><a class="btn ghost" href="#qcm">${t("other")}</a></div>
     ${rv?`<div class="review">${rv}</div>`:""}</div>`);
 }
-function retryWrong(){const w=Q.wrongs;Q={tp:Q.tp,list:shuffle(w),i:0,score:0,picked:null,wrongs:[],order:[]};Q.order=Q.list.map(q=>q.fr[1].length>2?shuffle(range(q.fr[1].length)):range(q.fr[1].length));CUR=renderQuiz;renderQuiz();window.scrollTo(0,0)}
+function retryWrong(){const w=Q.wrongs;Q={tp:Q.tp,free:Q.free,list:shuffle(w),i:0,score:0,picked:null,wrongs:[],order:[]};freeReset();Q.order=Q.list.map(q=>q.fr[1].length>2?shuffle(range(q.fr[1].length)):range(q.fr[1].length));CUR=renderQuiz;renderQuiz();window.scrollTo(0,0)}
 
 /* ================= EXAMEN ================= */
 let E=null,examConfirm=false;
@@ -1448,18 +1676,19 @@ function gameHead(title,extra){return `<div class="qtop"><a class="btn sm ghost"
 /* --- Cartes --- */
 let C=null;
 function viewCartes(){if(!C)cardsStart("all");CUR=renderCards;renderCards()}
-function cardsStart(f,subset){const base=subset||CARDS.filter(c=>f==="all"||c[0]===f);C={f,deck:shuffle(base),i:0,flip:false,known:0,again:[]};}
+function cardsStart(f,subset){const base=subset||(f==="vocab"?VOCAB_CARDS:CARDS.filter(c=>f==="all"||c[0]===f));C={f,deck:shuffle(base),i:0,flip:false,known:0,again:[]};}
 function renderCards(){
-  const filt=`<div class="tag-row"><button class="tagbtn ${C.f==="all"?"on":""}" data-act="cfilter" data-v="all">${t("allT")}</button>${TOPICS.map(x=>`<button class="tagbtn ${C.f===x.id?"on":""}" data-act="cfilter" data-v="${x.id}">${esc(L(x).t)}</button>`).join("")}</div>`;
+  const filt=`<div class="tag-row"><button class="tagbtn ${C.f==="all"?"on":""}" data-act="cfilter" data-v="all">${t("allT")}</button>${TOPICS.map(x=>`<button class="tagbtn ${C.f===x.id?"on":""}" data-act="cfilter" data-v="${x.id}">${esc(L(x).t)}</button>`).join("")}<button class="tagbtn ${C.f==="vocab"?"on":""}" data-act="cfilter" data-v="vocab">Aa · ${t("vocabT")}</button></div>`;
   if(C.i>=C.deck.length){
     render(`<div class="flash-wrap">${gameHead(t("cardsT"))}${filt}<div class="result sheet" style="--tc:var(--c-manager)">${ring(C.known/C.deck.length,C.known+"/"+C.deck.length)}<p class="h3">${t("cardsDone")} · ${C.known} ${t("known")}</p><div class="row" style="justify-content:center">${C.again.length?`<button class="btn pri" data-act="cagain">${t("onlyReview")} (${C.again.length})</button>`:""}<button class="btn" data-act="cfilter" data-v="${C.f}">${t("restart")}</button></div></div></div>`);return}
-  const c=C.deck[C.i],ru=S.lang==="ru",tp=topic(c[0]);
-  const front=ru?c[3]:c[1],back=ru?c[4]:c[2];
-  render(`<div class="flash-wrap" style="--tc:var(--c-${c[0]})">${gameHead(t("cardsT"),`<span class="mono" style="margin-left:auto">${C.i+1}/${C.deck.length}</span>`)}${filt}
+  const c=C.deck[C.i],ru=S.lang==="ru",voc=c[0]==="vocab",tp=voc?null:topic(c[0]);
+  /* vocabulary cards always go French → Russian: that is the point of learning them */
+  const front=voc?c[1]:ru?c[3]:c[1],back=voc?c[2]:ru?c[4]:c[2];
+  render(`<div class="flash-wrap" style="--tc:var(--c-${voc?"gouv":c[0]})">${gameHead(t("cardsT"),`<span class="mono" style="margin-left:auto">${C.i+1}/${C.deck.length}</span>`)}${filt}
     <div class="bar"><i style="width:${C.i/C.deck.length*100}%"></i></div>
     <button class="flash ${C.flip?"flip":""}" data-act="cflip" aria-label="${t("flipHint")}"><div class="flash-in">
-      <div class="face front"><span class="chip">${esc(L(tp).t)}</span><span class="term">${esc(front)}</span>${ru?`<span class="muted">${esc(c[1])}</span>`:""}<span class="hint">${t("flipHint")}</span></div>
-      <div class="face back"><span class="term" style="font-size:18px;opacity:.75">${esc(front)}</span><span class="def">${esc(back)}</span></div>
+      <div class="face front"><span class="chip">${voc?"Aa · "+t("vocabT"):esc(L(tp).t)}</span><span class="term">${esc(front)}</span>${ru&&!voc?`<span class="muted">${esc(c[1])}</span>`:""}<span class="hint">${t("flipHint")}</span></div>
+      <div class="face back"><span class="term" style="font-size:18px;opacity:.75">${esc(front)}</span><span class="def">${esc(back)}</span>${voc&&c[5]?`<span class="def" style="font-size:14.5px;opacity:.75;font-style:italic">${esc(c[5])}</span>`:""}</div>
     </div></button>
     <div class="vf"><button class="btn f" data-act="cno">${t("review")}</button><button class="btn v" data-act="cyes">${t("knew")}</button></div></div>`);
 }
@@ -1677,6 +1906,7 @@ function textCheck(i){
 }
 function textManual(v){const [i,j]=String(v).split("|").map(Number);const x=curText;if(!x)return;const r=S.tr[tKey(x,i)];if(!r)return;r.m[j]=r.m[j]?0:1;r.ts=Date.now();save();rerenderTQ(i)}
 let draftT=null;
+document.addEventListener("input",e=>{if(e.target&&e.target.id==="free-ans"&&Q&&Q.free&&!Q.revealed)Q.text=e.target.value});
 document.addEventListener("input",e=>{const ta=e.target.closest&&e.target.closest("textarea[data-key]");if(!ta)return;S.ta[ta.dataset.key]=ta.value;S.taT[ta.dataset.key]=Date.now();clearTimeout(draftT);draftT=setTimeout(save,400)});
 
 /* ================= COMPTE ================= */
@@ -1834,6 +2064,10 @@ const ACT={
  reset:(v,b)=>{if(b.dataset.armed){const keep={lang:S.lang,theme:S.theme,orig:S.orig};S=Object.assign({xp:0,res:{},best:{},h:{},exams:[],runs:[],ta:{},tr:{}},keep);M=null;save();toast(t("resetDone"));viewHome();shell()}else{b.dataset.armed="1";b.textContent=t("resetC");b.classList.add("pri")}},
  cmode:v=>{coursMode=v;CUR()},
  startq:v=>{if(location.hash==="#qcm-"+v)startQuiz(v);else location.hash="#qcm-"+v},
+ startf:v=>{if(location.hash==="#libre-"+v)startQuiz(v,true);else location.hash="#libre-"+v},
+ freveal:v=>freeReveal(v==="skip"),fgrade:v=>freeGrade(v),
+ vtab:v=>{vocabTab=v;viewVocab()},vhide:()=>{vocabHide=!vocabHide;viewVocab()},vrev:(v,b)=>{b.classList.toggle("shown")},
+ vcards:()=>{cardsStart("vocab");location.hash="#cartes"},
  pick:v=>pickQ(v),nextq:()=>nextQ(),retryw:()=>retryWrong(),
  orig:()=>{S.orig=!S.orig;save();CUR()},
  examgo:()=>examStart(),examnew:()=>{E=null;examStart()},
@@ -1841,8 +2075,8 @@ const ACT={
  ego:v=>{v=+v;if(v>=0&&v<E.list.length){E.i=v;examConfirm=false;renderExam()}},
  efinish:()=>{if(examConfirm)examFinish();else{examConfirm=true;renderExam()}},
  cflip:()=>{C.flip=!C.flip;const f=$(".flash");if(f)f.classList.toggle("flip",C.flip)},
- cyes:()=>{const c=C.deck[C.i];rec("c"+CARDS.indexOf(c)+"d",c[0],true);C.known++;addXP(3);C.i++;C.flip=false;renderCards()},
- cno:()=>{const c=C.deck[C.i];rec("c"+CARDS.indexOf(c)+"d",c[0],false);C.again.push(c);C.i++;C.flip=false;renderCards()},
+ cyes:()=>{const c=C.deck[C.i];if(c[0]!=="vocab")rec("c"+CARDS.indexOf(c)+"d",c[0],true);C.known++;addXP(3);C.i++;C.flip=false;renderCards()},
+ cno:()=>{const c=C.deck[C.i];if(c[0]!=="vocab")rec("c"+CARDS.indexOf(c)+"d",c[0],false);C.again.push(c);C.i++;C.flip=false;renderCards()},
  cfilter:v=>{cardsStart(v);renderCards()},
  cagain:()=>{cardsStart(C.f,C.again);renderCards()},
  ego2:()=>eclairStart(),
@@ -1861,7 +2095,9 @@ const ACT={
 };
 document.addEventListener("click",e=>{const b=e.target.closest("[data-act]");if(!b||b.disabled)return;const f=ACT[b.dataset.act];if(f){e.preventDefault();f(b.dataset.v,b)}});
 document.addEventListener("keydown",e=>{
+  if(e.target&&e.target.id==="free-ans"&&e.key==="Enter"&&(e.ctrlKey||e.metaKey)){e.preventDefault();freeReveal(false);return}
   if(e.ctrlKey||e.metaKey||e.altKey)return;
+  if(Q&&Q.free&&(location.hash||"").startsWith("#libre-")&&e.key==="Enter"&&Q.grade!=null&&(e.target.tagName||"").toLowerCase()!=="textarea"){e.preventDefault();nextQ();return}
   const tag=(e.target.tagName||"").toLowerCase();if(tag==="input"||tag==="textarea")return;
   const h=(location.hash||"").slice(1);
   if(h.startsWith("qcm-")&&Q&&Q.i<Q.list.length){
