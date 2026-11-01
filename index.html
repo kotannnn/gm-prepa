@@ -1,0 +1,1358 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#1F4BFF">
+<title>Révision Management L1</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&family=Unbounded:wght@500;700;800&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+/* Layout: a planning board — grid-paper ground, the four PODC functions as the signature tiles, content in calm white sheets; bottom tab bar on phones. */
+:root{
+  --bg:#ECEFF3; --surface:#FFFFFF; --surface2:#F4F6F9; --ink:#0F1A2B; --muted:#596476; --line:#D5DCE5; --grid:rgba(31,75,255,.07);
+  --accent:#1F4BFF; --accent-ink:#FFFFFF; --accent-soft:#E6ECFF;
+  --hi:#FFD84D; --hi-ink:#1E1700;
+  --ok:#0F8A55; --ok-bg:#E1F5EA; --bad:#C93434; --bad-bg:#FBE7E7; --warn:#9A5800; --warn-bg:#FDF0DC;
+  --c-gm:#1F4BFF; --c-podc:#0A9586; --c-manager:#B26100; --c-leader:#D93D55; --c-gouv:#7446D4; --c-cas:#3A7636;
+  --shadow:0 1px 0 rgba(15,26,43,.04),0 10px 28px -16px rgba(15,26,43,.28);
+  --f-display:"Unbounded","Arial Black",system-ui,sans-serif;
+  --f-body:"Onest","Segoe UI",system-ui,-apple-system,Roboto,sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,Consolas,monospace;
+  --r:14px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0B111B; --surface:#141C29; --surface2:#1A2434; --ink:#E7ECF4; --muted:#97A2B5; --line:#283447; --grid:rgba(120,150,255,.06);
+  --accent:#7590FF; --accent-ink:#0B111B; --accent-soft:#1D2848;
+  --hi:#FFD84D; --hi-ink:#1E1700;
+  --ok:#3FCB8A; --ok-bg:#12301F; --bad:#FF7373; --bad-bg:#3A1717; --warn:#FFB547; --warn-bg:#3A2A10;
+  --c-gm:#7590FF; --c-podc:#2CC9B6; --c-manager:#FFAA3B; --c-leader:#FF6F86; --c-gouv:#A988FF; --c-cas:#7CC56F;
+  --shadow:0 1px 0 rgba(0,0,0,.2),0 12px 30px -16px rgba(0,0,0,.7);
+  color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0B111B; --surface:#141C29; --surface2:#1A2434; --ink:#E7ECF4; --muted:#97A2B5; --line:#283447; --grid:rgba(120,150,255,.06);
+  --accent:#7590FF; --accent-ink:#0B111B; --accent-soft:#1D2848;
+  --hi:#FFD84D; --hi-ink:#1E1700;
+  --ok:#3FCB8A; --ok-bg:#12301F; --bad:#FF7373; --bad-bg:#3A1717; --warn:#FFB547; --warn-bg:#3A2A10;
+  --c-gm:#7590FF; --c-podc:#2CC9B6; --c-manager:#FFAA3B; --c-leader:#FF6F86; --c-gouv:#A988FF; --c-cas:#7CC56F;
+  --shadow:0 1px 0 rgba(0,0,0,.2),0 12px 30px -16px rgba(0,0,0,.7);
+  color-scheme:dark}
+
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 var(--f-body);
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:28px 28px;background-attachment:fixed;min-height:100vh}
+[hidden]{display:none!important}
+img{max-width:100%}
+button{font:inherit;color:inherit}
+a{color:var(--accent)}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px;border-radius:6px}
+h1,h2,h3{text-wrap:balance;margin:0}
+mark{background:linear-gradient(transparent 55%,var(--hi) 55%);color:inherit;padding:0 .1em}
+:root[data-theme="dark"] mark{background:linear-gradient(transparent 55%,rgba(255,216,77,.38) 55%)}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) mark{background:linear-gradient(transparent 55%,rgba(255,216,77,.38) 55%)}}
+
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:30;background:var(--surface)}
+
+/* header */
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:color-mix(in srgb,var(--surface) 88%,transparent);
+  backdrop-filter:saturate(1.4) blur(10px);-webkit-backdrop-filter:saturate(1.4) blur(10px);border-bottom:1px solid var(--line)}
+.top-in{max-width:1120px;margin:0 auto;display:flex;align-items:center;gap:14px;height:60px;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--ink);font:700 15px/1 var(--f-display);letter-spacing:-.01em;white-space:nowrap}
+.brand-mark{display:grid;grid-template-columns:repeat(2,11px);gap:2px}
+.brand-mark i{width:11px;height:11px;border-radius:3px;display:block}
+.brand-mark i:nth-child(1){background:var(--c-gm)}.brand-mark i:nth-child(2){background:var(--c-podc)}
+.brand-mark i:nth-child(3){background:var(--c-manager)}.brand-mark i:nth-child(4){background:var(--c-leader)}
+.nav{display:flex;gap:2px;margin-left:8px}
+.nav a{text-decoration:none;color:var(--muted);font-weight:600;font-size:14.5px;padding:8px 12px;border-radius:10px}
+.nav a:hover{color:var(--ink);background:var(--surface2)}
+.nav a.on{color:var(--ink);background:var(--accent-soft)}
+.top-r{margin-left:auto;display:flex;align-items:center;gap:8px}
+.xp{display:flex;align-items:center;gap:6px;font:700 13px/1 var(--f-mono);padding:7px 10px;border-radius:999px;background:var(--hi);color:var(--hi-ink);white-space:nowrap}
+.seg{display:inline-flex;background:var(--surface2);border:1px solid var(--line);border-radius:10px;padding:3px}
+.seg button{border:0;background:transparent;padding:6px 10px;border-radius:7px;font-weight:700;font-size:13px;cursor:pointer;color:var(--muted)}
+.seg button.on{background:var(--surface);color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.12)}
+.iconbtn{width:38px;height:38px;border-radius:10px;border:1px solid var(--line);background:var(--surface2);display:grid;place-items:center;cursor:pointer}
+.iconbtn svg{width:18px;height:18px;stroke:var(--ink);fill:none;stroke-width:2}
+
+/* bottom tabbar (mobile) */
+.tabbar{display:none}
+@media (max-width:960px){
+  .nav{display:none}
+  .tabbar{display:grid;grid-template-columns:repeat(6,1fr);position:fixed;left:0;right:0;bottom:0;z-index:25;
+    background:var(--surface);border-top:1px solid var(--line);
+    padding:6px max(6px,env(safe-area-inset-right,0px)) calc(6px + env(safe-area-inset-bottom,0px)) max(6px,env(safe-area-inset-left,0px))}
+  .tabbar a{display:flex;flex-direction:column;align-items:center;gap:3px;text-decoration:none;color:var(--muted);font-size:11.5px;font-weight:600;padding:6px 2px;border-radius:10px}
+  .tabbar a svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.9}
+  .tabbar a.on{color:var(--accent);background:var(--accent-soft)}
+  .xp .xp-l{display:none}
+}
+
+main{max-width:1120px;margin:0 auto;padding-block:28px 64px;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+@media (max-width:960px){main{padding-block:18px calc(96px + env(safe-area-inset-bottom,0px))}}
+
+.view{animation:rise .35s ease both}
+@keyframes rise{from{opacity:.4;transform:translateY(6px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+/* type */
+.eyebrow{font:600 12px/1.3 var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.h1{font:800 clamp(28px,5.4vw,52px)/1.04 var(--f-display);letter-spacing:-.025em}
+.h2{font:700 clamp(21px,3vw,28px)/1.15 var(--f-display);letter-spacing:-.015em}
+.h3{font:700 17px/1.25 var(--f-body)}
+.lead{font-size:17.5px;color:var(--muted);max-width:60ch}
+.muted{color:var(--muted)}
+.mono{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+
+/* buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:1px solid var(--line);background:var(--surface);color:var(--ink);
+  padding:12px 18px;border-radius:12px;font-weight:700;font-size:15px;cursor:pointer;text-decoration:none;transition:transform .12s,background .15s,border-color .15s;min-height:46px}
+.btn:hover{border-color:var(--ink)}
+.btn:active{transform:translateY(1px)}
+.btn.pri{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.btn.pri:hover{filter:brightness(1.07)}
+.btn.ghost{background:transparent}
+.btn.sm{padding:8px 12px;min-height:38px;font-size:14px}
+.btn[disabled]{opacity:.45;cursor:not-allowed}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+
+.sheet{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow)}
+.chip{display:inline-flex;align-items:center;gap:6px;font:700 11.5px/1 var(--f-mono);letter-spacing:.04em;text-transform:uppercase;
+  padding:6px 9px;border-radius:7px;color:var(--tc,var(--accent));background:color-mix(in srgb,var(--tc,var(--accent)) 13%,transparent)}
+.chip::before{content:"";width:7px;height:7px;border-radius:2px;background:var(--tc,var(--accent))}
+
+/* HOME */
+.hero{display:grid;grid-template-columns:1.15fr .85fr;gap:32px;align-items:center;margin-bottom:34px}
+@media (max-width:900px){.hero{grid-template-columns:1fr;gap:22px}}
+.hero-t{display:flex;flex-direction:column;gap:16px;min-width:0}
+.podc{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.tile{position:relative;border:0;cursor:pointer;text-align:left;border-radius:16px;padding:16px;min-height:132px;color:#fff;
+  background:var(--tc);display:flex;flex-direction:column;justify-content:space-between;overflow:hidden;transition:transform .18s}
+.tile:hover{transform:translateY(-2px) rotate(-.4deg)}
+.tile .L{font:800 54px/.9 var(--f-display);letter-spacing:-.04em;opacity:.95}
+.tile .n{font:700 14px/1.2 var(--f-body)}
+.tile .d{font-size:13.5px;line-height:1.35;font-weight:500}
+.tile .k{position:absolute;right:12px;top:12px;font:600 11px var(--f-mono);opacity:.75}
+:root[data-theme="dark"] .tile{color:#0B111B}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .tile{color:#0B111B}}
+.podc-cap{grid-column:1/-1;font-size:13px;color:var(--muted);text-align:center}
+
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:34px}
+@media (max-width:820px){.stats{grid-template-columns:1fr 1fr}}
+.stat{padding:16px;display:flex;flex-direction:column;gap:6px;min-width:0}
+.stat b{font:700 26px/1 var(--f-mono);font-variant-numeric:tabular-nums}
+.stat span{font-size:13px;color:var(--muted)}
+.bar{height:8px;border-radius:99px;background:var(--surface2);overflow:hidden;border:1px solid var(--line)}
+.bar i{display:block;height:100%;background:var(--tc,var(--accent));border-radius:99px;transition:width .4s}
+
+.sec-h{display:flex;align-items:end;justify-content:space-between;gap:12px;margin:0 0 14px}
+.modes{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px;margin-bottom:38px}
+.mode{display:flex;flex-direction:column;gap:10px;padding:18px;text-decoration:none;color:var(--ink);transition:transform .15s,border-color .15s;min-width:0}
+.mode:hover{transform:translateY(-2px);border-color:var(--tc,var(--accent))}
+.mode .ic{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;background:color-mix(in srgb,var(--tc) 15%,transparent)}
+.mode .ic svg{width:24px;height:24px;stroke:var(--tc);fill:none;stroke-width:2}
+.mode p{margin:0;font-size:14.5px;color:var(--muted)}
+.mode .meta{margin-top:auto;font:600 12px var(--f-mono);color:var(--tc)}
+
+.topics-prog{display:grid;gap:8px}
+.tp{display:grid;grid-template-columns:minmax(0,1fr) 120px 52px;gap:14px;align-items:center;padding:12px 16px;text-decoration:none;color:var(--ink)}
+.tp:hover{border-color:var(--tc)}
+.tp .mono{text-align:right;font-size:14px}
+@media (max-width:520px){.tp{grid-template-columns:minmax(0,1fr) 70px 44px;gap:10px}}
+
+/* COURS */
+.cours{display:grid;grid-template-columns:260px minmax(0,1fr);gap:26px;align-items:start}
+@media (max-width:900px){.cours{grid-template-columns:1fr}}
+.toc{position:sticky;top:84px;display:flex;flex-direction:column;gap:4px;padding:10px}
+.toc a{display:flex;gap:10px;align-items:center;padding:10px 12px;border-radius:10px;text-decoration:none;color:var(--ink);font-weight:600;font-size:14.5px;line-height:1.25}
+.toc a i{width:10px;height:10px;border-radius:3px;background:var(--tc);flex:none}
+.toc a:hover{background:var(--surface2)}
+.toc a.on{background:color-mix(in srgb,var(--tc) 14%,transparent)}
+@media (max-width:900px){
+  .toc{position:static;flex-direction:row;overflow-x:auto;padding:6px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+  .toc::-webkit-scrollbar{display:none}
+  .toc a{white-space:nowrap;flex:none}
+}
+.art{padding:clamp(18px,3.4vw,38px);min-width:0}
+.art-h{display:flex;flex-direction:column;gap:12px;padding-bottom:20px;border-bottom:1px dashed var(--line);margin-bottom:22px}
+.art-h .chip{align-self:flex-start}
+.art section{margin-bottom:26px}
+.art section h3{font:700 18px/1.3 var(--f-body);margin-bottom:8px;display:flex;gap:10px;align-items:baseline}
+.art section h3 small{font:600 12px var(--f-mono);color:var(--tc)}
+.art p,.art li{max-width:68ch}
+.art p{margin:0 0 10px}
+.art ul{margin:0 0 10px;padding-left:20px}
+.art li{margin-bottom:6px}
+.art li::marker{color:var(--tc)}
+.tbl-wrap{overflow-x:auto;margin:6px 0 14px;border:1px solid var(--line);border-radius:10px}
+.tbl{border-collapse:collapse;width:100%;font-size:14.5px;min-width:440px}
+.tbl th,.tbl td{padding:9px 12px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
+.tbl th{background:var(--surface2);font-weight:700}
+.tbl tr:last-child td{border-bottom:0}
+.facts{border-radius:14px;padding:18px 18px 8px;background:color-mix(in srgb,var(--hi) 22%,var(--surface));border:1px solid color-mix(in srgb,var(--hi) 70%,var(--line));margin-bottom:18px}
+:root[data-theme="dark"] .facts{background:color-mix(in srgb,var(--hi) 9%,var(--surface))}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .facts{background:color-mix(in srgb,var(--hi) 9%,var(--surface))}}
+.facts h3,.traps h3{font:700 13px/1.2 var(--f-mono);letter-spacing:.07em;text-transform:uppercase;margin-bottom:12px}
+.facts ol{margin:0;padding:0;list-style:none;counter-reset:f}
+.facts li{counter-increment:f;display:grid;grid-template-columns:30px minmax(0,1fr);gap:8px;margin-bottom:10px;max-width:none}
+.facts li::before{content:counter(f);font:700 12px/22px var(--f-mono);text-align:center;width:24px;height:22px;border-radius:6px;background:var(--hi);color:var(--hi-ink)}
+.traps{border-radius:14px;padding:18px 18px 8px;background:var(--bad-bg);border:1px solid color-mix(in srgb,var(--bad) 35%,var(--line));margin-bottom:18px}
+.traps h3{color:var(--bad)}
+.traps ul{margin:0;padding-left:18px}
+.traps li{margin-bottom:8px}
+.art-nav{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:8px;padding-top:18px;border-top:1px dashed var(--line)}
+
+/* QCM select */
+.grid-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px}
+.pick{display:flex;flex-direction:column;gap:10px;padding:18px;text-align:left;cursor:pointer;border:1px solid var(--line);transition:transform .15s,border-color .15s;min-width:0}
+.pick:hover{transform:translateY(-2px);border-color:var(--tc,var(--accent))}
+.pick .h3{color:var(--ink)}
+.pick .muted{font-size:14px}
+.pick[disabled]{opacity:.5;cursor:not-allowed;transform:none}
+.pick.special{background:var(--ink);color:var(--surface);border-color:var(--ink)}
+.pick.special .h3,.pick.special .muted{color:inherit}
+.pick.special .muted{opacity:.75}
+
+/* quiz */
+.quiz{max-width:780px;margin:0 auto;display:flex;flex-direction:column;gap:14px}
+.qtop{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.qtop .bar{flex:1 1 160px}
+.qcard{padding:clamp(18px,3.4vw,30px);display:flex;flex-direction:column;gap:16px}
+.qmeta{display:flex;gap:8px;flex-wrap:wrap;align-items:center;justify-content:space-between}
+.qtext{font:600 clamp(18px,2.4vw,21px)/1.4 var(--f-body)}
+.orig{display:block;font-size:13.5px;font-weight:500;color:var(--muted);margin-top:4px;font-style:italic}
+.opts{display:flex;flex-direction:column;gap:9px}
+.opt{display:grid;grid-template-columns:34px minmax(0,1fr);gap:12px;align-items:start;text-align:left;cursor:pointer;
+  border:1.5px solid var(--line);background:var(--surface);border-radius:12px;padding:12px 14px;font-size:15.5px;line-height:1.4;transition:border-color .15s,background .15s,transform .1s;color:var(--ink)}
+.opt:hover:not([disabled]){border-color:var(--accent);background:var(--accent-soft)}
+.opt .key{font:700 13px/30px var(--f-mono);text-align:center;width:30px;height:30px;border-radius:8px;background:var(--surface2);border:1px solid var(--line)}
+.opt[disabled]{cursor:default;opacity:1}
+.opt.sel{border-color:var(--accent);background:var(--accent-soft)}
+.opt.sel .key{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.opt.ok{border-color:var(--ok);background:var(--ok-bg)}
+.opt.ok .key{background:var(--ok);color:#fff;border-color:var(--ok)}
+.opt.bad{border-color:var(--bad);background:var(--bad-bg)}
+.opt.bad .key{background:var(--bad);color:#fff;border-color:var(--bad)}
+.opt.dim{opacity:.55}
+.opt.shake{animation:shake .35s}
+@keyframes shake{25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+.expl{border-radius:12px;padding:14px 16px;border:1px solid var(--line);background:var(--surface2);font-size:15px}
+.expl b.okt{color:var(--ok)} .expl b.badt{color:var(--bad)}
+.qfoot{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center}
+.kbd{font:600 12px var(--f-mono);color:var(--muted)}
+@media (hover:none){.kbd{display:none}}
+
+/* result */
+.result{max-width:640px;margin:0 auto;padding:clamp(20px,4vw,36px);display:flex;flex-direction:column;gap:18px;align-items:center;text-align:center}
+.ring{width:150px;height:150px;position:relative}
+.ring svg{width:100%;height:100%;transform:rotate(-90deg)}
+.ring circle{fill:none;stroke-width:12}
+.ring .bg{stroke:var(--surface2)}
+.ring .fg{stroke:var(--tc,var(--accent));stroke-linecap:round;transition:stroke-dashoffset .8s}
+.ring b{position:absolute;inset:0;display:grid;place-items:center;font:800 30px var(--f-display)}
+.review{width:100%;text-align:left;display:flex;flex-direction:column;gap:10px}
+.rv{border:1px solid var(--line);border-radius:12px;padding:12px 14px;font-size:14.5px;background:var(--surface)}
+.rv .q{font-weight:600;margin-bottom:6px}
+.rv .a-ok{color:var(--ok);font-weight:600}
+.rv .a-bad{color:var(--bad);text-decoration:line-through}
+
+/* exam */
+.exam-grid{display:grid;grid-template-columns:minmax(0,1fr) 220px;gap:18px;align-items:start}
+@media (max-width:860px){.exam-grid{grid-template-columns:1fr}}
+.dots{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;padding:14px}
+.dots button{aspect-ratio:1;max-width:100%;border:1.5px solid var(--line);background:var(--surface);border-radius:8px;font:700 13px var(--f-mono);cursor:pointer;color:var(--muted)}
+.dots button.done{background:var(--accent-soft);border-color:var(--accent);color:var(--ink)}
+.dots button.cur{outline:2px solid var(--ink);outline-offset:1px}
+@media (max-width:860px){.dots{grid-template-columns:repeat(10,1fr);order:-1}}
+.timer{font:700 18px var(--f-mono);padding:8px 14px;border-radius:10px;background:var(--ink);color:var(--surface);font-variant-numeric:tabular-nums}
+.timer.low{background:var(--bad);color:#fff}
+.note{font:800 clamp(52px,10vw,84px)/1 var(--f-display);letter-spacing:-.04em}
+.note small{font-size:.38em;color:var(--muted)}
+.callout{border:1px dashed var(--line);border-radius:12px;padding:12px 14px;font-size:14.5px;background:var(--surface2)}
+
+/* flashcards */
+.flash-wrap{max-width:620px;margin:0 auto;display:flex;flex-direction:column;gap:16px}
+.flash{perspective:1200px;cursor:pointer;border:0;background:none;padding:0;width:100%;text-align:center}
+.flash-in{position:relative;min-height:290px;transition:transform .5s;transform-style:preserve-3d}
+.flash.flip .flash-in{transform:rotateY(180deg)}
+.face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:18px;padding:28px 24px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;border:1px solid var(--line);box-shadow:var(--shadow)}
+.face.front{background:var(--surface)}
+.face.back{background:var(--ink);color:var(--surface);transform:rotateY(180deg)}
+.face .term{font:700 clamp(22px,4vw,30px)/1.2 var(--f-display);letter-spacing:-.02em}
+.face .def{font-size:17px;line-height:1.5;max-width:46ch}
+.face .hint{font:600 12px var(--f-mono);opacity:.6;text-transform:uppercase;letter-spacing:.06em}
+@media (prefers-reduced-motion:reduce){.flash.flip .face.front{visibility:hidden}.flash.flip .face.back{transform:none}}
+
+/* eclair */
+.eclair{max-width:640px;margin:0 auto;display:flex;flex-direction:column;gap:16px}
+.ec-hud{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.ec-hud .sheet{padding:12px;text-align:center}
+.ec-hud b{display:block;font:700 24px var(--f-mono)}
+.ec-hud span{font-size:12px;color:var(--muted)}
+.statement{padding:30px 24px;min-height:190px;display:grid;place-items:center;text-align:center;font:600 clamp(19px,3vw,23px)/1.4 var(--f-body)}
+.statement.flash-ok{animation:pulseok .4s}.statement.flash-bad{animation:pulsebad .4s}
+@keyframes pulseok{0%{box-shadow:0 0 0 0 var(--ok)}100%{box-shadow:0 0 0 14px transparent}}
+@keyframes pulsebad{0%{box-shadow:0 0 0 0 var(--bad)}100%{box-shadow:0 0 0 14px transparent}}
+.vf{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.vf .btn{min-height:68px;font-size:19px}
+.vf .v{background:var(--ok);border-color:var(--ok);color:#fff}
+.vf .f{background:var(--bad);border-color:var(--bad);color:#fff}
+.timebar{height:10px;border-radius:99px;background:var(--surface2);overflow:hidden;border:1px solid var(--line)}
+.timebar i{display:block;height:100%;background:var(--hi);transition:width 1s linear}
+
+/* associer */
+.match{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.match .col{display:flex;flex-direction:column;gap:8px;min-width:0}
+.mitem{border:1.5px solid var(--line);background:var(--surface);border-radius:12px;padding:12px;text-align:left;cursor:pointer;font-size:14.5px;line-height:1.35;min-height:56px;color:var(--ink);transition:border-color .15s,background .15s,opacity .3s}
+.mitem.term{font-weight:700}
+.mitem:hover:not([disabled]){border-color:var(--accent)}
+.mitem.sel{border-color:var(--accent);background:var(--accent-soft)}
+.mitem.done{border-color:var(--ok);background:var(--ok-bg);opacity:.6;cursor:default}
+.mitem.err{animation:shake .35s;border-color:var(--bad)}
+@media (max-width:520px){.mitem{font-size:13.5px;padding:10px}}
+
+/* trier */
+.sort{max-width:680px;margin:0 auto;display:flex;flex-direction:column;gap:16px}
+.sitem{padding:28px 22px;text-align:center;font:600 clamp(18px,3vw,22px)/1.4 var(--f-body);min-height:150px;display:grid;place-items:center}
+.bins{display:grid;gap:10px}
+.bins.n2{grid-template-columns:1fr 1fr}.bins.n3{grid-template-columns:repeat(3,1fr)}.bins.n4{grid-template-columns:repeat(2,1fr)}
+@media (min-width:640px){.bins.n4{grid-template-columns:repeat(4,1fr)}}
+@media (max-width:480px){.bins.n3{grid-template-columns:1fr}}
+.bin{min-height:64px;border-radius:14px;border:2px solid var(--tc);background:color-mix(in srgb,var(--tc) 10%,var(--surface));color:var(--ink);font-weight:700;cursor:pointer;padding:10px;font-size:15px}
+.bin:hover{background:color-mix(in srgb,var(--tc) 22%,var(--surface))}
+.fb{border-radius:12px;padding:12px 14px;font-size:15px;text-align:center}
+.fb.ok{background:var(--ok-bg);color:var(--ok);font-weight:700}
+.fb.bad{background:var(--bad-bg);color:var(--bad);font-weight:700}
+
+/* focus banner (home, games hub) */
+.focus{display:flex;align-items:center;gap:14px;padding:16px 18px;text-decoration:none;color:var(--ink);margin-bottom:34px;border-color:color-mix(in srgb,var(--tc) 45%,var(--line));transition:transform .15s}
+.focus:hover{transform:translateY(-2px)}
+.focus .ic{width:46px;height:46px;border-radius:12px;display:grid;place-items:center;flex:none;background:color-mix(in srgb,var(--tc) 15%,transparent)}
+.focus .ic svg{width:24px;height:24px;stroke:var(--tc);fill:none;stroke-width:2}
+.focus-t{display:flex;flex-direction:column;gap:4px;min-width:0;flex:1}
+.focus-t .muted{font-size:14.5px}
+.focus .btn{flex:none}
+.focus.feat{margin-bottom:0;padding:22px}
+@media (max-width:560px){.focus{flex-wrap:wrap}.focus .btn{width:100%}}
+
+/* analyse */
+.ana{display:flex;flex-direction:column;gap:30px}
+.ana-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+@media (max-width:820px){.ana-list{grid-template-columns:1fr}}
+.ana-row{padding:16px 18px;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px 14px;align-items:center}
+.ana-row .full{grid-column:1/-1}
+.ana-row .pct{font:700 26px/1 var(--f-mono);font-variant-numeric:tabular-nums}
+.ana-row .meta{font-size:12.5px;color:var(--muted)}
+.ana-row .adv{margin:0;font-size:14.5px}
+.tbar{position:relative;height:10px;border-radius:99px;background:var(--surface2);border:1px solid var(--line)}
+.tbar i{display:block;height:100%;border-radius:99px;background:var(--tc)}
+.tbar .goal{position:absolute;top:-5px;bottom:-5px;left:80%;width:2px;border-radius:2px;background:var(--ink);opacity:.45}
+.pill{display:inline-flex;gap:5px;align-items:center;font:700 12px/1 var(--f-body);padding:6px 9px;border-radius:99px;white-space:nowrap}
+.pill.s0{background:var(--surface2);color:var(--muted)}
+.pill.s1{background:var(--bad-bg);color:var(--bad)}
+.pill.s2{background:var(--warn-bg);color:var(--warn)}
+.pill.s3{background:var(--ok-bg);color:var(--ok)}
+.charts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+@media (max-width:760px){.charts{grid-template-columns:1fr}}
+.chart-card{padding:18px;display:flex;flex-direction:column;gap:14px;min-width:0}
+.chart{padding-top:24px}
+.plot{position:relative;height:140px;display:flex;align-items:flex-end;gap:6px;border-bottom:1px solid var(--line)}
+.cbar{position:relative;flex:1 1 0;max-width:40px;height:100%;display:flex;align-items:flex-end;cursor:default;border-radius:4px}
+.cbar i{display:block;width:100%;background:var(--accent);border-radius:4px 4px 0 0}
+.cbar:hover i,.cbar:focus i{filter:brightness(1.15)}
+.cbar b{position:absolute;left:50%;transform:translateX(-50%);font:700 12px var(--f-mono);color:var(--ink);white-space:nowrap}
+.cbar:hover::after,.cbar:focus::after{content:attr(data-tip);position:absolute;bottom:calc(100% + 4px);left:50%;transform:translateX(-50%);background:var(--ink);color:var(--surface);font:600 12px var(--f-mono);padding:5px 8px;border-radius:6px;white-space:nowrap;z-index:3;pointer-events:none}
+.cbar:first-child:hover::after,.cbar:first-child:focus::after{left:0;transform:none}
+.ref{position:absolute;left:0;right:0;height:0;border-top:1.5px dashed var(--muted);opacity:.8;pointer-events:none;z-index:1}
+.ref em{position:absolute;right:0;bottom:3px;font:600 11px var(--f-mono);font-style:normal;color:var(--muted)}
+
+.tag-row{display:flex;gap:6px;flex-wrap:wrap}
+.tagbtn{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:7px 12px;font-size:13.5px;font-weight:600;cursor:pointer;color:var(--ink)}
+.tagbtn.on{background:var(--ink);color:var(--surface);border-color:var(--ink)}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(90px + env(safe-area-inset-bottom,0px));z-index:40;background:var(--ink);color:var(--surface);padding:10px 16px;border-radius:12px;font-weight:700;font-size:14px;box-shadow:var(--shadow);pointer-events:none;animation:rise .25s}
+@media (min-width:961px){.toast{bottom:28px}}
+footer.foot{max-width:1120px;margin:0 auto;padding-block:0 30px;font-size:13px;color:var(--muted);
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+@media (max-width:960px){footer.foot{padding-block:0 calc(96px + env(safe-area-inset-bottom,0px))}}
+</style>
+
+<header class="top">
+  <div class="top-in">
+    <a class="brand" href="#home" aria-label="Accueil"><span class="brand-mark"><i></i><i></i><i></i><i></i></span><span>GM·prépa</span></a>
+    <nav class="nav" id="nav"></nav>
+    <div class="top-r">
+      <span class="xp" id="xp" title="XP"></span>
+      <div class="seg" role="group" aria-label="Langue / Язык">
+        <button id="lang-fr" data-act="lang" data-v="fr">FR</button>
+        <button id="lang-ru" data-act="lang" data-v="ru">RU</button>
+      </div>
+      <button class="iconbtn" id="theme-btn" data-act="theme" aria-label="Thème"><svg viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
+    </div>
+  </div>
+</header>
+
+<main id="app" tabindex="-1"></main>
+<footer class="foot" id="foot"></footer>
+<nav class="tabbar" id="tabbar"></nav>
+
+<script>
+"use strict";
+/* ================= DATA ================= */
+const TOPICS = [
+{id:"gm",fr:{t:"Gestion & management",s:"Définitions, dimensions, efficacité / efficience"},ru:{t:"Управление (gestion) и менеджмент",s:"Определения, уровни, результативность / эффективность"},
+ body:{
+ fr:[
+  {h:"La gestion",x:"<p>La <mark>gestion</mark> consiste à <b>utiliser de manière pertinente les ressources disponibles</b> (humaines, financières, matérielles, informationnelles) <b>afin d'atteindre les objectifs fixés</b>.</p><ul><li>Elle concerne <b>toutes les organisations</b> : entreprises, institutions publiques et organisations à but non lucratif (associations).</li><li>Temporalité : <b>le court et le moyen terme</b>, avec des <b>processus, des budgets et des indicateurs</b>.</li><li>Exemples typiques : établir un budget, contrôler les dépenses, planifier les stocks, suivre l'écart entre ventes prévues et réalisées.</li></ul>"},
+  {h:"Le management",x:"<p>Le <mark>management</mark> rassemble <b>les techniques permettant de planifier, d'organiser, de diriger et de contrôler</b> les activités d'une entreprise.</p><ul><li>Il recouvre <b>deux éléments essentiels : la direction et la gestion</b>.</li><li>Le management <b>englobe la gestion</b>, tout en accordant <b>davantage d'importance au leadership et à la mobilisation des personnes</b>.</li><li>Il traite la dimension humaine : motiver, régler les conflits, donner du sens, accompagner le changement.</li></ul>"},
+  {h:"Deux dimensions",x:"<div class='tbl-wrap'><table class='tbl'><tr><th></th><th>Management stratégique</th><th>Management opérationnel</th></tr><tr><td><b>Rôle</b></td><td>Création, mise en place et suivi d'une stratégie</td><td>Mettre en œuvre concrètement les décisions stratégiques à travers des plans d'action</td></tr><tr><td><b>Horizon</b></td><td>Long terme</td><td>Court / moyen terme</td></tr><tr><td><b>Qui ?</b></td><td>Direction générale</td><td>Managers de proximité, chefs d'équipe</td></tr></table></div>"},
+  {h:"Efficacité et efficience",x:"<ul><li><mark>Efficacité</mark> : atteindre les objectifs.</li><li><mark>Efficience</mark> : atteindre les objectifs en utilisant le moins de ressources possible.</li><li>Rechercher les deux à la fois = <b>atteindre les objectifs en utilisant les ressources de manière maîtrisée</b>.</li></ul>"},
+  {h:"Pourquoi la gestion est stratégique",x:"<p>La gestion <b>contribue à la performance, à la compétitivité et à la pérennité</b> de l'organisation. Elle ne garantit pas automatiquement la réussite et ne remplace pas la direction générale.</p><p><b>Limite de la gestion seule :</b> les procédures sont respectées, les indicateurs suivis… mais les salariés ne comprennent pas le sens de leur travail et se désengagent. Il faut alors renforcer le <b>management</b>.</p>"}
+ ],
+ ru:[
+  {h:"Управление (la gestion)",x:"<p><mark>Gestion</mark> — это <b>грамотное использование имеющихся ресурсов</b> (человеческих, финансовых, материальных, информационных) <b>для достижения поставленных целей</b>.</p><ul><li>Касается <b>всех организаций</b>: предприятий, государственных учреждений и некоммерческих организаций (ассоциаций).</li><li>Горизонт: <b>краткосрочный и среднесрочный</b>, через <b>процессы, бюджеты и показатели</b> (processus, budgets, indicateurs).</li><li>Типичные примеры: составить бюджет, контролировать расходы, планировать запасы, сравнить план продаж с фактом.</li></ul>"},
+  {h:"Менеджмент (le management)",x:"<p><mark>Management</mark> — это <b>совокупность техник, позволяющих планировать, организовывать, руководить и контролировать</b> деятельность предприятия (planifier, organiser, diriger, contrôler).</p><ul><li>Включает <b>два ключевых элемента: руководство и управление ресурсами (direction et gestion)</b>.</li><li>Менеджмент <b>шире, чем gestion</b>: он включает её, но делает <b>больший акцент на лидерстве и мобилизации людей</b>.</li><li>Человеческое измерение: мотивировать, решать конфликты, давать смысл работе, сопровождать изменения.</li></ul>"},
+  {h:"Два уровня",x:"<div class='tbl-wrap'><table class='tbl'><tr><th></th><th>Стратегический (stratégique)</th><th>Операционный (opérationnel)</th></tr><tr><td><b>Роль</b></td><td>Создание, внедрение и сопровождение стратегии</td><td>Конкретно реализовать стратегические решения через планы действий (plans d'action)</td></tr><tr><td><b>Горизонт</b></td><td>Долгосрочный</td><td>Кратко- / среднесрочный</td></tr><tr><td><b>Кто?</b></td><td>Высшее руководство</td><td>Линейные менеджеры, руководители групп</td></tr></table></div>"},
+  {h:"Результативность и эффективность",x:"<ul><li><mark>Efficacité</mark> (результативность): достигать целей.</li><li><mark>Efficience</mark> (эффективность): достигать целей, тратя как можно меньше ресурсов.</li><li>Обе сразу = <b>достигать целей при контролируемом расходе ресурсов</b>.</li></ul>"},
+  {h:"Почему gestion важна стратегически",x:"<p>Gestion <b>способствует результативности (performance), конкурентоспособности и долговечности (pérennité)</b> организации. Она НЕ гарантирует автоматически успех и НЕ заменяет высшее руководство.</p><p><b>Предел «чистой» gestion:</b> процедуры соблюдаются, показатели отслеживаются… но сотрудники не понимают смысла своей работы и теряют вовлечённость. Тогда нужно усиливать <b>менеджмент</b>.</p>"}
+ ]},
+ facts:{fr:["Gestion = utiliser de manière pertinente les ressources pour atteindre les objectifs fixés.","Management = planifier, organiser, diriger, contrôler. Il recouvre direction + gestion.","Le management englobe la gestion et insiste sur le leadership et la mobilisation des personnes.","Management stratégique = stratégie à long terme ; opérationnel = plans d'action concrets.","La gestion concerne entreprises, institutions publiques et organisations à but non lucratif.","Gestion → court et moyen terme, processus, budgets, indicateurs.","Efficacité + efficience = objectifs atteints avec des ressources maîtrisées.","La gestion contribue à la performance, la compétitivité et la pérennité."],
+        ru:["Gestion = грамотно использовать ресурсы для достижения поставленных целей.","Management = планировать, организовывать, руководить, контролировать. Включает direction + gestion.","Менеджмент включает gestion и делает акцент на лидерстве и мобилизации людей.","Стратегический менеджмент = стратегия на долгий срок; операционный = конкретные планы действий.","Gestion касается предприятий, госучреждений и некоммерческих организаций.","Gestion → кратко- и среднесрочный горизонт, процессы, бюджеты, показатели.","Efficacité + efficience = цели достигнуты при контролируемых ресурсах.","Gestion способствует performance, compétitivité и pérennité."]},
+ traps:{fr:["« Gestion et management sont synonymes » → FAUX.","« La gestion concerne seulement les entreprises commerciales » → FAUX.","« La gestion garantit automatiquement la réussite » → FAUX.","Motivation, résistance au changement → c'est le management, pas la gestion matérielle."],
+        ru:["«Gestion и management — синонимы» → НЕВЕРНО.","«Gestion касается только коммерческих предприятий» → НЕВЕРНО.","«Gestion автоматически гарантирует успех» → НЕВЕРНО.","Мотивация, сопротивление изменениям → это менеджмент, а не материальное управление."]}},
+
+{id:"podc",fr:{t:"Les fonctions : P·O·D·C",s:"Planifier, organiser, diriger, contrôler, coordonner"},ru:{t:"Функции: P·O·D·C",s:"Планировать, организовать, руководить, контролировать"},
+ body:{
+ fr:[
+  {h:"Le cycle du management",x:"<p>Hérité d'<b>Henri Fayol</b> (prévoir, organiser, commander, coordonner, contrôler), le cours retient <mark>4 fonctions</mark> : <b>Planification → Organisation → Direction → Contrôle</b>, plus la <b>coordination</b> qui relie l'ensemble.</p><div class='tbl-wrap'><table class='tbl'><tr><th>Fonction</th><th>Rôle</th></tr><tr><td><b>Planification</b></td><td>Définir les objectifs et prévoir les actions</td></tr><tr><td><b>Organisation</b></td><td>Répartir les tâches, attribuer les responsabilités, allouer les ressources</td></tr><tr><td><b>Direction</b></td><td>Animer : former, fixer les objectifs individuels, communiquer, motiver, évaluer</td></tr><tr><td><b>Contrôle</b></td><td>Comparer les résultats aux objectifs et apporter des corrections</td></tr></table></div>"},
+  {h:"Planification",x:"<ul><li><b>Tous les managers planifient</b>, même si le <b>degré de formalisation varie</b> (pas besoin d'un plan écrit pour planifier).</li><li>Elle <b>facilite le contrôle</b> : elle définit des <b>objectifs et des normes</b> permettant d'évaluer les performances.</li><li>Risque : un plan qui fixe tout précisément dans un environnement qui change brutalement → <mark>rigidité</mark>, l'organisation ne s'adapte plus.</li></ul>"},
+  {h:"Organisation et coordination",x:"<ul><li>Une bonne organisation permet de <b>clarifier les rôles, répartir les responsabilités et faciliter le flux de travail</b>.</li><li>La <mark>coordination</mark> vise à <b>synchroniser les activités et les efforts</b> afin d'éviter <b>les doublons, les retards et les conflits</b>.</li></ul>"},
+  {h:"Direction (animation)",x:"<p>Activités d'animation du manager : <b>former, fixer les objectifs individuels, communiquer, motiver et évaluer</b>. C'est la fonction la plus humaine, liée au leadership.</p>"},
+  {h:"Contrôle",x:"<ul><li>Le contrôle n'est <b>pas une simple surveillance</b> ni une sanction : il <b>compare les résultats aux objectifs</b> et <b>engage des actions correctives</b>.</li><li>Séquence correcte : <mark>Contrôle → correction</mark>.</li><li>Planification et contrôle sont <b>complémentaires</b> : définir des objectifs → mesurer les résultats → corriger les écarts.</li><li>Contrôler les résultats et mobiliser les hommes <b>fait partie</b> du rôle du manager.</li></ul>"}
+ ],
+ ru:[
+  {h:"Цикл менеджмента",x:"<p>Идея восходит к <b>Анри Файолю</b> (prévoir, organiser, commander, coordonner, contrôler). В курсе — <mark>4 функции</mark>: <b>Планирование → Организация → Руководство → Контроль</b> и <b>координация</b>, которая связывает всё вместе.</p><div class='tbl-wrap'><table class='tbl'><tr><th>Функция</th><th>Роль</th></tr><tr><td><b>Planification</b></td><td>Определить цели и предусмотреть действия</td></tr><tr><td><b>Organisation</b></td><td>Распределить задачи, ответственность и ресурсы</td></tr><tr><td><b>Direction</b></td><td>Вести людей: обучать, ставить индивидуальные цели, общаться, мотивировать, оценивать</td></tr><tr><td><b>Contrôle</b></td><td>Сравнить результаты с целями и внести исправления</td></tr></table></div>"},
+  {h:"Планирование (planification)",x:"<ul><li><b>Все менеджеры планируют</b>, даже если <b>степень формализации разная</b> (не обязательно писать формальный план).</li><li>Планирование <b>облегчает контроль</b>: задаёт <b>цели и нормы</b> для оценки результатов.</li><li>Риск: план, жёстко фиксирующий все действия, при резко меняющейся среде → <mark>rigidité</mark> (жёсткость), организация не успевает адаптироваться.</li></ul>"},
+  {h:"Организация и координация",x:"<ul><li>Хорошая организация позволяет <b>прояснить роли, распределить ответственность и облегчить поток работы</b>.</li><li><mark>Coordination</mark> = <b>синхронизировать действия и усилия</b>, чтобы избежать <b>дублирования, задержек и конфликтов</b>.</li></ul>"},
+  {h:"Руководство (direction / animation)",x:"<p>Действия менеджера по «animation»: <b>обучать, ставить индивидуальные цели, общаться, мотивировать и оценивать</b>. Самая «человеческая» функция, связана с лидерством.</p>"},
+  {h:"Контроль (contrôle)",x:"<ul><li>Контроль — это <b>не просто надзор</b> и не наказание: он <b>сравнивает результаты с целями</b> и <b>запускает корректирующие действия</b>.</li><li>Правильная последовательность: <mark>Contrôle → correction</mark>.</li><li>Планирование и контроль <b>дополняют друг друга</b>: поставить цели → измерить результаты → исправить отклонения (écarts).</li><li>Контролировать результаты и мобилизовать людей — <b>это задача</b> менеджера.</li></ul>"}
+ ]},
+ facts:{fr:["Planification = définir les objectifs et prévoir les actions.","Organisation = répartir tâches, responsabilités et ressources.","Direction = former, fixer les objectifs individuels, communiquer, motiver, évaluer.","Contrôle = comparer les résultats aux objectifs + actions correctives (pas une simple surveillance).","Coordination = synchroniser pour éviter doublons, retards, conflits.","Tous les managers planifient ; seul le degré de formalisation varie.","La planification facilite le contrôle (objectifs + normes).","Plan trop précis + environnement instable = rigidité."],
+        ru:["Planification = определить цели и предусмотреть действия.","Organisation = распределить задачи, ответственность и ресурсы.","Direction = обучать, ставить индивидуальные цели, общаться, мотивировать, оценивать.","Contrôle = сравнить результаты с целями + корректирующие действия (не просто надзор).","Coordination = синхронизация, чтобы избежать дублей, задержек, конфликтов.","Все менеджеры планируют; различается лишь степень формализации.","Планирование облегчает контроль (цели + нормы).","Слишком детальный план + нестабильная среда = жёсткость (rigidité)."]},
+ traps:{fr:["« Direction : comparer les résultats aux objectifs » → INCORRECT, c'est le contrôle.","« Le contrôle intervient avant la définition des objectifs » → FAUX.","« Seuls ceux qui rédigent un plan formel planifient » → FAUX.","« Ce n'est pas au manager de contrôler et mobiliser » → FAUX."],
+        ru:["«Direction: сравнивать результаты с целями» → НЕВЕРНО, это контроль.","«Контроль происходит до постановки целей» → НЕВЕРНО.","«Планируют только те, кто пишет формальный план» → НЕВЕРНО.","«Контроль и мобилизация людей — не задача менеджера» → НЕВЕРНО."]}},
+
+{id:"manager",fr:{t:"Le manager : rôles & compétences",s:"Mintzberg, compétences technique, humaine, conceptuelle, politique"},ru:{t:"Менеджер: роли и компетенции",s:"Минцберг, технические, человеческие, концептуальные, политические компетенции"},
+ body:{
+ fr:[
+  {h:"Qui est le manager ?",x:"<p>Le manager est celui qui <mark>mobilise les ressources d'autres individus</mark> et <b>transforme les compétences individuelles en performance collective</b>. Il n'exécute pas tout lui-même.</p><ul><li>Budget, dépenses, stocks → activité de <b>gestion</b>.</li><li>Motiver, régler un conflit, accompagner une transformation → fonction de <b>management</b>.</li></ul>"},
+  {h:"Les 10 rôles de Mintzberg",x:"<div class='tbl-wrap'><table class='tbl'><tr><th>Famille</th><th>Rôles</th><th>Idée</th></tr><tr><td><b>Interpersonnels</b></td><td>Figure de proue (symbole), leader, agent de liaison</td><td>Relations avec les personnes</td></tr><tr><td><b>Informationnels</b></td><td>Observateur actif, diffuseur, porte-parole</td><td>Collecter, analyser, transmettre l'information</td></tr><tr><td><b>Décisionnels</b></td><td>Entrepreneur, régulateur, répartiteur de ressources, négociateur</td><td>Prendre des décisions</td></tr></table></div><p>Exemple : un manager qui <b>collecte, analyse et transmet</b> des informations aux services exerce des <b>rôles informationnels</b>.</p>"},
+  {h:"Les compétences du manager",x:"<ul><li><mark>Technique</mark> : maîtrise du métier, des outils et méthodes.</li><li><mark>Humaine / interpersonnelle</mark> : travailler avec les autres, communiquer, motiver.</li><li><mark>Conceptuelle</mark> : <b>analyser des situations complexes et prendre des décisions appropriées</b>, vision d'ensemble.</li><li><mark>Politique</mark> : <b>développer une influence et obtenir les soutiens nécessaires</b> au développement de ses activités (réseau, alliances).</li></ul>"}
+ ],
+ ru:[
+  {h:"Кто такой менеджер?",x:"<p>Менеджер — тот, кто <mark>мобилизует ресурсы других людей</mark> и <b>превращает индивидуальные компетенции в коллективный результат</b>. Он не выполняет всё сам.</p><ul><li>Бюджет, расходы, запасы → деятельность по <b>gestion</b>.</li><li>Мотивировать, решить конфликт, сопровождать трансформацию → функция <b>management</b>.</li></ul>"},
+  {h:"10 ролей Минцберга",x:"<div class='tbl-wrap'><table class='tbl'><tr><th>Группа</th><th>Роли</th><th>Суть</th></tr><tr><td><b>Межличностные (interpersonnels)</b></td><td>Символ / «лицо» (figure de proue), лидер, связующее звено (agent de liaison)</td><td>Отношения с людьми</td></tr><tr><td><b>Информационные (informationnels)</b></td><td>Наблюдатель (observateur), распространитель (diffuseur), представитель (porte-parole)</td><td>Собирать, анализировать, передавать информацию</td></tr><tr><td><b>Решенческие (décisionnels)</b></td><td>Предприниматель, регулятор (régulateur), распределитель ресурсов, переговорщик</td><td>Принимать решения</td></tr></table></div><p>Пример: менеджер, который <b>собирает, анализирует и передаёт</b> информацию службам, выполняет <b>информационные роли</b>.</p>"},
+  {h:"Компетенции менеджера",x:"<ul><li><mark>Техническая (technique)</mark>: владение профессией, инструментами и методами.</li><li><mark>Человеческая / межличностная (humaine)</mark>: работать с людьми, общаться, мотивировать.</li><li><mark>Концептуальная (conceptuelle)</mark>: <b>анализировать сложные ситуации и принимать адекватные решения</b>, видеть картину целиком.</li><li><mark>Политическая (politique)</mark>: <b>развивать влияние и получать поддержку</b>, необходимую для развития своей деятельности (связи, альянсы).</li></ul>"}
+ ]},
+ facts:{fr:["Manager = mobilise les ressources des autres et transforme les compétences individuelles en performance collective.","Rôles interpersonnels : figure de proue, leader, agent de liaison.","Rôles informationnels : observateur, diffuseur, porte-parole.","Rôles décisionnels : entrepreneur, régulateur, répartiteur de ressources, négociateur.","Compétence conceptuelle = analyser des situations complexes et décider.","Compétence politique = influence + obtenir les soutiens nécessaires.","Budget / dépenses / stocks = gestion ; motiver / conflit / changement = management."],
+        ru:["Менеджер = мобилизует ресурсы других и превращает индивидуальные компетенции в коллективный результат.","Межличностные роли: figure de proue, leader, agent de liaison.","Информационные роли: observateur, diffuseur, porte-parole.","Решенческие роли: entrepreneur, régulateur, répartiteur de ressources, négociateur.","Концептуальная компетенция = анализ сложных ситуаций и принятие решений.","Политическая компетенция = влияние + получение нужной поддержки.","Бюджет / расходы / запасы = gestion; мотивация / конфликт / изменения = management."]},
+ traps:{fr:["Ne pas confondre : « figure de proue, leader, agent de liaison » = interpersonnels, PAS décisionnels.","Collecter + transmettre l'information = informationnels, PAS décisionnels.","Sur la copie scannée, les réponses cochées aux questions 33 et 34 sont fausses d'après Mintzberg. Le site donne la bonne réponse."],
+        ru:["Не путать: «figure de proue, leader, agent de liaison» = межличностные, НЕ решенческие.","Собирать + передавать информацию = информационные роли, НЕ решенческие.","В отсканированной работе в вопросах 33 и 34 отмечены неверные ответы (по Минцбергу). На сайте дан правильный вариант."]}},
+
+{id:"leader",fr:{t:"Leadership & styles",s:"Leader vs manager, leadership situationnel, cas Steve Jobs"},ru:{t:"Лидерство и стили",s:"Лидер vs менеджер, ситуационное лидерство, кейс Стива Джобса"},
+ body:{
+ fr:[
+  {h:"Définir le leadership",x:"<p>Le <mark>leadership</mark> est <b>la capacité à influencer et fédérer un groupe autour d'un but commun, dans une relation de confiance</b>. Ce n'est pas un pouvoir hiérarchique imposé.</p><ul><li>On peut être <b>leader sans être manager</b> : leader <b>expert, stratège, rénovateur ou coach</b>.</li><li>Le leadership est <b>limité dans le temps</b> : l'influence du leader dépend <b>des situations, de l'environnement et de la reconnaissance du groupe</b>.</li><li><mark>Humilité et leadership situationnel</mark> : le manager peut s'effacer temporairement au profit d'un collaborateur plus compétent sur un sujet précis.</li></ul>"},
+  {h:"Manager ou leader ?",x:"<div class='tbl-wrap'><table class='tbl'><tr><th>Manager</th><th>Leader</th></tr><tr><td>Pouvoir lié à la position hiérarchique</td><td>Pouvoir reconnu par le groupe</td></tr><tr><td>Gère les ressources, les procédures, les résultats</td><td>Donne une vision, inspire, entraîne</td></tr><tr><td>Planifie, organise, contrôle</td><td>Influence, fédère, crée la confiance</td></tr></table></div>"},
+  {h:"Les styles de management",x:"<ul><li><b>Autoritaire / directif</b> : le manager décide seul et contrôle.</li><li><b>Persuasif (paternaliste)</b> : il décide mais explique et convainc.</li><li><b>Participatif</b> : il associe l'équipe aux décisions.</li><li><b>Délégatif</b> : il confie la décision aux collaborateurs autonomes.</li></ul><p>Le style doit être choisi <mark>en fonction de l'influence du manager, des subordonnés et du contexte</mark>, pas seulement de la personnalité ou du rang.</p>"},
+  {h:"Étude de cas : Steve Jobs",x:"<ul><li>Style <b>autoritaire et directif</b>, <b>obsédé par le contrôle</b>, perfectionniste, impatient, colérique.</li><li><b>« Culture du oui »</b> : il était déconseillé de ne pas approuver les décisions.</li><li><b>Dévouement à la marque</b> : disponibilité 24h/24, 7j/7 ; « Worldwide loyalty team » pour détecter le personnel déviant.</li><li>Projets en <b>vase clos</b> : équipes isolées, contrôle « jusqu'au bout des ongles ».</li><li>Renvoyé de sa propre firme en <b>1985</b> pour avoir ignoré l'avis des actionnaires et partenaires.</li><li><b>Avantages</b> : vision forte, exigence de qualité, innovation, confidentialité, rapidité de décision.</li><li><b>Inconvénients</b> : pression constante, stress, fatigue physique et morale, peur, créativité bridée, turnover.</li><li><b>Leader ou manager ?</b> Leader charismatique et visionnaire, mais manager autoritaire. On retiendrait l'exigence et la vision, pas la peur.</li></ul>"}
+ ],
+ ru:[
+  {h:"Что такое лидерство",x:"<p><mark>Leadership</mark> — это <b>способность влиять на группу и объединять её вокруг общей цели в отношениях доверия</b>. Это не навязанная иерархическая власть.</p><ul><li>Можно быть <b>лидером, не будучи менеджером</b>: лидер-<b>эксперт, стратег, реформатор (rénovateur) или коуч</b>.</li><li>Лидерство <b>ограничено во времени</b>: влияние лидера зависит <b>от ситуации, среды и признания группой</b>.</li><li><mark>Скромность и ситуационное лидерство</mark>: менеджер может временно уступить роль более компетентному в конкретном вопросе сотруднику.</li></ul>"},
+  {h:"Менеджер или лидер?",x:"<div class='tbl-wrap'><table class='tbl'><tr><th>Менеджер</th><th>Лидер</th></tr><tr><td>Власть от должности</td><td>Власть признана группой</td></tr><tr><td>Управляет ресурсами, процедурами, результатами</td><td>Даёт видение, вдохновляет, ведёт</td></tr><tr><td>Планирует, организует, контролирует</td><td>Влияет, объединяет, создаёт доверие</td></tr></table></div>"},
+  {h:"Стили менеджмента",x:"<ul><li><b>Авторитарный / директивный (autoritaire, directif)</b>: решает сам и контролирует.</li><li><b>Убеждающий (persuasif, paternaliste)</b>: решает сам, но объясняет и убеждает.</li><li><b>Партисипативный (participatif)</b>: вовлекает команду в решения.</li><li><b>Делегирующий (délégatif)</b>: передаёт решения самостоятельным сотрудникам.</li></ul><p>Стиль выбирают <mark>в зависимости от влияния менеджера, подчинённых и контекста</mark>, а не только от характера или должности.</p>"},
+  {h:"Кейс: Стив Джобс",x:"<ul><li>Стиль <b>авторитарный и директивный</b>, <b>одержимость контролем</b>, перфекционизм, нетерпеливость, вспыльчивость.</li><li><b>«Культура да» (culture du oui)</b>: не соглашаться с решениями компании не рекомендовалось.</li><li><b>Преданность бренду</b>: доступность 24/7; «Worldwide loyalty team» для выявления «неблагонадёжных».</li><li>Проекты <b>в изоляции (vase clos)</b>: закрытые команды, тотальный контроль.</li><li>Уволен из собственной компании в <b>1985</b>, т.к. игнорировал мнение акционеров и партнёров.</li><li><b>Плюсы</b>: сильное видение, требование качества, инновации, конфиденциальность, быстрые решения.</li><li><b>Минусы</b>: постоянное давление, стресс, физическая и моральная усталость, страх, подавленная креативность, текучесть.</li><li><b>Лидер или менеджер?</b> Харизматичный лидер-визионер, но авторитарный менеджер. Стоит перенять требовательность и видение, но не страх.</li></ul>"}
+ ]},
+ facts:{fr:["Leadership = influencer et fédérer un groupe autour d'un but commun, dans la confiance.","On peut être leader sans être manager : expert, stratège, rénovateur, coach.","Leadership limité dans le temps : dépend des situations, de l'environnement, de la reconnaissance du groupe.","S'effacer au profit d'un collaborateur plus compétent = humilité + leadership situationnel.","Style choisi selon : influence du manager + subordonnés + contexte.","Steve Jobs : autoritaire, directif, contrôle, « culture du oui », renvoyé en 1985."],
+        ru:["Лидерство = влиять и объединять группу вокруг общей цели на основе доверия.","Можно быть лидером без должности менеджера: эксперт, стратег, реформатор, коуч.","Лидерство ограничено во времени: зависит от ситуации, среды и признания группой.","Уступить роль более компетентному сотруднику = скромность + ситуационное лидерство.","Стиль выбирают по: влиянию менеджера + подчинённым + контексту.","Стив Джобс: авторитарный, директивный, контроль, «культура да», уволен в 1985."]},
+ traps:{fr:["« Le leadership suppose obligatoirement une fonction hiérarchique » → FAUX.","« Le style dépend de la personnalité du manager uniquement » → FAUX.","S'effacer temporairement ≠ perte définitive du statut hiérarchique."],
+        ru:["«Лидерство обязательно требует иерархической должности» → НЕВЕРНО.","«Стиль зависит только от характера менеджера» → НЕВЕРНО.","Временно уступить роль ≠ окончательно потерять статус."]}},
+
+{id:"gouv",fr:{t:"Gouvernance d'entreprise",s:"Parties prenantes, conseil d'administration, structure dualiste"},ru:{t:"Корпоративное управление",s:"Стейкхолдеры, совет директоров, двухуровневая структура"},
+ body:{
+ fr:[
+  {h:"Définition",x:"<p>La <mark>gouvernance d'entreprise</mark> est <b>un ensemble de principes et de pratiques qui guident la direction et le contrôle des entreprises</b> : qui décide, qui contrôle, et dans l'intérêt de qui. Ce n'est ni un ensemble de lois, ni un système comptable, ni du marketing.</p>"},
+  {h:"Les parties prenantes",x:"<p>Les <mark>parties prenantes</mark> (stakeholders) sont tous ceux qui sont concernés par l'activité de l'entreprise : <b>les employés, les clients, les fournisseurs, les communautés locales et les actionnaires</b> (et aussi banques, État, ONG…).</p>"},
+  {h:"Structure moniste : le conseil d'administration",x:"<p>Le <mark>conseil d'administration</mark> <b>supervise la direction de l'entreprise et protège les intérêts des parties prenantes</b>. Il ne gère pas les opérations quotidiennes : c'est le rôle de la direction générale (PDG / DG).</p>"},
+  {h:"Structure dualiste",x:"<ul><li>Le <mark>directoire</mark> <b>pilote l'entreprise</b>.</li><li>Le <mark>conseil de surveillance</mark> <b>contrôle l'activité du directoire</b>.</li><li>On sépare ainsi clairement la gestion et le contrôle.</li></ul>"},
+  {h:"Le rôle des salariés",x:"<p>Les salariés peuvent agir <b>par l'intermédiaire de représentants du personnel</b> (CSE, administrateurs salariés) et exercer certains droits, comme le <mark>droit d'alerte</mark>.</p><p><b>Exemple :</b> chez Muller-Schuster en 2010, M. Schuster garde la propriété du capital mais confie la direction à un ingénieur. C'est une <b>séparation entre propriété et direction</b>.</p>"}
+ ],
+ ru:[
+  {h:"Определение",x:"<p><mark>Gouvernance d'entreprise</mark> (корпоративное управление) — это <b>совокупность принципов и практик, которые направляют руководство и контроль предприятий</b>: кто решает, кто контролирует и в чьих интересах. Это не свод законов, не бухгалтерия и не маркетинг.</p>"},
+  {h:"Заинтересованные стороны",x:"<p><mark>Parties prenantes</mark> (стейкхолдеры) — все, кого касается деятельность компании: <b>сотрудники, клиенты, поставщики, местные сообщества и акционеры</b> (а также банки, государство, НКО…).</p>"},
+  {h:"Одноуровневая структура: совет директоров",x:"<p><mark>Conseil d'administration</mark> <b>надзирает за руководством компании и защищает интересы заинтересованных сторон</b>. Он НЕ управляет повседневной работой: это делает генеральный директор (PDG / DG).</p>"},
+  {h:"Двухуровневая структура (dualiste)",x:"<ul><li><mark>Directoire</mark> (правление) <b>управляет компанией</b>.</li><li><mark>Conseil de surveillance</mark> (наблюдательный совет) <b>контролирует работу правления</b>.</li><li>Так управление и контроль чётко разделены.</li></ul>"},
+  {h:"Роль сотрудников",x:"<p>Сотрудники действуют <b>через представителей персонала</b> (CSE, администраторы от сотрудников) и имеют определённые права, например <mark>droit d'alerte</mark> (право на тревожное уведомление).</p><p><b>Пример:</b> в Muller-Schuster в 2010 г. г-н Шустер сохраняет собственность на капитал, но передаёт руководство инженеру. Это <b>разделение собственности и управления</b>.</p>"}
+ ]},
+ facts:{fr:["Gouvernance = principes et pratiques qui guident la direction et le contrôle des entreprises.","Parties prenantes : employés, clients, fournisseurs, communautés locales, actionnaires.","Conseil d'administration : supervise la direction, protège les intérêts des parties prenantes.","Structure dualiste : le directoire pilote, le conseil de surveillance contrôle.","Salariés : représentants du personnel + droit d'alerte."],
+        ru:["Gouvernance = принципы и практики, направляющие руководство и контроль компаний.","Parties prenantes: сотрудники, клиенты, поставщики, местные сообщества, акционеры.","Conseil d'administration: надзирает за руководством, защищает интересы стейкхолдеров.","Структура dualiste: directoire управляет, conseil de surveillance контролирует.","Сотрудники: представители персонала + droit d'alerte."]},
+ traps:{fr:["« Le CA gère les opérations quotidiennes » → FAUX.","« Le directoire contrôle le conseil de surveillance » → FAUX, c'est l'inverse.","« Les parties prenantes = les actionnaires seulement » → FAUX."],
+        ru:["«Совет директоров управляет повседневной работой» → НЕВЕРНО.","«Directoire контролирует conseil de surveillance» → НЕВЕРНО, наоборот.","«Стейкхолдеры = только акционеры» → НЕВЕРНО."]}},
+
+{id:"cas",fr:{t:"Études de cas",s:"Muller-Schuster, Lafuma, structures, outils d'analyse"},ru:{t:"Кейсы",s:"Muller-Schuster, Lafuma, структуры, инструменты анализа"},
+ body:{
+ fr:[
+  {h:"Méthode de l'étude de cas",x:"<p>Une <mark>étude de cas</mark> est l'analyse d'une <b>situation réelle d'entreprise</b> pour poser un diagnostic et proposer des solutions argumentées. Elle entraîne à décider comme un manager.</p><ul><li>Lire le texte et les annexes, repérer les acteurs, les chiffres et la chronologie.</li><li>Identifier le problème principal.</li><li>Diagnostic : forces / faiblesses (interne), opportunités / menaces (externe).</li><li>Proposer et justifier des solutions avec des notions du cours.</li></ul><p><b>Entreprise</b> : organisation qui combine des <b>facteurs de production</b> (travail, capital) pour produire des biens ou services vendus sur un marché et créer de la valeur.</p>"},
+  {h:"Tôleries Muller-Schuster",x:"<ul><li>1933 : Jean Paul Muller, forgeron. 1954 : Richard Schuster dirige. 1955 : tôlerie. Années 60 : absorption de 2 concurrents. Puis <b>Société Anonyme</b>.</li><li>+60 % du CA à l'étranger (Allemagne 27 %). 200 salariés, politique sociale avancée (intéressement, crèche).</li><li>Problèmes : demande individualisée → petites séries, délais courts, 5 clients perdus en 2009, usine vétuste. Productivité en baisse : <b>6,70 (1988) → 8,3 (1998) → 5,90 € (2009)</b>.</li><li><b>2010</b> : Tony Schuster confie la direction à un <b>ingénieur recruté</b> et garde le capital. C'est le passage d'une <mark>logique entrepreneuriale</mark> (le fondateur-propriétaire décide seul) à une <mark>logique managériale</mark> (dirigeant professionnel, objectifs chiffrés, audit).</li><li>Objectifs 2011 : CA +5 %, productivité +3 %, résultat d'exploitation +5 %. Audit : 1 mois par pièce, 8 000 m parcourus, satisfaction clients 70 %.</li><li><b>Indicateurs de performance</b> possibles : CA, productivité, délais de livraison, satisfaction clients, coûts, absentéisme, turnover.</li><li>Nouvelle organisation : moins de niveaux hiérarchiques, ouvriers polyvalents → <b>structure plus plate</b>, plus réactive, communication plus rapide, plus d'autonomie.</li></ul>"},
+  {h:"Les structures",x:"<div class='tbl-wrap'><table class='tbl'><tr><th>Structure</th><th>Principe</th></tr><tr><td>Simple</td><td>Le dirigeant décide de tout (petite entreprise)</td></tr><tr><td>Fonctionnelle</td><td>Découpage par fonctions : production, commercial, finance…</td></tr><tr><td>Divisionnelle</td><td>Découpage par produits, marchés ou zones (ex. 3 pôles Lafuma)</td></tr><tr><td>Matricielle</td><td>Double rattachement : fonction + projet / produit</td></tr><tr><td>Plate / par projets</td><td>Peu de niveaux, équipes autonomes et polyvalentes</td></tr></table></div>"},
+  {h:"Groupe Lafuma",x:"<ul><li><b>1930</b> : création par les 3 frères Lafuma. <b>1936</b> : armature du sac à dos. <b>1954</b> : mobilier de camping.</li><li>Croissance externe : <b>Millet</b> (1995), <b>Oxbow</b> (2005), <b>Eider</b> (2008). Eider cédé au coréen <b>K2</b> en 2020.</li><li><b>2013-2014</b> : <b>Calida</b> prend le contrôle (59,92 % en 2014).</li><li><mark>Trois pôles autonomes</mark> : Montagne, Surf, Mobilier → <b>structure divisionnelle</b>.</li><li>CA 2019 : <b>172,6 M€</b>. 1 013 collaborateurs dans 12 pays, 4 usines.</li><li><b>Make or buy</b> (faire ou faire faire) : Made in France <b>25 %</b>, Made in Lafuma <b>13 %</b> (Tunisie, Hongrie), Made for Lafuma <b>62 %</b> (sous-traitance sur cahier des charges).</li><li><b>Distribution multicanale</b> : wholesale (grossistes, 76 %) + direct/retail (23 %) : boutiques, outlets, e-commerce.</li></ul>"},
+  {h:"Outils d'analyse",x:"<ul><li><mark>Chaîne de valeur</mark> (Porter) : activités principales (logistique, production, commercialisation, SAV) + activités de soutien (R&D, achats, RH, infrastructure). Lafuma : design → prototype → collection → achat matières → production → logistique → distribution.</li><li><mark>Matrice BCG</mark> : croise le <b>taux de croissance du marché</b> et la <b>part de marché relative</b> → vedettes, vaches à lait, dilemmes, poids morts.</li><li><mark>Bilan</mark> : patrimoine (actif / passif) à une date donnée.</li><li><mark>Compte de résultat</mark> : produits et charges de l'exercice → bénéfice ou perte.</li></ul>"}
+ ],
+ ru:[
+  {h:"Метод кейса",x:"<p><mark>Étude de cas</mark> — анализ <b>реальной ситуации компании</b>, чтобы поставить диагноз и предложить обоснованные решения. Учит принимать решения как менеджер.</p><ul><li>Прочитать текст и приложения, выделить участников, цифры и хронологию.</li><li>Определить главную проблему.</li><li>Диагностика: сильные / слабые стороны (внутри), возможности / угрозы (снаружи).</li><li>Предложить и обосновать решения понятиями из курса.</li></ul><p><b>Предприятие (entreprise)</b>: организация, сочетающая <b>факторы производства</b> (труд, капитал), чтобы производить товары или услуги для рынка и создавать стоимость.</p>"},
+  {h:"Tôleries Muller-Schuster",x:"<ul><li>1933: кузнец Жан-Поль Мюллер. 1954: руководит Ришар Шустер. 1955: жестяное производство (tôlerie). 60-е: поглощение 2 конкурентов. Затем <b>АО (Société Anonyme)</b>.</li><li>Более 60% оборота — за рубежом (Германия 27%). 200 сотрудников, развитая социальная политика (участие в прибыли, детский сад).</li><li>Проблемы: индивидуальный спрос → малые серии, короткие сроки, 5 клиентов ушли в 2009, устаревший завод. Падение производительности: <b>6,70 (1988) → 8,3 (1998) → 5,90 € (2009)</b>.</li><li><b>2010</b>: Тони Шустер передаёт руководство <b>нанятому инженеру</b>, но сохраняет капитал. Это переход от <mark>предпринимательской логики</mark> (основатель-собственник решает сам) к <mark>управленческой логике</mark> (профессиональный руководитель, цели в цифрах, аудит).</li><li>Цели на 2011: оборот +5%, производительность +3%, операционный результат +5%. Аудит: 1 месяц на деталь, 8 000 м по линии, удовлетворённость клиентов 70%.</li><li><b>Показатели эффективности</b>: оборот, производительность, сроки поставок, удовлетворённость клиентов, затраты, прогулы, текучесть.</li><li>Новая организация: меньше уровней иерархии, универсальные рабочие → <b>более плоская структура</b>, быстрее реакция и коммуникация, больше автономии.</li></ul>"},
+  {h:"Структуры",x:"<div class='tbl-wrap'><table class='tbl'><tr><th>Структура</th><th>Принцип</th></tr><tr><td>Простая (simple)</td><td>Руководитель решает всё (малое предприятие)</td></tr><tr><td>Функциональная</td><td>Деление по функциям: производство, продажи, финансы…</td></tr><tr><td>Дивизиональная</td><td>Деление по продуктам, рынкам или зонам (напр. 3 полюса Lafuma)</td></tr><tr><td>Матричная</td><td>Двойное подчинение: функция + проект / продукт</td></tr><tr><td>Плоская / проектная</td><td>Мало уровней, автономные и универсальные команды</td></tr></table></div>"},
+  {h:"Группа Lafuma",x:"<ul><li><b>1930</b>: основана 3 братьями Лафума. <b>1936</b>: каркас рюкзака. <b>1954</b>: кемпинговая мебель.</li><li>Внешний рост: <b>Millet</b> (1995), <b>Oxbow</b> (2005), <b>Eider</b> (2008). Eider продан корейской <b>K2</b> в 2020.</li><li><b>2013–2014</b>: контроль получает <b>Calida</b> (59,92% в 2014).</li><li><mark>Три автономных полюса</mark>: Горы, Сёрф, Мебель → <b>дивизиональная структура</b>.</li><li>Оборот 2019: <b>172,6 млн €</b>. 1 013 сотрудников в 12 странах, 4 завода.</li><li><b>Make or buy</b> (делать самим или покупать): Made in France <b>25%</b>, Made in Lafuma <b>13%</b> (Тунис, Венгрия), Made for Lafuma <b>62%</b> (субподряд по техзаданию).</li><li><b>Многоканальная дистрибуция</b>: wholesale (оптовики, 76%) + direct/retail (23%): бутики, аутлеты, e-commerce.</li></ul>"},
+  {h:"Инструменты анализа",x:"<ul><li><mark>Цепочка ценности</mark> (Портер): основные виды деятельности (логистика, производство, продажи, сервис) + вспомогательные (R&D, закупки, HR, инфраструктура). Lafuma: дизайн → прототип → коллекция → закупка сырья → производство → логистика → дистрибуция.</li><li><mark>Матрица BCG</mark>: <b>темп роста рынка</b> × <b>относительная доля рынка</b> → звёзды, дойные коровы, дилеммы, собаки.</li><li><mark>Bilan</mark> (баланс): имущество (актив / пассив) на определённую дату.</li><li><mark>Compte de résultat</mark> (отчёт о прибылях): доходы и расходы за период → прибыль или убыток.</li></ul>"}
+ ]},
+ facts:{fr:["Logique entrepreneuriale → managériale = séparation propriété / direction (Muller-Schuster 2010).","Productivité Muller-Schuster : 6,70 → 8,3 → 5,90 € (1988-1998-2009).","Lafuma : 3 pôles (Montagne, Surf, Mobilier) = structure divisionnelle.","Made in France 25 %, Made in Lafuma 13 %, Made for Lafuma 62 %.","Wholesale 76 % / direct 23 %. CA 2019 : 172,6 M€.","BCG = croissance du marché × part de marché relative.","Bilan = patrimoine à une date ; compte de résultat = produits − charges de l'exercice."],
+        ru:["Предпринимательская → управленческая логика = разделение собственности и руководства (Muller-Schuster 2010).","Производительность Muller-Schuster: 6,70 → 8,3 → 5,90 € (1988-1998-2009).","Lafuma: 3 полюса (Горы, Сёрф, Мебель) = дивизиональная структура.","Made in France 25%, Made in Lafuma 13%, Made for Lafuma 62%.","Wholesale 76% / прямые продажи 23%. Оборот 2019: 172,6 млн €.","BCG = рост рынка × относительная доля рынка.","Bilan = имущество на дату; compte de résultat = доходы − расходы за период."]},
+ traps:{fr:["Bilan ≠ compte de résultat : ne pas inverser.","Make or buy = produire soi-même ou sous-traiter (pas « vendre ou acheter »).","Wholesale = distributeurs / grossistes ; retail = vente directe."],
+        ru:["Bilan ≠ compte de résultat: не путать.","Make or buy = производить самим или отдать на субподряд (не «продать или купить»).","Wholesale = через дистрибьюторов / оптовиков; retail = прямые продажи."]}}
+];
+
+/* QCM: a = index of correct option. id < 100 = TD questions (scan), id > 100 = bonus */
+const QS = [
+{id:1,t:"podc",a:1,fr:["Ce n'est pas au manager de contrôler les résultats et de mobiliser les hommes.",["Vrai","Faux"],"Faux : contrôler les résultats et mobiliser les hommes sont deux missions centrales du manager (fonctions contrôle et direction)."],ru:["Контролировать результаты и мобилизовать людей — не задача менеджера.",["Верно","Неверно"],"Неверно: контроль результатов и мобилизация людей — ключевые задачи менеджера (функции контроля и руководства)."]},
+{id:2,t:"gm",a:0,fr:["Le management peut se décliner sur une dimension stratégique et une dimension opérationnelle.",["Vrai","Faux"],"Vrai : stratégique = long terme (direction générale) ; opérationnel = mise en œuvre concrète (plans d'action)."],ru:["Менеджмент может иметь стратегическое и операционное измерение.",["Верно","Неверно"],"Верно: стратегический = долгий срок (высшее руководство); операционный = конкретная реализация (планы действий)."]},
+{id:3,t:"gm",a:0,fr:["Le rôle du manager opérationnel est de mettre en œuvre concrètement les décisions stratégiques à travers des plans d'action.",["Vrai","Faux"],"Vrai : c'est exactement la définition du management opérationnel."],ru:["Роль операционного менеджера — конкретно реализовывать стратегические решения через планы действий.",["Верно","Неверно"],"Верно: это и есть определение операционного менеджмента."]},
+{id:4,t:"gm",a:1,fr:["Le management rassemble…",["Des moyens permettant de communiquer","Des techniques permettant de planifier, d'organiser, de diriger et de contrôler les activités d'une entreprise","Des dispositifs permettant de recruter les salariés et de les motiver"],"Définition du cours : techniques pour planifier, organiser, diriger et contrôler (PODC)."],ru:["Менеджмент объединяет…",["Средства для коммуникации","Техники, позволяющие планировать, организовывать, руководить и контролировать деятельность предприятия","Механизмы для найма и мотивации сотрудников"],"Определение из курса: техники для планирования, организации, руководства и контроля (PODC)."]},
+{id:5,t:"gm",a:0,fr:["Qu'est-ce que le management stratégique ?",["La création, la mise en place et le suivi d'une stratégie à long terme","La gestion et l'organisation des activités de l'entreprise à court et moyen terme","La gestion des relations avec les clients et les fournisseurs à moyen terme"],"Stratégique = long terme. Le court / moyen terme relève de la gestion et de l'opérationnel."],ru:["Что такое стратегический менеджмент?",["Создание, внедрение и сопровождение долгосрочной стратегии","Управление и организация деятельности на кратко- и среднесрочную перспективу","Управление отношениями с клиентами и поставщиками на среднесрочную перспективу"],"Стратегический = долгий срок. Кратко-/среднесрочное — это gestion и операционный уровень."]},
+{id:6,t:"gm",a:0,fr:["Quels sont les deux éléments essentiels que recouvre le terme management ?",["Direction et gestion","Planification et contrôle","Organisation et coordination","Motivation et évaluation"],"Le management recouvre la direction (conduire, décider) et la gestion (utiliser les ressources)."],ru:["Какие два ключевых элемента охватывает термин «менеджмент»?",["Руководство и управление ресурсами (direction et gestion)","Планирование и контроль","Организация и координация","Мотивация и оценка"],"Менеджмент = direction (вести, решать) + gestion (использовать ресурсы)."]},
+{id:7,t:"podc",a:1,fr:["Un responsable répartit les tâches, attribue les responsabilités et alloue les ressources nécessaires. Quelle fonction exerce-t-il principalement ?",["La planification","L'organisation","La direction","Le contrôle"],"Répartir les tâches + responsabilités + ressources = organiser."],ru:["Руководитель распределяет задачи, ответственность и необходимые ресурсы. Какую функцию он выполняет?",["Планирование","Организацию","Руководство","Контроль"],"Распределить задачи + ответственность + ресурсы = организация."]},
+{id:8,t:"gm",a:1,fr:["Une entreprise dispose de ressources et doit atteindre plusieurs objectifs. Quelle approche correspond le mieux à la définition de la gestion ?",["Maximiser systématiquement les ressources financières disponibles","Utiliser de manière pertinente les ressources disponibles afin d'atteindre les objectifs fixés","Déléguer toutes les décisions aux responsables opérationnels","Contrôler uniquement les résultats financiers de l'entreprise"],"C'est mot pour mot la définition de la gestion."],ru:["У компании есть ресурсы и несколько целей. Какой подход лучше всего соответствует определению gestion?",["Систематически максимизировать финансовые ресурсы","Грамотно использовать имеющиеся ресурсы для достижения поставленных целей","Делегировать все решения операционным руководителям","Контролировать только финансовые результаты"],"Это дословное определение gestion."]},
+{id:9,t:"gm",a:2,fr:["La recherche simultanée d'efficacité et d'efficience signifie principalement :",["Atteindre les objectifs, même avec une forte consommation de ressources","Réduire les ressources utilisées, même si les objectifs ne sont pas atteints","Atteindre les objectifs en utilisant les ressources de manière maîtrisée","Remplacer les objectifs qualitatifs par des objectifs financiers"],"Efficacité = atteindre l'objectif ; efficience = avec le moins de ressources. Les deux = objectifs atteints, ressources maîtrisées."],ru:["Одновременное стремление к efficacité и efficience означает:",["Достигать целей, даже тратя много ресурсов","Сокращать ресурсы, даже если цели не достигнуты","Достигать целей при контролируемом использовании ресурсов","Заменить качественные цели финансовыми"],"Efficacité = достичь цели; efficience = с минимумом ресурсов. Вместе = цель достигнута, ресурсы под контролем."]},
+{id:10,t:"podc",a:2,fr:["Un manager compare les résultats obtenus aux objectifs prévus et décide d'une action corrective. Quelle séquence décrit correctement son intervention ?",["Direction → organisation → planification","Planification → direction → organisation","Contrôle → correction","Organisation → motivation → planification"],"Comparer résultats / objectifs = contrôle, puis action corrective = correction."],ru:["Менеджер сравнивает результаты с целями и принимает корректирующее действие. Какая последовательность верна?",["Руководство → организация → планирование","Планирование → руководство → организация","Контроль → корректировка","Организация → мотивация → планирование"],"Сравнить результаты с целями = контроль, затем исправление."]},
+{id:11,t:"gm",a:2,fr:["Quelle proposition décrit le mieux la relation entre la gestion et le management ?",["Le management exclut la gestion, car il se concentre uniquement sur les relations humaines","La gestion et le management sont deux termes strictement synonymes","Le management englobe la gestion, tout en accordant davantage d'importance au leadership et à la mobilisation des personnes","La gestion concerne la stratégie, tandis que le management concerne uniquement l'administration"],"Le management est plus large : il inclut la gestion + la dimension humaine (leadership, mobilisation)."],ru:["Какое утверждение лучше описывает связь gestion и management?",["Менеджмент исключает gestion, т.к. занимается только отношениями людей","Gestion и management — строгие синонимы","Менеджмент включает gestion, но больше внимания уделяет лидерству и мобилизации людей","Gestion — это стратегия, а менеджмент — только администрирование"],"Менеджмент шире: включает gestion + человеческое измерение (лидерство, мобилизация)."]},
+{id:12,t:"gm",a:2,fr:["Une entreprise applique correctement ses procédures, mais ses équipes manquent de motivation et résistent au changement. Quel aspect doit être renforcé en priorité ?",["La gestion matérielle","Le contrôle administratif","Le management","La planification financière"],"Motivation et résistance au changement = dimension humaine → management."],ru:["Компания правильно применяет процедуры, но команды демотивированы и сопротивляются изменениям. Что усилить в первую очередь?",["Материальное управление","Административный контроль","Менеджмент","Финансовое планирование"],"Мотивация и сопротивление изменениям = человеческое измерение → менеджмент."]},
+{id:13,t:"gm",a:2,fr:["Laquelle de ces situations relève principalement du management plutôt que de la gestion ?",["Contrôler les dépenses réalisées par un service","Répartir les ressources matérielles entre plusieurs équipes","Mobiliser les collaborateurs autour d'une vision et accompagner le changement","Vérifier l'écart entre les ventes prévues et les ventes réalisées"],"Vision, mobilisation, changement = management. Les autres = gestion (chiffres, ressources)."],ru:["Какая ситуация относится скорее к менеджменту, чем к gestion?",["Контролировать расходы отдела","Распределять материальные ресурсы между командами","Мобилизовать сотрудников вокруг видения и сопровождать изменения","Проверять отклонение плановых продаж от фактических"],"Видение, мобилизация, изменения = менеджмент. Остальное = gestion (цифры, ресурсы)."]},
+{id:14,t:"podc",a:2,fr:["Quelle association entre une fonction de gestion et son rôle est incorrecte ?",["Planification : définir les objectifs et prévoir les actions","Organisation : répartir les tâches et les responsabilités","Direction : comparer les résultats aux objectifs","Contrôle : apporter des corrections lorsque cela est nécessaire"],"Piège : comparer les résultats aux objectifs, c'est le contrôle. La direction = animer, motiver, guider."],ru:["Какое сочетание функции и её роли НЕВЕРНО?",["Планирование: определить цели и предусмотреть действия","Организация: распределить задачи и ответственность","Руководство: сравнивать результаты с целями","Контроль: вносить исправления при необходимости"],"Ловушка: сравнение результатов с целями — это контроль. Руководство = вести, мотивировать."]},
+{id:15,t:"podc",a:1,fr:["Pourquoi le contrôle ne doit-il pas être compris comme une simple surveillance ?",["Parce qu'il consiste uniquement à sanctionner les responsables","Parce qu'il permet de comparer les résultats aux objectifs et d'engager des actions correctives","Parce qu'il intervient avant la définition des objectifs","Parce qu'il remplace la planification et l'organisation"],"Le contrôle sert à corriger et améliorer, pas seulement à surveiller ou sanctionner."],ru:["Почему контроль нельзя понимать как простой надзор?",["Потому что он состоит только в наказании ответственных","Потому что он позволяет сравнить результаты с целями и запустить корректирующие действия","Потому что он происходит до постановки целей","Потому что он заменяет планирование и организацию"],"Контроль нужен, чтобы исправлять и улучшать, а не только следить или наказывать."]},
+{id:16,t:"podc",a:0,fr:["Quelle situation illustre le mieux le rôle complémentaire de la planification et du contrôle ?",["Définir des objectifs, mesurer les résultats obtenus et corriger les écarts","Motiver les collaborateurs sans fixer d'objectifs","Répartir les tâches sans vérifier les résultats","Contrôler les dépenses sans prévoir les ressources nécessaires"],"Planifier (objectifs) → contrôler (mesurer) → corriger : les deux fonctions se complètent."],ru:["Какая ситуация лучше показывает взаимодополняемость планирования и контроля?",["Поставить цели, измерить результаты и исправить отклонения","Мотивировать сотрудников без постановки целей","Распределять задачи, не проверяя результаты","Контролировать расходы, не планируя ресурсы"],"Планировать (цели) → контролировать (измерять) → исправлять: функции дополняют друг друга."]},
+{id:17,t:"gm",a:1,fr:["La gestion concerne :",["Exclusivement les entreprises commerciales","Les entreprises, les institutions publiques et les organisations à but non lucratif","Uniquement les organisations disposant d'un service financier","Seulement les projets entrepreneuriaux"],"Toute organisation qui a des ressources et des objectifs doit être gérée."],ru:["Gestion касается:",["Исключительно коммерческих предприятий","Предприятий, государственных учреждений и некоммерческих организаций","Только организаций с финансовым отделом","Только предпринимательских проектов"],"Любой организацией с ресурсами и целями нужно управлять."]},
+{id:18,t:"gm",a:1,fr:["Quelle affirmation explique le mieux l'importance stratégique de la gestion ?",["Elle garantit automatiquement la réussite de toute organisation","Elle contribue à la performance, à la compétitivité et à la pérennité de l'organisation","Elle permet uniquement d'améliorer les relations entre les salariés","Elle remplace les décisions prises par la direction générale"],"Elle contribue (sans garantir) à la performance, la compétitivité et la pérennité."],ru:["Что лучше объясняет стратегическую важность gestion?",["Она автоматически гарантирует успех любой организации","Она способствует результативности, конкурентоспособности и долговечности организации","Она лишь улучшает отношения между сотрудниками","Она заменяет решения высшего руководства"],"Способствует (но не гарантирует) результативности, конкурентоспособности и долговечности."]},
+{id:19,t:"gouv",a:2,fr:["Qu'est-ce que la gouvernance d'entreprise ?",["Un ensemble de lois et de réglementations imposées aux entreprises","Un système de gestion financière et comptable","Un ensemble de principes et de pratiques qui guident la direction et le contrôle des entreprises","Une stratégie marketing pour améliorer l'image de l'entreprise"],"Définition du cours : principes et pratiques de direction et de contrôle."],ru:["Что такое корпоративное управление (gouvernance d'entreprise)?",["Совокупность законов и правил, навязанных компаниям","Система финансового и бухгалтерского учёта","Совокупность принципов и практик, которые направляют руководство и контроль компаний","Маркетинговая стратегия для улучшения имиджа"],"Определение из курса: принципы и практики руководства и контроля."]},
+{id:20,t:"gouv",a:1,fr:["Qui sont les principales parties prenantes d'une entreprise ?",["Les actionnaires seulement","Les employés, les clients, les fournisseurs, les communautés locales et les actionnaires","Les concurrents, les médias et les organisations non gouvernementales (ONG)","Le gouvernement et les organismes de réglementation"],"Les parties prenantes principales sont tous ceux qui sont directement liés à l'activité."],ru:["Кто главные заинтересованные стороны (parties prenantes) компании?",["Только акционеры","Сотрудники, клиенты, поставщики, местные сообщества и акционеры","Конкуренты, СМИ и НКО","Государство и регулирующие органы"],"Главные стейкхолдеры — все, кто напрямую связан с деятельностью компании."]},
+{id:21,t:"gouv",a:1,fr:["Quel est le rôle du conseil d'administration dans la gouvernance d'entreprise ?",["Gérer les opérations quotidiennes de l'entreprise","Superviser la direction de l'entreprise et protéger les intérêts des parties prenantes","Prendre toutes les décisions stratégiques de l'entreprise","Contrôler les activités du service des ressources humaines"],"Le CA supervise, il ne gère pas le quotidien (c'est la direction générale)."],ru:["Какова роль совета директоров (conseil d'administration)?",["Управлять повседневной работой","Надзирать за руководством компании и защищать интересы стейкхолдеров","Принимать все стратегические решения","Контролировать отдел кадров"],"Совет надзирает, а не управляет повседневно (это делает гендиректор)."]},
+{id:22,t:"manager",a:2,fr:["Un responsable établit un budget, contrôle les dépenses et planifie les stocks. Il exerce principalement :",["Une activité de leadership","Une activité de gouvernance","Une activité de gestion"],"Budget, dépenses, stocks = utilisation des ressources → gestion."],ru:["Руководитель составляет бюджет, контролирует расходы и планирует запасы. Он в основном занимается:",["Лидерством","Корпоративным управлением","Управлением ресурсами (gestion)"],"Бюджет, расходы, запасы = использование ресурсов → gestion."]},
+{id:23,t:"manager",a:0,fr:["Le même responsable motive son équipe, règle un conflit et accompagne une transformation organisationnelle. Il exerce alors principalement :",["Une fonction de management","Une fonction de contrôle financier","Une fonction d'audit externe","Une fonction de conformité réglementaire"],"Motiver, gérer un conflit, accompagner le changement = management."],ru:["Тот же руководитель мотивирует команду, решает конфликт и сопровождает организационные изменения. Он выполняет:",["Функцию менеджмента","Функцию финансового контроля","Функцию внешнего аудита","Функцию регуляторного соответствия"],"Мотивировать, решать конфликт, сопровождать изменения = менеджмент."]},
+{id:24,t:"gm",a:1,fr:["Dans le cours, la gestion est principalement associée à quelle temporalité ?",["L'immédiateté et l'absence de planification","Le court et le moyen terme, avec des processus, des budgets et des indicateurs","Le très long terme uniquement, avec la culture d'entreprise","Une temporalité indépendante des objectifs"],"Gestion = court / moyen terme, outillée par processus, budgets, indicateurs."],ru:["С каким временным горизонтом в курсе связана gestion?",["Сиюминутность и отсутствие планирования","Кратко- и среднесрочный, с процессами, бюджетами и показателями","Только очень долгий срок и корпоративная культура","Горизонт, не зависящий от целей"],"Gestion = кратко-/среднесрочный горизонт: процессы, бюджеты, показатели."]},
+{id:25,t:"gm",a:1,fr:["Quelle situation illustre une limite de la gestion lorsqu'elle n'est pas complétée par le management ?",["Les objectifs sont définis et les indicateurs sont suivis","Les procédures sont respectées, mais les salariés ne comprennent pas le sens de leur travail et se désengagent","Les ressources sont réparties entre les différents services","Les écarts entre les résultats et les objectifs sont corrigés"],"Sans management, la gestion ne donne pas de sens et ne motive pas."],ru:["Какая ситуация показывает предел gestion без менеджмента?",["Цели поставлены, показатели отслеживаются","Процедуры соблюдаются, но сотрудники не понимают смысла работы и теряют вовлечённость","Ресурсы распределены между отделами","Отклонения результатов от целей исправляются"],"Без менеджмента gestion не даёт смысла и не мотивирует."]},
+{id:26,t:"podc",a:1,fr:["Une entreprise élabore un plan qui fixe précisément les actions à mener, mais l'environnement évolue brutalement. Quel risque encourt cette entreprise ?",["Une amélioration automatique de la créativité","Une rigidité empêchant l'organisation de s'adapter rapidement","Une disparition des objectifs stratégiques","Une augmentation systématique de la motivation"],"Plan trop précis + environnement changeant = rigidité."],ru:["Компания составила план, точно фиксирующий действия, но среда резко изменилась. Какой риск?",["Автоматический рост креативности","Жёсткость, мешающая быстро адаптироваться","Исчезновение стратегических целей","Систематический рост мотивации"],"Слишком точный план + меняющаяся среда = жёсткость (rigidité)."]},
+{id:27,t:"podc",a:1,fr:["Quelle affirmation concernant la planification est exacte ?",["Seuls les managers qui rédigent un plan formel planifient réellement","Tous les managers planifient, même si le degré de formalisation varie","La planification exclut toute adaptation ultérieure","La planification ne concerne que les objectifs financiers"],"Tout manager planifie ; seul le degré de formalisation change."],ru:["Какое утверждение о планировании верно?",["Реально планируют только те, кто пишет формальный план","Все менеджеры планируют, даже если степень формализации разная","Планирование исключает последующую адаптацию","Планирование касается только финансовых целей"],"Каждый менеджер планирует; меняется лишь степень формализации."]},
+{id:28,t:"podc",a:1,fr:["La planification facilite le contrôle parce qu'elle :",["Supprime la nécessité de mesurer les résultats","Définit des objectifs et des normes permettant d'évaluer les performances","Remplace les indicateurs de performance","Confie le contrôle exclusivement aux actionnaires"],"Sans objectifs ni normes, on ne peut rien comparer : la planification prépare le contrôle."],ru:["Планирование облегчает контроль, потому что оно:",["Устраняет необходимость измерять результаты","Задаёт цели и нормы для оценки результатов","Заменяет показатели эффективности","Передаёт контроль только акционерам"],"Без целей и норм сравнивать нечего: планирование готовит контроль."]},
+{id:29,t:"podc",a:1,fr:["Une bonne organisation permet principalement :",["D'éviter toute prise de décision collective","De clarifier les rôles, de répartir les responsabilités et de faciliter le flux de travail","De supprimer les relations informelles","De réduire le rôle de la direction à une fonction administrative"],"Organisation = rôles clairs, responsabilités réparties, travail fluide."],ru:["Хорошая организация прежде всего позволяет:",["Избежать любых коллективных решений","Прояснить роли, распределить ответственность и облегчить поток работы","Устранить неформальные отношения","Свести роль руководства к администрированию"],"Организация = ясные роли, распределённая ответственность, плавная работа."]},
+{id:30,t:"podc",a:0,fr:["La coordination vise à :",["Synchroniser les activités et les efforts afin d'éviter les doublons, les retards et les conflits","Concentrer toutes les décisions entre les mains d'un seul dirigeant","Remplacer la planification stratégique","Contrôler uniquement les résultats financiers"],"Coordonner = synchroniser pour éviter doublons, retards et conflits."],ru:["Координация направлена на то, чтобы:",["Синхронизировать действия и усилия, избегая дублирования, задержек и конфликтов","Сосредоточить все решения в руках одного руководителя","Заменить стратегическое планирование","Контролировать только финансовые результаты"],"Координировать = синхронизировать, чтобы избежать дублей, задержек, конфликтов."]},
+{id:31,t:"podc",a:0,fr:["Quel ensemble correspond le mieux aux activités d'animation du manager ?",["Former, fixer les objectifs individuels, communiquer, motiver et évaluer","Établir les comptes annuels, auditer et certifier les états financiers","Définir les lois, contrôler les marchés et sanctionner les entreprises","Concevoir les produits, fixer les prix et organiser la distribution"],"L'animation (direction) porte sur les personnes : former, objectifs, communication, motivation, évaluation."],ru:["Что лучше всего соответствует деятельности менеджера по «animation» (ведению людей)?",["Обучать, ставить индивидуальные цели, общаться, мотивировать и оценивать","Составлять годовую отчётность, проводить аудит","Устанавливать законы, контролировать рынки","Разрабатывать продукты, устанавливать цены"],"Animation (руководство) — про людей: обучение, цели, общение, мотивация, оценка."]},
+{id:32,t:"manager",a:1,fr:["Le manager est principalement celui qui :",["Exécute personnellement toutes les tâches de l'organisation","Mobilise les ressources d'autres individus et transforme les compétences individuelles en performance collective","Représente uniquement les actionnaires","Contrôle exclusivement la conformité juridique"],"Le manager fait travailler les autres ensemble : compétences individuelles → performance collective."],ru:["Менеджер — это прежде всего тот, кто:",["Лично выполняет все задачи организации","Мобилизует ресурсы других людей и превращает индивидуальные компетенции в коллективный результат","Представляет только акционеров","Контролирует только юридическое соответствие"],"Менеджер организует совместную работу: индивидуальные компетенции → коллективный результат."]},
+{id:33,t:"manager",a:2,fr:["Quelle proposition décrit correctement les rôles décisionnels du manager ?",["Figure de proue, leader et agent de liaison","Observateur, diffuseur d'information et porte-parole","Entrepreneur, régulateur, répartiteur de ressources et négociateur","Auditeur, comptable, contrôleur et juriste"],"Mintzberg : A = interpersonnels, B = informationnels, C = décisionnels. Sur la copie, A est coché, mais la bonne réponse est C."],ru:["Какой вариант правильно описывает решенческие (décisionnels) роли менеджера?",["Символ, лидер и связующее звено","Наблюдатель, распространитель информации и представитель","Предприниматель, регулятор, распределитель ресурсов и переговорщик","Аудитор, бухгалтер, контролёр и юрист"],"Минцберг: A = межличностные, B = информационные, C = решенческие. В копии отмечен A, но правильно — C."]},
+{id:34,t:"manager",a:1,fr:["Un manager collecte des informations, les analyse et les transmet aux services concernés. Quels rôles exerce-t-il principalement ?",["Des rôles interpersonnels","Des rôles informationnels","Des rôles décisionnels uniquement","Des rôles exclusivement politiques"],"Collecter (observateur) + transmettre (diffuseur) = rôles informationnels. Sur la copie, C est coché, c'est une erreur."],ru:["Менеджер собирает информацию, анализирует и передаёт её службам. Какие роли он выполняет?",["Межличностные","Информационные","Только решенческие","Исключительно политические"],"Собирать (наблюдатель) + передавать (распространитель) = информационные роли. В копии отмечен C — это ошибка."]},
+{id:35,t:"manager",a:1,fr:["Quelle compétence permet au manager d'analyser des situations complexes et de prendre des décisions appropriées ?",["La compétence technique","La compétence conceptuelle","La compétence politique uniquement","La compétence administrative"],"Conceptuelle = analyse, vision d'ensemble, décision."],ru:["Какая компетенция позволяет менеджеру анализировать сложные ситуации и принимать адекватные решения?",["Техническая","Концептуальная","Только политическая","Административная"],"Концептуальная = анализ, видение целого, принятие решений."]},
+{id:36,t:"manager",a:0,fr:["La compétence politique du manager consiste notamment à :",["Développer une influence et obtenir les soutiens nécessaires au développement de ses activités","Maîtriser uniquement les outils informatiques","Remplacer la compétence interpersonnelle","Contrôler les stocks et les achats"],"Politique = influence, réseau, soutiens."],ru:["Политическая компетенция менеджера состоит, в частности, в том, чтобы:",["Развивать влияние и получать поддержку, необходимую для развития своей деятельности","Владеть только IT-инструментами","Заменять межличностную компетенцию","Контролировать запасы и закупки"],"Политическая = влияние, связи, поддержка."]},
+{id:37,t:"leader",a:1,fr:["Peut-on être leader sans être manager ?",["Non, car le leadership suppose obligatoirement une fonction hiérarchique","Oui, par exemple en tant que leader expert, stratège, rénovateur ou coach","Oui, mais uniquement dans les entreprises familiales","Non, sauf si l'on est nommé par le conseil d'administration"],"Le leadership vient de la reconnaissance du groupe, pas du poste."],ru:["Можно ли быть лидером, не будучи менеджером?",["Нет, лидерство обязательно требует иерархической должности","Да, например как лидер-эксперт, стратег, реформатор или коуч","Да, но только в семейных компаниях","Нет, если не назначен советом директоров"],"Лидерство — от признания группы, а не от должности."]},
+{id:38,t:"leader",a:1,fr:["Quelle proposition définit le mieux le leadership ?",["L'exercice d'un pouvoir hiérarchique imposé par l'organisation","La capacité à influencer et fédérer un groupe autour d'un but commun, dans une relation de confiance","Le contrôle des ressources financières d'une organisation","L'application stricte des procédures internes"],"Influence + but commun + confiance."],ru:["Какое определение лидерства лучшее?",["Осуществление иерархической власти, навязанной организацией","Способность влиять на группу и объединять её вокруг общей цели в отношениях доверия","Контроль финансовых ресурсов","Строгое соблюдение внутренних процедур"],"Влияние + общая цель + доверие."]},
+{id:39,t:"leader",a:0,fr:["Pourquoi le leadership est-il présenté comme limité dans le temps ?",["Parce que l'influence du leader dépend des situations, de l'environnement et de la reconnaissance du groupe","Parce qu'un leader ne peut jamais conserver la confiance de son équipe","Parce que le leadership repose uniquement sur une fonction temporaire","Parce que le manager doit toujours remplacer le leader après une crise"],"Le leader l'est tant que la situation et le groupe le reconnaissent."],ru:["Почему лидерство считается ограниченным во времени?",["Потому что влияние лидера зависит от ситуации, среды и признания группой","Потому что лидер никогда не сохраняет доверие команды","Потому что лидерство основано только на временной должности","Потому что после кризиса менеджер всегда заменяет лидера"],"Лидер остаётся лидером, пока ситуация и группа его признают."]},
+{id:40,t:"leader",a:1,fr:["Un manager abandonne temporairement son rôle central au profit d'un collaborateur plus compétent sur un sujet précis. Cette attitude illustre principalement :",["L'autoritarisme","L'humilité et le leadership situationnel","La perte définitive de son statut hiérarchique","Le refus de déléguer"],"S'adapter à la situation et laisser la place au plus compétent = leadership situationnel."],ru:["Менеджер временно уступает центральную роль более компетентному в конкретном вопросе сотруднику. Это пример:",["Авторитаризма","Скромности и ситуационного лидерства","Окончательной потери статуса","Отказа делегировать"],"Адаптироваться к ситуации и уступить самому компетентному = ситуационное лидерство."]},
+{id:41,t:"leader",a:2,fr:["Le style de management doit être choisi en fonction :",["De la personnalité du manager uniquement","Du niveau hiérarchique du manager uniquement","De l'influence du manager, des subordonnés et du contexte","Des préférences des actionnaires exclusivement"],"Trois facteurs : manager + subordonnés + contexte. Méfie-toi des mots « uniquement » / « exclusivement »."],ru:["Стиль менеджмента нужно выбирать в зависимости от:",["Только характера менеджера","Только его уровня в иерархии","Влияния менеджера, подчинённых и контекста","Исключительно предпочтений акционеров"],"Три фактора: менеджер + подчинённые + контекст. Слова «только» / «исключительно» обычно — ловушка."]},
+{id:42,t:"gouv",a:1,fr:["Dans une structure dualiste, le directoire :",["Contrôle le conseil de surveillance","Pilote l'entreprise, tandis que son activité est contrôlée par le conseil de surveillance","Représente uniquement les actionnaires minoritaires","Se limite à approuver les comptes annuels"],"Directoire = pilote ; conseil de surveillance = contrôle."],ru:["В двухуровневой (dualiste) структуре правление (directoire):",["Контролирует наблюдательный совет","Управляет компанией, а его работу контролирует наблюдательный совет","Представляет только миноритарных акционеров","Лишь утверждает годовую отчётность"],"Directoire = управляет; conseil de surveillance = контролирует."]},
+{id:43,t:"gouv",a:1,fr:["Quel rôle les salariés peuvent-ils jouer dans la gouvernance ?",["Ils ne disposent d'aucun moyen d'action dans l'entreprise","Ils peuvent agir par l'intermédiaire de représentants du personnel et exercer certains droits, comme le droit d'alerte","Ils remplacent obligatoirement le conseil d'administration","Ils contrôlent seuls la rémunération des dirigeants"],"Représentants du personnel + droit d'alerte."],ru:["Какую роль сотрудники могут играть в корпоративном управлении?",["У них нет никаких средств влияния","Они действуют через представителей персонала и имеют некоторые права, например право на тревожное уведомление (droit d'alerte)","Они обязательно заменяют совет директоров","Они одни контролируют вознаграждение руководителей"],"Представители персонала + droit d'alerte."]},
+/* bonus */
+{id:101,t:"leader",a:1,fr:["D'après l'étude de cas, comment qualifier le style de management de Steve Jobs ?",["Participatif et délégatif","Autoritaire et directif, centré sur le contrôle","Laisser-faire","Consultatif"],"Décisions seul, contrôle de tout, peur : style autoritaire / directif."],ru:["Как по кейсу охарактеризовать стиль Стива Джобса?",["Партисипативный и делегирующий","Авторитарный и директивный, с упором на контроль","Попустительский (laisser-faire)","Консультативный"],"Решает сам, контролирует всё, страх: авторитарный / директивный стиль."]},
+{id:102,t:"leader",a:2,fr:["Chez Apple sous Steve Jobs, la « culture du oui » signifiait :",["Les salariés pouvaient proposer librement toute idée","Les décisions étaient votées collectivement","Il était formellement déconseillé de ne pas approuver les décisions de la société","Les clients avaient toujours raison"],"Toute tentative de changement ou d'influence était mal perçue."],ru:["Что означала «культура да» в Apple при Джобсе?",["Сотрудники могли свободно предлагать идеи","Решения принимались голосованием","Не одобрять решения компании было категорически не рекомендовано","Клиент всегда прав"],"Любая попытка изменений или влияния воспринималась плохо."]},
+{id:103,t:"leader",a:0,fr:["Quel inconvénient du style de Steve Jobs ressort du texte ?",["Une pression constante, du stress et une grande fatigue physique et morale","Un manque total de contrôle sur les projets","Une absence de vision produit","Des délais trop longs accordés aux équipes"],"Le texte : « une pression constante, du stress et une grande fatigue physique et morale »."],ru:["Какой минус стиля Джобса следует из текста?",["Постоянное давление, стресс и сильная физическая и моральная усталость","Полное отсутствие контроля над проектами","Отсутствие продуктового видения","Слишком долгие сроки для команд"],"В тексте: «постоянное давление, стресс, физическая и моральная усталость»."]},
+{id:104,t:"leader",a:1,fr:["Pourquoi Steve Jobs a-t-il été renvoyé de sa propre firme en 1985 ?",["Pour fraude financière","Son caractère colérique et le fait d'ignorer l'avis des actionnaires, financiers et partenaires","Parce qu'il avait délocalisé la production","Parce qu'il refusait d'innover"],"Son comportement envers actionnaires et partenaires lui a valu d'être renvoyé en 1985."],ru:["Почему Стива Джобса уволили из собственной компании в 1985?",["За финансовое мошенничество","Из-за вспыльчивости и игнорирования мнения акционеров, финансистов и партнёров","Из-за переноса производства за рубеж","Из-за отказа от инноваций"],"Поведение с акционерами и партнёрами привело к увольнению в 1985."]},
+{id:105,t:"cas",a:2,fr:["Chez Muller-Schuster, qu'est-ce qui marque le passage à une logique managériale en 2010 ?",["L'absorption de deux concurrents","La transformation en société anonyme","Tony Schuster confie la direction à un ingénieur expérimenté tout en conservant la propriété du capital","La création d'une crèche d'entreprise"],"Séparation propriété (capital) / direction (dirigeant professionnel) = logique managériale."],ru:["Что в Muller-Schuster знаменует переход к управленческой логике в 2010?",["Поглощение двух конкурентов","Преобразование в АО","Тони Шустер передаёт руководство опытному инженеру, сохраняя собственность на капитал","Открытие корпоративного детского сада"],"Разделение собственности (капитал) и руководства (наёмный профессионал) = управленческая логика."]},
+{id:106,t:"cas",a:3,fr:["Muller-Schuster : à combien d'euros de production correspond 1 € investi en 2009 ?",["6,70","8,3","10","5,90"],"1988 : 6,70 F ; 1998 : 8,3 ; 2009 : 5,90 € → la productivité baisse."],ru:["Muller-Schuster: сколько евро продукции даёт 1 € инвестиций в 2009?",["6,70","8,3","10","5,90"],"1988: 6,70 F; 1998: 8,3; 2009: 5,90 € → производительность падает."]},
+{id:107,t:"cas",a:1,fr:["Quels objectifs le nouveau dirigeant de Muller-Schuster fixe-t-il pour 2011 ?",["CA −5 %, productivité +10 %","CA +5 %, productivité +3 %, résultat d'exploitation +5 %","−20 % de CO2 en 1 an","Délocalisation en Europe de l'Est"],"Objectifs chiffrés et communiqués à tous : signe de logique managériale."],ru:["Какие цели новый руководитель Muller-Schuster ставит на 2011?",["Оборот −5%, производительность +10%","Оборот +5%, производительность +3%, операционный результат +5%","−20% CO2 за год","Перенос производства в Восточную Европу"],"Цели в цифрах, сообщённые всем: признак управленческой логики."]},
+{id:108,t:"cas",a:2,fr:["Muller-Schuster supprime des postes de chefs d'équipe et rend les ouvriers polyvalents. Quel avantage en attend-elle ?",["Plus de niveaux hiérarchiques et plus de contrôle","Une production en grandes séries standardisées","Une structure plus plate, plus réactive, avec une communication plus rapide et plus d'autonomie","La suppression de toute coordination"],"Moins de niveaux = décisions et informations plus rapides, adaptées aux commandes spécifiques."],ru:["Muller-Schuster сокращает бригадиров и делает рабочих универсальными. Какое преимущество ожидается?",["Больше уровней иерархии и контроля","Производство больших стандартных серий","Более плоская и гибкая структура, быстрая коммуникация и больше автономии","Отмена любой координации"],"Меньше уровней = быстрее решения и информация, лучше под индивидуальные заказы."]},
+{id:109,t:"cas",a:1,fr:["Lafuma est organisé en trois pôles autonomes (Montagne, Surf, Mobilier). De quel type de structure s'agit-il ?",["Structure simple","Structure divisionnelle","Structure fonctionnelle","Structure entrepreneuriale"],"Découpage par activités / produits = divisionnelle."],ru:["Lafuma организована в 3 автономных полюса (Горы, Сёрф, Мебель). Какая это структура?",["Простая","Дивизиональная","Функциональная","Предпринимательская"],"Деление по направлениям / продуктам = дивизиональная."]},
+{id:110,t:"cas",a:2,fr:["« Made for Lafuma » désigne :",["La production dans les usines françaises (25 %)","La production dans les usines de Tunisie et de Hongrie (13 %)","La sous-traitance à partir d'un cahier des charges strict fourni par le groupe (62 %)","La vente directe en boutiques"],"Made for = fabriqué POUR Lafuma par des sous-traitants : 62 % en équivalent CA."],ru:["«Made for Lafuma» означает:",["Производство на французских заводах (25%)","Производство на заводах в Тунисе и Венгрии (13%)","Субподряд по строгому техзаданию группы (62%)","Прямые продажи в бутиках"],"Made for = сделано ДЛЯ Lafuma субподрядчиками: 62% оборота."]},
+{id:111,t:"cas",a:0,fr:["Que signifie « Make or Buy » ?",["Choisir entre produire soi-même ou acheter / sous-traiter","Choisir entre vendre en gros ou au détail","Choisir entre deux fournisseurs étrangers","Fabriquer pour stocker ou pour vendre"],"Make = internaliser ; buy = externaliser."],ru:["Что означает «Make or Buy»?",["Выбор: производить самим или покупать / отдавать на субподряд","Выбор: оптом или в розницу","Выбор между двумя иностранными поставщиками","Производить на склад или на продажу"],"Make = делать самим; buy = отдать внешним исполнителям."]},
+{id:112,t:"cas",a:1,fr:["Dans la distribution de Lafuma, le « wholesale » correspond à :",["La vente directe en boutiques propres et en ligne","La vente via des distributeurs / grossistes (environ 76 %)","Les magasins d'usine uniquement","La vente aux salariés"],"Wholesale = grossistes (76 %) ; retail = direct (23 %)."],ru:["В дистрибуции Lafuma «wholesale» — это:",["Прямые продажи в своих бутиках и онлайн","Продажи через дистрибьюторов / оптовиков (около 76%)","Только фабричные магазины","Продажи сотрудникам"],"Wholesale = оптовики (76%); retail = напрямую (23%)."]},
+{id:113,t:"cas",a:0,fr:["À quoi sert le bilan ?",["Présenter le patrimoine de l'entreprise (actif / passif) à une date donnée","Calculer le résultat à partir des produits et des charges","Lister les parties prenantes","Mesurer la satisfaction des clients"],"Bilan = photo du patrimoine à une date (ex. 31.12.2019)."],ru:["Для чего нужен баланс (bilan)?",["Показать имущество компании (актив / пассив) на определённую дату","Рассчитать результат по доходам и расходам","Перечислить стейкхолдеров","Измерить удовлетворённость клиентов"],"Bilan = «фото» имущества на дату (напр. 31.12.2019)."]},
+{id:114,t:"cas",a:1,fr:["À quoi sert le compte de résultat ?",["Décrire le patrimoine à une date donnée","Retracer les produits et les charges de l'exercice pour dégager un bénéfice ou une perte","Présenter l'organigramme","Évaluer les concurrents"],"Compte de résultat = « film » de l'année : produits − charges = résultat."],ru:["Для чего нужен отчёт о прибылях (compte de résultat)?",["Описать имущество на дату","Отразить доходы и расходы за период и получить прибыль или убыток","Показать оргструктуру","Оценить конкурентов"],"Compte de résultat = «фильм» за год: доходы − расходы = результат."]},
+{id:115,t:"cas",a:2,fr:["La matrice BCG croise :",["Prix et qualité","Coûts et délais","Le taux de croissance du marché et la part de marché relative","Le nombre de salariés et le chiffre d'affaires"],"Axes BCG : croissance du marché × part de marché relative."],ru:["Матрица BCG сочетает:",["Цену и качество","Затраты и сроки","Темп роста рынка и относительную долю рынка","Число сотрудников и оборот"],"Оси BCG: рост рынка × относительная доля рынка."]},
+{id:116,t:"cas",a:1,fr:["Quel groupe prend le contrôle de Lafuma en 2013-2014 ?",["LG Fashion","Calida","K2","Millet"],"Calida détient 59,92 % du capital en 2014."],ru:["Какая группа получила контроль над Lafuma в 2013–2014?",["LG Fashion","Calida","K2","Millet"],"Calida владеет 59,92% капитала в 2014."]},
+{id:117,t:"cas",a:3,fr:["Chiffre d'affaires consolidé du groupe Lafuma en 2019 :",["16 M€","31 M€","228 M€","172,6 M€"],"172,6 M€ en 2019 (228 M€ en 2011, 16 M€ en 1980)."],ru:["Консолидированный оборот Lafuma в 2019:",["16 млн €","31 млн €","228 млн €","172,6 млн €"],"172,6 млн € в 2019 (228 млн в 2011, 16 млн в 1980)."]},
+{id:118,t:"cas",a:0,fr:["Qu'est-ce qu'une étude de cas ?",["L'analyse d'une situation réelle d'entreprise pour poser un diagnostic et proposer des solutions argumentées","Un résumé de cours","Un test de mémoire","Un rapport financier officiel"],"Situation réelle → diagnostic → solutions justifiées."],ru:["Что такое кейс (étude de cas)?",["Анализ реальной ситуации компании для диагностики и обоснованных решений","Конспект курса","Тест на запоминание","Официальный финансовый отчёт"],"Реальная ситуация → диагноз → обоснованные решения."]},
+{id:119,t:"cas",a:1,fr:["Quels sont les facteurs de production classiques d'une entreprise ?",["Les clients et les fournisseurs","Le travail et le capital","Les impôts et les taxes","La publicité et le marketing"],"Travail (salariés) + capital (machines, usines, marques)."],ru:["Классические факторы производства предприятия:",["Клиенты и поставщики","Труд и капитал","Налоги и сборы","Реклама и маркетинг"],"Труд (сотрудники) + капитал (оборудование, заводы, бренды)."]},
+{id:120,t:"manager",a:1,fr:["Chez Mintzberg, le rôle de « porte-parole » appartient aux rôles :",["Interpersonnels","Informationnels","Décisionnels","Politiques"],"Porte-parole = transmet l'information à l'extérieur → informationnel."],ru:["У Минцберга роль «представителя» (porte-parole) относится к:",["Межличностным","Информационным","Решенческим","Политическим"],"Porte-parole передаёт информацию вовне → информационная роль."]},
+{id:121,t:"manager",a:0,fr:["Le rôle de « figure de proue » (symbole) appartient aux rôles :",["Interpersonnels","Informationnels","Décisionnels","Financiers"],"Figure de proue, leader, agent de liaison = interpersonnels."],ru:["Роль «символа» (figure de proue) относится к:",["Межличностным","Информационным","Решенческим","Финансовым"],"Figure de proue, leader, agent de liaison = межличностные."]},
+{id:122,t:"gm",a:1,fr:["L'efficience, c'est :",["Atteindre ses objectifs, peu importe le coût","Atteindre ses objectifs en minimisant les ressources utilisées","Avoir le plus de salariés possible","Augmenter ses prix"],"Efficience = rapport résultat / ressources."],ru:["Efficience (эффективность) — это:",["Достигать целей любой ценой","Достигать целей, минимизируя используемые ресурсы","Иметь как можно больше сотрудников","Повышать цены"],"Efficience = соотношение результата и ресурсов."]},
+{id:123,t:"podc",a:0,fr:["Henri Fayol est connu pour avoir défini :",["Les fonctions administratives : prévoir, organiser, commander, coordonner, contrôler","Les 10 rôles du manager","La matrice BCG","La chaîne de valeur"],"Fayol → POCCC, à l'origine du PODC. Mintzberg → 10 rôles. Porter → chaîne de valeur."],ru:["Анри Файоль известен тем, что определил:",["Административные функции: предвидеть, организовать, распоряжаться, координировать, контролировать","10 ролей менеджера","Матрицу BCG","Цепочку ценности"],"Файоль → функции управления (основа PODC). Минцберг → 10 ролей. Портер → цепочка ценности."]},
+{id:124,t:"cas",a:1,fr:["La chaîne de valeur (Porter) distingue :",["L'actif et le passif","Les activités principales et les activités de soutien","Les vedettes et les poids morts","Les marchés directs et indirects"],"Activités principales (production, logistique, vente…) + soutien (R&D, RH, achats…)."],ru:["Цепочка ценности (Портер) различает:",["Актив и пассив","Основные и вспомогательные виды деятельности","Звёзд и собак","Прямые и косвенные рынки"],"Основные (производство, логистика, продажи…) + вспомогательные (R&D, HR, закупки…)."]},
+{id:125,t:"gouv",a:2,fr:["Dans une entreprise, les clients, les fournisseurs et les salariés sont :",["Des concurrents","Des organismes de réglementation","Des parties prenantes","Des administrateurs"],"Tous ceux concernés par l'activité sont des parties prenantes."],ru:["Клиенты, поставщики и сотрудники компании — это:",["Конкуренты","Регуляторы","Заинтересованные стороны (parties prenantes)","Члены совета директоров"],"Все, кого касается деятельность компании, — стейкхолдеры."]}
+];
+
+const VF = [
+["Le management englobe la gestion.","Менеджмент включает в себя gestion.",1],
+["La gestion ne concerne que les entreprises commerciales.","Gestion касается только коммерческих предприятий.",0],
+["Le management stratégique concerne le long terme.","Стратегический менеджмент — про долгий срок.",1],
+["Comparer les résultats aux objectifs relève de la fonction direction.","Сравнение результатов с целями — это функция руководства (direction).",0],
+["Le contrôle sert à engager des actions correctives.","Контроль нужен, чтобы запускать корректирующие действия.",1],
+["Seuls les managers qui rédigent un plan formel planifient.","Планируют только менеджеры, пишущие формальный план.",0],
+["La coordination évite les doublons, les retards et les conflits.","Координация помогает избежать дублирования, задержек и конфликтов.",1],
+["Un plan trop rigide peut empêcher l'adaptation à un environnement changeant.","Слишком жёсткий план может мешать адаптации к меняющейся среде.",1],
+["Observateur, diffuseur et porte-parole sont des rôles informationnels.","Наблюдатель, распространитель и представитель — информационные роли.",1],
+["Négociateur est un rôle interpersonnel.","Переговорщик — межличностная роль.",0],
+["Agent de liaison est un rôle interpersonnel.","Связующее звено (agent de liaison) — межличностная роль.",1],
+["La compétence conceptuelle sert à analyser des situations complexes.","Концептуальная компетенция нужна для анализа сложных ситуаций.",1],
+["La compétence politique consiste à maîtriser les outils informatiques.","Политическая компетенция — это владение IT-инструментами.",0],
+["On peut être leader sans être manager.","Можно быть лидером, не будучи менеджером.",1],
+["Le leadership repose sur un pouvoir hiérarchique imposé.","Лидерство основано на навязанной иерархической власти.",0],
+["Le style de management dépend du manager, des subordonnés et du contexte.","Стиль менеджмента зависит от менеджера, подчинённых и контекста.",1],
+["Le conseil d'administration gère les opérations quotidiennes.","Совет директоров управляет повседневной работой.",0],
+["Dans une structure dualiste, le conseil de surveillance contrôle le directoire.","В двухуровневой структуре наблюдательный совет контролирует правление.",1],
+["Les salariés n'ont aucun rôle dans la gouvernance.","У сотрудников нет никакой роли в корпоративном управлении.",0],
+["Les clients et les fournisseurs sont des parties prenantes.","Клиенты и поставщики — заинтересованные стороны.",1],
+["Efficacité = atteindre les objectifs.","Efficacité = достигать целей.",1],
+["Efficience = atteindre les objectifs quel que soit le coût.","Efficience = достигать целей любой ценой.",0],
+["La gestion garantit automatiquement la réussite d'une organisation.","Gestion автоматически гарантирует успех организации.",0],
+["La gestion est associée au court et au moyen terme.","Gestion связана с кратко- и среднесрочным горизонтом.",1],
+["Steve Jobs pratiquait un management participatif.","Стив Джобс практиковал партисипативный менеджмент.",0],
+["Après 2010, M. Schuster garde la propriété du capital de l'entreprise.","После 2010 г. г-н Шустер сохраняет собственность на капитал.",1],
+["Lafuma est structuré en trois pôles : Montagne, Surf, Mobilier.","Lafuma разделена на 3 полюса: Горы, Сёрф, Мебель.",1],
+["« Made for Lafuma » représente la plus grande part (62 %).","«Made for Lafuma» — самая большая доля (62%).",1],
+["Le bilan mesure le résultat d'une année.","Баланс измеряет результат за год.",0],
+["Lafuma a été créé en 1930 par trois frères.","Lafuma основана в 1930 году тремя братьями.",1],
+["Motiver une équipe et accompagner le changement relève du management.","Мотивировать команду и сопровождать изменения — это менеджмент.",1],
+["Établir un budget et planifier les stocks relève du leadership.","Составить бюджет и спланировать запасы — это лидерство.",0],
+["La gouvernance est un ensemble de lois imposées aux entreprises.","Корпоративное управление — это свод законов для компаний.",0],
+["Le manager transforme les compétences individuelles en performance collective.","Менеджер превращает индивидуальные компетенции в коллективный результат.",1]
+];
+
+const CARDS = [
+["gm","Gestion","Utiliser de manière pertinente les ressources disponibles afin d'atteindre les objectifs fixés.","Gestion (управление ресурсами)","Грамотно использовать имеющиеся ресурсы для достижения поставленных целей."],
+["gm","Management","Techniques pour planifier, organiser, diriger et contrôler. Recouvre direction + gestion.","Management (менеджмент)","Техники планирования, организации, руководства и контроля. Включает direction + gestion."],
+["gm","Management stratégique","Création, mise en place et suivi d'une stratégie à long terme.","Стратегический менеджмент","Создание, внедрение и сопровождение долгосрочной стратегии."],
+["gm","Management opérationnel","Mettre en œuvre concrètement les décisions stratégiques via des plans d'action.","Операционный менеджмент","Конкретная реализация стратегических решений через планы действий."],
+["gm","Efficacité","Atteindre les objectifs fixés.","Efficacité (результативность)","Достигать поставленных целей."],
+["gm","Efficience","Atteindre les objectifs avec le minimum de ressources.","Efficience (эффективность)","Достигать целей с минимумом ресурсов."],
+["podc","Planification","Définir les objectifs et prévoir les actions.","Planification (планирование)","Определить цели и предусмотреть действия."],
+["podc","Organisation","Répartir les tâches, les responsabilités et les ressources.","Organisation (организация)","Распределить задачи, ответственность и ресурсы."],
+["podc","Direction","Animer : former, fixer les objectifs individuels, communiquer, motiver, évaluer.","Direction (руководство)","Вести людей: обучать, ставить цели, общаться, мотивировать, оценивать."],
+["podc","Contrôle","Comparer les résultats aux objectifs et engager des actions correctives.","Contrôle (контроль)","Сравнить результаты с целями и запустить корректирующие действия."],
+["podc","Coordination","Synchroniser activités et efforts pour éviter doublons, retards, conflits.","Coordination (координация)","Синхронизировать действия, чтобы избежать дублей, задержек, конфликтов."],
+["manager","Rôles interpersonnels","Figure de proue, leader, agent de liaison.","Межличностные роли","Figure de proue (символ), leader, agent de liaison (связующее звено)."],
+["manager","Rôles informationnels","Observateur, diffuseur, porte-parole.","Информационные роли","Observateur (наблюдатель), diffuseur (распространитель), porte-parole (представитель)."],
+["manager","Rôles décisionnels","Entrepreneur, régulateur, répartiteur de ressources, négociateur.","Решенческие роли","Entrepreneur, régulateur, répartiteur de ressources, négociateur."],
+["manager","Compétence conceptuelle","Analyser des situations complexes et prendre des décisions appropriées.","Концептуальная компетенция","Анализировать сложные ситуации и принимать адекватные решения."],
+["manager","Compétence politique","Développer une influence et obtenir les soutiens nécessaires.","Политическая компетенция","Развивать влияние и получать нужную поддержку."],
+["manager","Compétence technique","Maîtriser son métier, ses outils et ses méthodes.","Техническая компетенция","Владеть профессией, инструментами и методами."],
+["leader","Leadership","Capacité à influencer et fédérer un groupe autour d'un but commun, dans la confiance.","Leadership (лидерство)","Способность влиять и объединять группу вокруг общей цели в доверии."],
+["leader","Leadership situationnel","Adapter son rôle à la situation, s'effacer devant plus compétent.","Ситуационное лидерство","Адаптировать роль к ситуации, уступать более компетентному."],
+["leader","Choix du style","Selon l'influence du manager, les subordonnés et le contexte.","Выбор стиля","По влиянию менеджера, подчинённым и контексту."],
+["gouv","Gouvernance d'entreprise","Principes et pratiques qui guident la direction et le contrôle des entreprises.","Gouvernance (корп. управление)","Принципы и практики, направляющие руководство и контроль компаний."],
+["gouv","Parties prenantes","Employés, clients, fournisseurs, communautés locales, actionnaires.","Parties prenantes (стейкхолдеры)","Сотрудники, клиенты, поставщики, местные сообщества, акционеры."],
+["gouv","Conseil d'administration","Supervise la direction et protège les intérêts des parties prenantes.","Conseil d'administration","Надзирает за руководством и защищает интересы стейкхолдеров."],
+["gouv","Structure dualiste","Le directoire pilote ; le conseil de surveillance contrôle.","Двухуровневая структура","Directoire управляет; conseil de surveillance контролирует."],
+["gouv","Droit d'alerte","Droit des représentants du personnel d'alerter sur une situation préoccupante.","Droit d'alerte","Право представителей персонала сообщить о тревожной ситуации."],
+["cas","Logique managériale","Séparation propriété / direction, dirigeant professionnel, objectifs chiffrés.","Управленческая логика","Разделение собственности и руководства, наёмный руководитель, цели в цифрах."],
+["cas","Structure divisionnelle","Découpage par produits, marchés ou zones (ex. 3 pôles Lafuma).","Дивизиональная структура","Деление по продуктам, рынкам или зонам (напр. 3 полюса Lafuma)."],
+["cas","Make or buy","Produire soi-même ou acheter / sous-traiter.","Make or buy","Производить самим или покупать / отдавать на субподряд."],
+["cas","Bilan","Patrimoine (actif / passif) à une date donnée.","Bilan (баланс)","Имущество (актив / пассив) на определённую дату."],
+["cas","Compte de résultat","Produits − charges de l'exercice = bénéfice ou perte.","Compte de résultat","Доходы − расходы за период = прибыль или убыток."],
+["cas","Matrice BCG","Croissance du marché × part de marché relative.","Матрица BCG","Рост рынка × относительная доля рынка."],
+["cas","Chaîne de valeur","Activités principales + activités de soutien (Porter).","Цепочка ценности","Основные + вспомогательные виды деятельности (Портер)."]
+];
+
+const PAIRS = [
+{id:"fonctions",fr:"Les fonctions",ru:"Функции",items:[["Planification","Définir les objectifs et prévoir les actions","Planification","Определить цели и предусмотреть действия"],["Organisation","Répartir tâches, responsabilités et ressources","Organisation","Распределить задачи, ответственность, ресурсы"],["Direction","Former, communiquer, motiver, évaluer","Direction","Обучать, общаться, мотивировать, оценивать"],["Contrôle","Comparer résultats et objectifs, corriger","Contrôle","Сравнить результаты с целями, исправить"],["Coordination","Synchroniser, éviter doublons et retards","Coordination","Синхронизировать, избегать дублей и задержек"]]},
+{id:"competences",fr:"Les compétences",ru:"Компетенции",items:[["Technique","Maîtrise du métier et des outils","Техническая","Владение профессией и инструментами"],["Humaine","Travailler avec les autres, motiver","Человеческая","Работать с людьми, мотивировать"],["Conceptuelle","Analyser le complexe et décider","Концептуальная","Анализировать сложное и решать"],["Politique","Influence et soutiens nécessaires","Политическая","Влияние и нужная поддержка"]]},
+{id:"notions",fr:"Notions clés",ru:"Ключевые понятия",items:[["Efficacité","Atteindre les objectifs","Efficacité","Достигать целей"],["Efficience","Objectifs atteints avec peu de ressources","Efficience","Цели при минимуме ресурсов"],["Gouvernance","Principes de direction et de contrôle","Gouvernance","Принципы руководства и контроля"],["Leadership","Influencer et fédérer dans la confiance","Leadership","Влиять и объединять в доверии"],["Parties prenantes","Salariés, clients, fournisseurs, actionnaires…","Parties prenantes","Сотрудники, клиенты, поставщики, акционеры…"]]},
+{id:"lafuma",fr:"Lafuma en chiffres",ru:"Lafuma в цифрах",items:[["Made in France","25 %","Made in France","25%"],["Made in Lafuma","13 %","Made in Lafuma","13%"],["Made for Lafuma","62 %","Made for Lafuma","62%"],["Wholesale","76 %","Wholesale","76%"],["CA 2019","172,6 M€","Оборот 2019","172,6 млн €"],["Calida en 2014","59,92 % du capital","Calida в 2014","59,92% капитала"]]},
+{id:"structures",fr:"Les structures",ru:"Структуры",items:[["Simple","Le dirigeant décide de tout","Простая","Руководитель решает всё"],["Fonctionnelle","Par fonctions : production, vente, finance","Функциональная","По функциям: производство, продажи, финансы"],["Divisionnelle","Par produits, marchés ou zones","Дивизиональная","По продуктам, рынкам или зонам"],["Matricielle","Double rattachement fonction + projet","Матричная","Двойное подчинение: функция + проект"],["Plate","Peu de niveaux hiérarchiques","Плоская","Мало уровней иерархии"]]}
+];
+
+const SORTS = [
+{id:"mintzberg",fr:"Rôles de Mintzberg",ru:"Роли Минцберга",bins:{fr:["Interpersonnels","Informationnels","Décisionnels"],ru:["Межличностные","Информационные","Решенческие"]},
+ items:[["Figure de proue (symbole)","Символ (figure de proue)",0],["Leader","Лидер (leader)",0],["Agent de liaison","Связующее звено (agent de liaison)",0],["Observateur actif","Наблюдатель (observateur)",1],["Diffuseur","Распространитель (diffuseur)",1],["Porte-parole","Представитель (porte-parole)",1],["Entrepreneur","Предприниматель (entrepreneur)",2],["Régulateur","Регулятор (régulateur)",2],["Répartiteur de ressources","Распределитель ресурсов (répartiteur)",2],["Négociateur","Переговорщик (négociateur)",2]]},
+{id:"gestman",fr:"Gestion ou management ?",ru:"Gestion или менеджмент?",bins:{fr:["Gestion","Management"],ru:["Gestion","Менеджмент"]},
+ items:[["Établir un budget annuel","Составить годовой бюджет",0],["Contrôler les dépenses d'un service","Контролировать расходы отдела",0],["Planifier les stocks","Планировать запасы",0],["Suivre des indicateurs de performance","Отслеживать показатели эффективности",0],["Comparer ventes prévues et réalisées","Сравнить плановые и фактические продажи",0],["Motiver une équipe démotivée","Мотивировать демотивированную команду",1],["Régler un conflit entre deux collègues","Решить конфликт между коллегами",1],["Accompagner un changement d'organisation","Сопровождать организационные изменения",1],["Donner du sens au travail des salariés","Придать смысл работе сотрудников",1],["Fédérer les collaborateurs autour d'une vision","Объединить сотрудников вокруг видения",1]]},
+{id:"podc",fr:"Quelle fonction ?",ru:"Какая функция?",bins:{fr:["Planifier","Organiser","Diriger","Contrôler"],ru:["Планировать","Организовать","Руководить","Контролировать"]},
+ items:[["Fixer les objectifs de vente de l'année prochaine","Поставить цели продаж на следующий год",0],["Prévoir un plan d'action pour lancer un produit","Подготовить план действий по запуску продукта",0],["Répartir les tâches entre les membres de l'équipe","Распределить задачи между членами команды",1],["Attribuer un budget et des machines à chaque atelier","Выделить каждому цеху бюджет и оборудование",1],["Élaborer l'organigramme","Разработать оргструктуру",1],["Motiver les salariés avant un projet difficile","Мотивировать сотрудников перед сложным проектом",2],["Former un nouveau collègue et communiquer la vision","Обучить новичка и донести видение",2],["Comparer le CA réalisé à l'objectif","Сравнить фактический оборот с целью",3],["Mesurer un écart et lancer une action corrective","Измерить отклонение и запустить корректировку",3]]}
+];
+
+/* topic of each VF statement (same order as VF) */
+const VF_T="gm gm gm podc podc podc podc podc manager manager manager manager manager leader leader leader gouv gouv gouv gouv gm gm gm gm leader cas cas cas cas cas gm manager gouv manager".split(" ");
+const PAIR_T={fonctions:"podc",competences:"manager",notions:"gm",lafuma:"cas",structures:"cas"};
+const SORT_META={
+ mintzberg:{t:"manager",fr:"À quelle famille de rôles de Mintzberg appartient « % » ?",ru:"К какой группе ролей Минцберга относится «%»?"},
+ gestman:{t:"gm",fr:"Cette situation relève plutôt de la gestion ou du management : « % » ?",ru:"Это скорее gestion или менеджмент: «%»?"},
+ podc:{t:"podc",fr:"Quelle fonction du management : « % » ?",ru:"Какая это функция менеджмента: «%»?"}};
+
+/* Question bank for the marathon and the analysis: TD/bonus QCM + questions generated from VF, cards and sorts.
+   Card questions draw new distractors on every call. g = concept group, so one run never asks the same card twice. */
+function bank(){
+  const B=[];
+  QS.forEach(q=>B.push({k:"q"+q.id,g:"q"+q.id,t:q.t,a:q.a,fr:q.fr,ru:q.ru,tag:q.id<100?"TD "+q.id:"Bonus"}));
+  VF.forEach((v,i)=>B.push({k:"v"+i,g:"v"+i,t:VF_T[i],a:v[2]?0:1,tag:"V/F",
+    fr:[v[0],["Vrai","Faux"],"Cette affirmation est "+(v[2]?"vraie.":"fausse.")],
+    ru:[v[1],["Верно","Неверно"],"Это утверждение "+(v[2]?"верно.":"неверно.")]}));
+  CARDS.forEach((c,i)=>{
+    const pick=()=>[i].concat(shuffle(range(CARDS.length).filter(j=>j!==i)).slice(0,3));
+    const d=pick(),tm=pick();
+    B.push({k:"c"+i+"d",g:"c"+i,t:c[0],a:0,tag:"Def",
+      fr:["Quelle est la définition de « "+c[1]+" » ?",d.map(j=>CARDS[j][2]),c[1]+" : "+c[2]],
+      ru:["Какое определение у «"+c[3]+"»?",d.map(j=>CARDS[j][4]),c[3]+": "+c[4]]});
+    B.push({k:"c"+i+"t",g:"c"+i,t:c[0],a:0,tag:"Def",
+      fr:["Quelle notion correspond à : « "+c[2]+" » ?",tm.map(j=>CARDS[j][1]),c[1]+" : "+c[2]],
+      ru:["Какое понятие соответствует: «"+c[4]+"»?",tm.map(j=>CARDS[j][3]),c[3]+": "+c[4]]});
+  });
+  SORTS.forEach(s=>{const m=SORT_META[s.id];s.items.forEach((it,i)=>B.push({k:"s:"+s.id+":"+i,g:"s:"+s.id+":"+i,t:m.t,a:it[2],tag:"Tri",
+    fr:[m.fr.split("%").join(it[0]),s.bins.fr,"« "+it[0]+" » → "+s.bins.fr[it[2]]+"."],
+    ru:[m.ru.split("%").join(it[1]),s.bins.ru,"«"+it[1]+"» → "+s.bins.ru[it[2]]+"."]}))});
+  return B;
+}
+const BANK_N=QS.length+VF.length+CARDS.length*2+SORTS.reduce((n,s)=>n+s.items.length,0);
+
+/* ================= UI STRINGS ================= */
+const UI = {
+fr:{home:"Accueil",cours:"Cours",qcm:"QCM",jeux:"Jeux",examen:"Examen",
+ heroEy:"L1 Gestion · Introduction à la gestion et au management · TD 1 à 3",
+ heroT:"Prépare ton contrôle de management",
+ heroP:"Le cours résumé en 6 thèmes, les 43 questions du TD avec corrections expliquées, un examen blanc chronométré et des mini-jeux pour retenir sans t'ennuyer.",
+ startQ:"Lancer le QCM",readC:"Lire le cours",podcCap:"Touche une case pour voir la définition",
+ level:"Niveau",mastered:"questions maîtrisées",bestExam:"meilleure note à l'examen",bestFlash:"record Éclair",
+ modes:"Choisis ton mode",progress:"Progression par thème",reset:"Effacer ma progression",resetC:"Confirmer l'effacement",resetDone:"Progression effacée",
+ mCours:"Fiches de cours",mCoursD:"Tout lire, ou seulement l'essentiel à retenir.",mCoursM:"6 thèmes",
+ mQcm:"QCM d'entraînement",mQcmD:"Corrections expliquées après chaque réponse.",mQcmM:"43 du TD + 25 bonus",
+ mExam:"Examen blanc",mExamD:"20 questions tirées au hasard, note sur 20.",mExamM:"20 questions · 20 min",
+ mCards:"Cartes mémoire",mCardsD:"Retourne la carte, dis si tu savais.",mCardsM:CARDS.length+" cartes",
+ mEclair:"Éclair Vrai / Faux",mEclairD:"Un maximum de bonnes réponses en 60 secondes.",mEclairM:"60 s · combos",
+ mPairs:"Associer",mPairsD:"Relie chaque notion à sa définition.",mPairsM:PAIRS.length+" séries",
+ mSort:"Trier",mSortD:"Range chaque élément dans la bonne case.",mSortM:SORTS.length+" séries",
+ full:"Tout le cours",essential:"L'essentiel",facts:"À retenir pour le contrôle",traps:"Pièges fréquents",testTopic:"S'entraîner sur ce thème",prev:"Précédent",next:"Suivant",
+ qcmT:"QCM d'entraînement",qcmP:"Choisis une série. Après chaque réponse, tu vois la correction et l'explication.",
+ allTD:"Tout le TD dans l'ordre",allTDd:"Les 43 questions de la feuille, de 1 à 43",bonus:"Bonus : études de cas",bonusD:"Steve Jobs, Muller-Schuster, Lafuma, outils",mix:"Grand mélange",mixD:"Toutes les questions dans le désordre",errs:"Mes erreurs",errsD:"Les questions ratées à ta dernière tentative",noErr:"Aucune erreur enregistrée pour l'instant.",
+ questions:"questions",mastery:"maîtrisé",question:"Question",td:"TD n°",bonusTag:"Bonus",
+ validate:"Valider",nextQ:"Question suivante",finish:"Voir le résultat",good:"Bonne réponse !",bad:"Mauvaise réponse.",answer:"Réponse :",back:"Retour",
+ origOn:"Voir l'original FR",origOff:"Masquer l'original",kbd:"Touches 1–4, puis Entrée",
+ score:"Score",retryErr:"Refaire mes erreurs",again:"Recommencer",other:"Autres séries",
+ r100:"Parfait. Tu es prêt·e pour le contrôle.",r75:"Très bien. Revois les erreurs et c'est bon.",r50:"Pas mal. Relis l'essentiel du thème puis recommence.",r0:"Commence par la fiche « L'essentiel », puis réessaie.",
+ examT:"Examen blanc",examP:"20 questions tirées au hasard dans le TD et les bonus. Pas de correction pendant l'épreuve. Tu as 20 minutes, comme un vrai contrôle.",examGo:"Commencer l'examen",examRules:["Tu peux naviguer entre les questions et changer d'avis.","À la fin du temps, la copie est ramassée automatiquement.","Le résultat montre ta note sur 20 et la correction de chaque question."],
+ finishE:"Rendre la copie",confirmE:"Confirmer : rendre la copie",unans:"question(s) sans réponse",prevQ:"Précédente",nextQ2:"Suivante",note:"Ta note",correction:"Correction",yourAns:"Ta réponse",none:"Pas de réponse",timeUp:"Temps écoulé : copie ramassée.",
+ m16:"Très bien",m14:"Bien",m12:"Assez bien",m10:"Passable",m0:"Insuffisant",
+ jeuxT:"Mini-jeux",jeuxP:"Des formats courts pour réviser autrement. Chaque bonne réponse rapporte de l'XP.",
+ cardsT:"Cartes mémoire",flipHint:"Touche la carte pour la retourner",knew:"Je savais",review:"À revoir",allT:"Tous",cardsDone:"Paquet terminé",known:"connues",restart:"Recommencer",onlyReview:"Revoir celles à revoir",
+ eclairT:"Éclair Vrai / Faux",eclairP:"60 secondes. Réponds vite : 3 bonnes réponses d'affilée = bonus de combo. Clavier : ← Vrai, → Faux.",go:"C'est parti",tTrue:"Vrai",tFalse:"Faux",time:"temps",pts:"points",combo:"combo",best:"Record",newBest:"Nouveau record !",errorsList:"À revoir",
+ pairsT:"Associer",pairsP:"Touche une notion à gauche, puis sa définition à droite.",mistakes:"erreurs",pairsDone:"Série terminée",
+ sortT:"Trier",sortP:"Dans quelle case va cet élément ?",correct:"Correct",wrongIs:"Non, c'est :",sortDone:"Série terminée",
+ analyse:"Analyse",marathon:"Marathon",
+ mMara:"Marathon 50",mMaraD:"50 questions au hasard sur tous les thèmes, sans doublon.",mMaraM:"50 / "+BANK_N+" questions",
+ mAna:"Analyse de tes réponses",mAnaD:"Ce que tu maîtrises et ce qu'il faut revoir en priorité.",mAnaM:"mise à jour à chaque réponse",
+ maraT:"Marathon 50",maraP:"50 questions tirées parmi "+BANK_N+" : QCM du TD, bonus, vrai / faux, définitions et classements. Les questions que tu n'as jamais vues passent en premier, puis celles vues il y a le plus longtemps. Les réponses sont mélangées à chaque partie.",
+ maraRules:["Tous les thèmes sont représentés à parts égales.","Jamais deux fois la même question ou la même notion dans une partie.","3 bonnes réponses d'affilée = combo, les points montent."],
+ maraGo:"Lancer le marathon",maraDone:"Marathon terminé",byTopic:"Résultat par thème",seeAna:"Voir l'analyse",newRun:"Nouveau marathon",quit:"Abandonner",quitC:"Confirmer l'abandon",freshN:"questions jamais vues dans la banque",
+ anaT:"Analyse de tes réponses",anaEmpty:"Pas encore assez de réponses. Lance un marathon ou un QCM : l'analyse se remplit toute seule.",
+ anaSum:"{n} réponses · {p} % de réussite · {c} questions sur {N} déjà vues",
+ toImprove:"Ce qu'il faut travailler",toImproveP:"Classé du plus urgent au plus solide. Objectif : 80 % de réussite par thème.",weakQ:"Les questions qui te piègent",weakQP:"Ratées plusieurs fois ou ratées à la dernière tentative.",noWeak:"Aucune question piège pour l'instant.",
+ hist:"Historique",examsH:"Examens blancs, note sur 20",marasH:"Marathons, % de bonnes réponses",noHist:"Aucune partie pour l'instant.",passLine:"10/20",
+ st0:"Pas encore travaillé",st1:"Priorité",st2:"À consolider",st3:"Maîtrisé",
+ adv0:"Commence par la fiche « L'essentiel » de ce thème, puis fais son QCM.",adv1:"Relis « L'essentiel », puis refais le QCM du thème jusqu'à dépasser 80 %.",adv2:"Revois les questions pièges ci-dessous et refais le QCM du thème.",adv3:"Bien. Garde-le au chaud avec un marathon de temps en temps.",
+ btnEss:"L'essentiel",btnQcm:"QCM du thème",target:"Objectif : 80 %",focusNow:"À travailler en priorité",rate:"réussite",coverage:"vues",answersW:"réponses",missedW:"ratée",outOf:"fois sur",lastWrong:"dernière réponse fausse",
+ xp:"XP",foot:"Révision basée sur la feuille de TD (séances 1 à 3) du cours « Introduction à la gestion et au management ». Les réponses des questions 33 et 34 suivent Mintzberg et non la copie annotée.",
+ titles:["Stagiaire","Assistant·e","Chef·fe d'équipe","Manager","Directeur·rice","PDG"]},
+ru:{home:"Главная",cours:"Курс",qcm:"QCM",jeux:"Игры",examen:"Экзамен",
+ heroEy:"L1 Gestion · Введение в управление и менеджмент · TD 1–3",
+ heroT:"Подготовка к контролю по менеджменту",
+ heroP:"Курс в 6 темах, все 43 вопроса из TD с объяснениями, пробный экзамен на время и мини-игры, чтобы запоминать без скуки. Контроль на французском, поэтому французские термины везде указаны.",
+ startQ:"Начать QCM",readC:"Читать курс",podcCap:"Нажми на плитку, чтобы увидеть определение",
+ level:"Уровень",mastered:"вопросов освоено",bestExam:"лучшая оценка за экзамен",bestFlash:"рекорд «Молнии»",
+ modes:"Выбери режим",progress:"Прогресс по темам",reset:"Сбросить прогресс",resetC:"Подтвердить сброс",resetDone:"Прогресс сброшен",
+ mCours:"Конспекты",mCoursD:"Читать всё или только главное для контроля.",mCoursM:"6 тем",
+ mQcm:"Тренировка QCM",mQcmD:"Объяснение после каждого ответа.",mQcmM:"43 из TD + 25 бонус",
+ mExam:"Пробный экзамен",mExamD:"20 случайных вопросов, оценка из 20.",mExamM:"20 вопросов · 20 мин",
+ mCards:"Карточки",mCardsD:"Переверни карточку и отметь, знал(а) ли ты.",mCardsM:CARDS.length+" карточек",
+ mEclair:"Молния: верно / неверно",mEclairD:"Как можно больше правильных ответов за 60 секунд.",mEclairM:"60 с · комбо",
+ mPairs:"Пары",mPairsD:"Соедини понятие с определением.",mPairsM:PAIRS.length+" серий",
+ mSort:"Сортировка",mSortD:"Разложи элементы по правильным группам.",mSortM:SORTS.length+" серии",
+ full:"Весь курс",essential:"Только главное",facts:"Запомнить к контролю",traps:"Частые ловушки",testTopic:"Тренировать эту тему",prev:"Назад",next:"Далее",
+ qcmT:"Тренировка QCM",qcmP:"Выбери серию. После каждого ответа увидишь правильный вариант и объяснение.",
+ allTD:"Весь TD по порядку",allTDd:"43 вопроса из листа, с 1 по 43",bonus:"Бонус: кейсы",bonusD:"Стив Джобс, Muller-Schuster, Lafuma, инструменты",mix:"Большой микс",mixD:"Все вопросы вперемешку",errs:"Мои ошибки",errsD:"Вопросы, в которых ты ошибся(лась) в последний раз",noErr:"Пока ошибок нет.",
+ questions:"вопросов",mastery:"освоено",question:"Вопрос",td:"TD №",bonusTag:"Бонус",
+ validate:"Ответить",nextQ:"Следующий вопрос",finish:"Посмотреть результат",good:"Правильно!",bad:"Неправильно.",answer:"Ответ:",back:"Назад",
+ origOn:"Показать оригинал FR",origOff:"Скрыть оригинал",kbd:"Клавиши 1–4, затем Enter",
+ score:"Счёт",retryErr:"Повторить ошибки",again:"Ещё раз",other:"Другие серии",
+ r100:"Идеально. Ты готов(а) к контролю.",r75:"Очень хорошо. Повтори ошибки — и всё.",r50:"Неплохо. Перечитай главное по теме и попробуй снова.",r0:"Начни с конспекта «Только главное», потом попробуй ещё раз.",
+ examT:"Пробный экзамен",examP:"20 случайных вопросов из TD и бонуса. Во время экзамена ответы не показываются. 20 минут, как на настоящем контроле.",examGo:"Начать экзамен",examRules:["Можно переходить между вопросами и менять ответ.","Когда время выйдет, работа сдаётся автоматически.","В конце — оценка из 20 и разбор каждого вопроса."],
+ finishE:"Сдать работу",confirmE:"Подтвердить: сдать работу",unans:"вопрос(ов) без ответа",prevQ:"Предыдущий",nextQ2:"Следующий",note:"Твоя оценка",correction:"Разбор",yourAns:"Твой ответ",none:"Нет ответа",timeUp:"Время вышло: работа сдана.",
+ m16:"Очень хорошо (Très bien)",m14:"Хорошо (Bien)",m12:"Довольно хорошо (Assez bien)",m10:"Удовлетворительно (Passable)",m0:"Недостаточно (Insuffisant)",
+ jeuxT:"Мини-игры",jeuxP:"Короткие форматы, чтобы повторять по-другому. За каждый правильный ответ — XP.",
+ cardsT:"Карточки",flipHint:"Нажми на карточку, чтобы перевернуть",knew:"Знал(а)",review:"Повторить",allT:"Все",cardsDone:"Колода пройдена",known:"знаю",restart:"Заново",onlyReview:"Повторить отмеченные",
+ eclairT:"Молния: верно / неверно",eclairP:"60 секунд. Отвечай быстро: 3 правильных подряд = бонус-комбо. Клавиатура: ← верно, → неверно.",go:"Поехали",tTrue:"Верно",tFalse:"Неверно",time:"время",pts:"очки",combo:"комбо",best:"Рекорд",newBest:"Новый рекорд!",errorsList:"Повторить",
+ pairsT:"Пары",pairsP:"Нажми понятие слева, затем его определение справа.",mistakes:"ошибок",pairsDone:"Серия пройдена",
+ sortT:"Сортировка",sortP:"В какую группу относится этот элемент?",correct:"Верно",wrongIs:"Нет, правильно:",sortDone:"Серия пройдена",
+ analyse:"Анализ",marathon:"Марафон",
+ mMara:"Марафон 50",mMaraD:"50 случайных вопросов по всем темам, без повторов.",mMaraM:"50 из "+BANK_N+" вопросов",
+ mAna:"Анализ ответов",mAnaD:"Что ты уже знаешь и что подтянуть в первую очередь.",mAnaM:"обновляется после каждого ответа",
+ maraT:"Марафон 50",maraP:"50 вопросов из "+BANK_N+": QCM из TD, бонус, верно / неверно, определения и классификации. Сначала идут вопросы, которых ты ещё не видел(а), потом те, что были давно. Варианты ответов перемешиваются каждый раз.",
+ maraRules:["Все темы представлены поровну.","В одной игре никогда не повторяется вопрос или одно и то же понятие.","3 правильных подряд = комбо, очки растут."],
+ maraGo:"Начать марафон",maraDone:"Марафон завершён",byTopic:"Результат по темам",seeAna:"Открыть анализ",newRun:"Новый марафон",quit:"Сдаться",quitC:"Подтвердить выход",freshN:"вопросов в банке ещё не видел(а)",
+ anaT:"Анализ ответов",anaEmpty:"Пока мало ответов. Пройди марафон или QCM — анализ заполнится сам.",
+ anaSum:"{n} ответов · {p}% правильных · {c} из {N} вопросов уже встречались",
+ toImprove:"Что подтянуть",toImproveP:"От самого срочного к самому уверенному. Цель — 80% правильных по каждой теме.",weakQ:"Вопросы-ловушки",weakQP:"Ошибка несколько раз или ошибка в последней попытке.",noWeak:"Пока вопросов-ловушек нет.",
+ hist:"История",examsH:"Пробные экзамены, оценка из 20",marasH:"Марафоны, % правильных",noHist:"Пока нет ни одной игры.",passLine:"10/20",
+ st0:"Ещё не тренировалась",st1:"Приоритет",st2:"Закрепить",st3:"Освоено",
+ adv0:"Начни с конспекта «Только главное» по этой теме, потом пройди её QCM.",adv1:"Перечитай «Только главное» и проходи QCM темы, пока не будет больше 80%.",adv2:"Разбери вопросы-ловушки ниже и пройди QCM темы ещё раз.",adv3:"Хорошо. Поддерживай уровень марафоном время от времени.",
+ btnEss:"Только главное",btnQcm:"QCM темы",target:"Цель: 80%",focusNow:"Подтянуть в первую очередь",rate:"правильных",coverage:"пройдено",answersW:"ответов",missedW:"ошибка",outOf:"раз из",lastWrong:"последний ответ неверный",
+ xp:"XP",foot:"Материал основан на листе TD (занятия 1–3) курса «Introduction à la gestion et au management». Ответы на вопросы 33 и 34 даны по Минцбергу, а не по отметкам в копии.",
+ titles:["Стажёр","Ассистент","Тимлид","Менеджер","Директор","Гендиректор"]}
+};
+
+/* ================= STATE ================= */
+const KEY="gm-prepa-v1";
+let S={lang:(navigator.language||"").toLowerCase().startsWith("ru")?"ru":"fr",xp:0,res:{},best:{},theme:null,orig:true};
+try{const r=JSON.parse(localStorage.getItem(KEY)||"null");if(r&&typeof r==="object")S=Object.assign(S,r);}catch(e){}
+if(!S.res||typeof S.res!=="object")S.res={};
+if(!S.best||typeof S.best!=="object")S.best={};
+if(!S.h||typeof S.h!=="object")S.h={};
+if(!Array.isArray(S.exams))S.exams=[];
+if(!Array.isArray(S.runs))S.runs=[];
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+/* answer history per item: [times answered, times correct, last timestamp, topic, last result 1/0] */
+function rec(k,tp,ok){const r=S.h[k]||[0,0,0,tp,0];r[0]++;if(ok)r[1]++;r[2]=Date.now();r[3]=tp;r[4]=ok?1:0;S.h[k]=r;save()}
+const t=k=>(UI[S.lang]&&UI[S.lang][k]!==undefined)?UI[S.lang][k]:UI.fr[k];
+const L=o=>o[S.lang]||o.fr;
+const $=s=>document.querySelector(s);
+const topic=id=>TOPICS.find(x=>x.id===id);
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+const range=n=>Array.from({length:n},(_,i)=>i);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+let TIMERS=[];function every(fn,ms){TIMERS.push(setInterval(fn,ms))}function clearTimers(){TIMERS.forEach(clearInterval);TIMERS=[]}
+let CUR=null; /* current render fn, used on language switch */
+
+function addXP(n){S.xp=Math.max(0,(S.xp||0)+n);save();hud()}
+function level(){const xp=S.xp||0;const lv=Math.min(5,Math.floor(xp/300));return{lv,title:t("titles")[lv],pct:lv>=5?100:Math.round((xp%300)/3)}}
+function mastery(tid){const qs=QS.filter(q=>q.t===tid);const ok=qs.filter(q=>S.res[q.id]===true).length;return{ok,n:qs.length,p:Math.round(ok/qs.length*100)}}
+function toast(msg){const d=document.createElement("div");d.className="toast";d.textContent=msg;document.body.appendChild(d);setTimeout(()=>d.remove(),1700)}
+
+/* ================= ICONS ================= */
+const IC={
+home:'<svg viewBox="0 0 24 24"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/></svg>',
+cours:'<svg viewBox="0 0 24 24"><path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2z"/><path d="M4 19V5"/><path d="M8 7h7M8 11h7"/></svg>',
+qcm:'<svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="3"/><path d="M7 9l2 2 3-3M7 15h10"/></svg>',
+jeux:'<svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="11" rx="5"/><path d="M7 11v3M5.5 12.5h3M15 12h.01M18 13.5h.01"/></svg>',
+examen:'<svg viewBox="0 0 24 24"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2M9 2h6"/></svg>',
+cards:'<svg viewBox="0 0 24 24"><rect x="7" y="3" width="13" height="16" rx="2"/><path d="M4 7v12a2 2 0 0 0 2 2h10"/></svg>',
+bolt:'<svg viewBox="0 0 24 24"><path d="M13 2L4 14h7l-1 8 9-12h-7z"/></svg>',
+link:'<svg viewBox="0 0 24 24"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg>',
+sort:'<svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h10M4 18h5"/><path d="M18 14v6M15 17l3 3 3-3"/></svg>',
+analyse:'<svg viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>',
+flag:'<svg viewBox="0 0 24 24"><path d="M5 21V4h11l-2 4 2 4H5"/></svg>',
+sun:'<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>',
+moon:'<svg viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>'
+};
+
+/* ================= SHELL ================= */
+const NAV=["home","cours","qcm","jeux","examen","analyse"];
+function shell(){
+  const r=curRoute();
+  const navHTML=NAV.map(k=>`<a href="#${k}" class="${r===k?"on":""}">${t(k)}</a>`).join("");
+  $("#nav").innerHTML=navHTML;
+  $("#tabbar").innerHTML=NAV.map(k=>`<a href="#${k}" class="${r===k?"on":""}" aria-label="${t(k)}">${IC[k]}<span>${t(k)}</span></a>`).join("");
+  $("#lang-fr").classList.toggle("on",S.lang==="fr");$("#lang-ru").classList.toggle("on",S.lang==="ru");
+  $("#lang-fr").setAttribute("aria-pressed",S.lang==="fr");$("#lang-ru").setAttribute("aria-pressed",S.lang==="ru");
+  document.documentElement.lang=S.lang;
+  $("#foot").textContent=t("foot");
+  hud();themeIcon();
+}
+function hud(){const l=level();$("#xp").innerHTML=`★ ${S.xp||0}<span class="xp-l">&nbsp;${t("xp")} · ${esc(l.title)}</span>`}
+function isDark(){if(S.theme)return S.theme==="dark";return window.matchMedia&&matchMedia("(prefers-color-scheme: dark)").matches}
+function applyTheme(){if(S.theme)document.documentElement.setAttribute("data-theme",S.theme);else document.documentElement.removeAttribute("data-theme")}
+function themeIcon(){$("#theme-btn").innerHTML=isDark()?IC.sun:IC.moon}
+function curRoute(){const h=(location.hash||"#home").slice(1);const n=h.split("-")[0];const valid=["home","cours","qcm","jeux","examen","analyse","marathon","cartes","eclair","associer","trier"];const m=valid.includes(n)?n:"home";return ["cartes","eclair","associer","trier","marathon"].includes(m)?"jeux":m}
+
+function route(){
+  clearTimers();
+  const h=(location.hash||"#home").slice(1);
+  const i=h.indexOf("-");const name=i<0?h:h.slice(0,i);const arg=i<0?"":h.slice(i+1);
+  const views={home:viewHome,cours:viewCours,qcm:viewQcm,jeux:viewJeux,examen:viewExamen,analyse:viewAnalyse,marathon:viewMarathon,cartes:viewCartes,eclair:viewEclair,associer:viewAssocier,trier:viewTrier};
+  (views[name]||viewHome)(arg);
+  shell();
+  window.scrollTo(0,0);
+}
+function render(html){const a=$("#app");a.innerHTML=`<div class="view">${html}</div>`}
+
+/* ================= HOME ================= */
+const PODC=[["P","podc-p","gm"],["O","podc-o","podc"],["D","podc-d","manager"],["C","podc-c","leader"]];
+const PODC_TXT={fr:[["Planifier","Définir les objectifs et prévoir les actions."],["Organiser","Répartir tâches, responsabilités et ressources."],["Diriger","Former, communiquer, motiver, évaluer."],["Contrôler","Comparer résultats et objectifs, puis corriger."]],
+ ru:[["Планировать","Определить цели и предусмотреть действия."],["Организовать","Распределить задачи, ответственность, ресурсы."],["Руководить","Обучать, общаться, мотивировать, оценивать."],["Контролировать","Сравнить результаты с целями и исправить."]]};
+let podcOpen=-1;
+function viewHome(){CUR=viewHome;
+  const l=level(),total=QS.length,ok=QS.filter(q=>S.res[q.id]===true).length;
+  const be=S.best.exam!=null?String(S.best.exam).replace(".",",")+"/20":"—";
+  const tiles=PODC.map((p,i)=>{const tx=L(PODC_TXT)[i];return `<button class="tile" style="--tc:var(--c-${p[2]})" data-act="podc" data-v="${i}" aria-expanded="${podcOpen===i}"><span class="k">${i+1}/4</span><span class="L">${p[0]}</span>${podcOpen===i?`<span class="d">${esc(tx[1])}</span>`:`<span class="n">${esc(tx[0])}</span>`}</button>`}).join("");
+  const wk=weakestTopic();
+  const banner=`<a class="focus sheet" href="#analyse" style="--tc:var(--c-${wk?wk.x.id:"gouv"})"><span class="ic">${IC.analyse}</span><span class="focus-t"><span class="eyebrow">${wk?t("focusNow"):t("mAna")}</span><span class="h3">${wk?esc(L(wk.x).t)+" · "+wk.p+"%":t("mAnaD")}</span></span><span class="btn sm">${t("seeAna")} →</span></a>`;
+  const modes=[["cours","cours","gm","mCours"],["qcm","qcm","podc","mQcm"],["marathon","flag","leader","mMara"],["examen","examen","leader","mExam"],["cartes","cards","manager","mCards"],["eclair","bolt","gouv","mEclair"],["associer","link","cas","mPairs"],["trier","sort","gm","mSort"]]
+   .map(m=>`<a class="mode sheet" href="#${m[0]}" style="--tc:var(--c-${m[2]})"><span class="ic">${IC[m[1]]}</span><span class="h3">${t(m[3])}</span><p>${t(m[3]+"D")}</p><span class="meta">${t(m[3]+"M")}</span></a>`).join("");
+  const tp=TOPICS.map(x=>{const m=mastery(x.id);return `<a class="tp sheet" href="#cours-${x.id}" style="--tc:var(--c-${x.id})"><span><span class="chip">${esc(L(x).t)}</span></span><span class="bar"><i style="width:${m.p}%"></i></span><span class="mono">${m.ok}/${m.n}</span></a>`}).join("");
+  render(`
+  <section class="hero">
+    <div class="hero-t">
+      <span class="eyebrow">${t("heroEy")}</span>
+      <h1 class="h1">${t("heroT")}</h1>
+      <p class="lead">${t("heroP")}</p>
+      <div class="row"><a class="btn pri" href="#qcm">${t("startQ")} →</a><a class="btn" href="#cours">${t("readC")}</a></div>
+    </div>
+    <div class="podc">${tiles}<div class="podc-cap">${t("podcCap")}</div></div>
+  </section>
+  <section class="stats">
+    <div class="stat sheet"><span>${t("level")} ${l.lv+1} · ${esc(l.title)}</span><b>${S.xp||0} XP</b><div class="bar"><i style="width:${l.pct}%"></i></div></div>
+    <div class="stat sheet"><b>${ok}<small class="muted" style="font-size:15px">/${total}</small></b><span>${t("mastered")}</span></div>
+    <div class="stat sheet"><b>${be}</b><span>${t("bestExam")}</span></div>
+    <div class="stat sheet"><b>${S.best.eclair||0}</b><span>${t("bestFlash")}</span></div>
+  </section>
+  ${banner}
+  <div class="sec-h"><h2 class="h2">${t("modes")}</h2></div>
+  <section class="modes">${modes}</section>
+  <div class="sec-h"><h2 class="h2">${t("progress")}</h2></div>
+  <section class="topics-prog">${tp}</section>
+  <div class="row" style="margin-top:22px"><button class="btn ghost sm" id="reset-btn" data-act="reset">${t("reset")}</button></div>`);
+}
+
+/* ================= COURS ================= */
+let coursMode="full";
+function viewCours(arg){
+  const tp=topic(arg)||TOPICS[0];CUR=()=>viewCours(tp.id);
+  const idx=TOPICS.indexOf(tp),prev=TOPICS[idx-1],next=TOPICS[idx+1];
+  const toc=TOPICS.map(x=>`<a href="#cours-${x.id}" class="${x===tp?"on":""}" style="--tc:var(--c-${x.id})"><i></i>${esc(L(x).t)}</a>`).join("");
+  const secs=L(tp.body).map((s,i)=>`<section><h3><small>${String(i+1).padStart(2,"0")}</small>${s.h}</h3>${s.x}</section>`).join("");
+  const facts=`<div class="facts"><h3>★ ${t("facts")}</h3><ol>${L(tp.facts).map(f=>`<li><span>${esc(f)}</span></li>`).join("")}</ol></div>`;
+  const traps=`<div class="traps"><h3>⚠ ${t("traps")}</h3><ul>${L(tp.traps).map(f=>`<li>${esc(f)}</li>`).join("")}</ul></div>`;
+  render(`<div class="cours" style="--tc:var(--c-${tp.id})">
+    <nav class="toc sheet" aria-label="${t("cours")}">${toc}</nav>
+    <article class="art sheet">
+      <div class="art-h">
+        <span class="chip">${idx+1} / ${TOPICS.length}</span>
+        <h1 class="h2">${esc(L(tp).t)}</h1>
+        <p class="muted" style="margin:0">${esc(L(tp).s)}</p>
+        <div class="row" style="justify-content:space-between">
+          <div class="seg" role="group"><button class="${coursMode==="full"?"on":""}" data-act="cmode" data-v="full">${t("full")}</button><button class="${coursMode==="ess"?"on":""}" data-act="cmode" data-v="ess">${t("essential")}</button></div>
+          <a class="btn sm pri" href="#qcm-${tp.id}">${t("testTopic")} →</a>
+        </div>
+      </div>
+      ${coursMode==="ess"?facts+traps:secs+facts+traps}
+      <div class="art-nav">
+        ${prev?`<a class="btn sm" href="#cours-${prev.id}">← ${esc(L(prev).t)}</a>`:"<span></span>"}
+        ${next?`<a class="btn sm" href="#cours-${next.id}">${esc(L(next).t)} →</a>`:`<a class="btn sm pri" href="#examen">${t("examT")} →</a>`}
+      </div>
+    </article></div>`);
+  const tocEl=$(".toc"),on=$(".toc a.on");
+  if(tocEl&&on&&tocEl.scrollWidth>tocEl.clientWidth)tocEl.scrollLeft=on.offsetLeft-tocEl.offsetLeft-12;
+}
+
+/* ================= QCM ================= */
+let Q=null;
+function viewQcm(arg){
+  if(arg){startQuiz(arg);return}
+  Q=null;CUR=()=>viewQcm("");
+  const nErr=QS.filter(q=>S.res[q.id]===false).length;
+  const special=[["all",t("allTD"),t("allTDd"),43],["mix",t("mix"),t("mixD"),QS.length],["bonus",t("bonus"),t("bonusD"),QS.filter(q=>q.id>100).length],["err",t("errs"),nErr?t("errsD"):t("noErr"),nErr]];
+  const sp=special.map((s,i)=>`<button class="pick sheet ${i===0?"special":""}" data-act="startq" data-v="${s[0]}" ${s[0]==="err"&&!nErr?"disabled":""}><span class="h3">${s[1]}</span><span class="muted">${s[2]}</span><span class="mono muted">${s[3]} ${t("questions")}</span></button>`).join("");
+  const tps=TOPICS.map(x=>{const m=mastery(x.id);return `<button class="pick sheet" style="--tc:var(--c-${x.id})" data-act="startq" data-v="${x.id}"><span class="chip">${m.n} ${t("questions")}</span><span class="h3">${esc(L(x).t)}</span><span class="bar"><i style="width:${m.p}%"></i></span><span class="mono muted" style="font-size:13px">${m.p}% ${t("mastery")}</span></button>`}).join("");
+  render(`<div style="display:flex;flex-direction:column;gap:18px">
+    <div><h1 class="h2">${t("qcmT")}</h1><p class="lead" style="margin:8px 0 0">${t("qcmP")}</p></div>
+    <div class="grid-cards">${sp}</div>
+    <div class="grid-cards">${tps}</div></div>`);
+}
+function startQuiz(tp){
+  let pool;
+  if(tp==="all")pool=QS.filter(q=>q.id<100);
+  else if(tp==="bonus")pool=shuffle(QS.filter(q=>q.id>100));
+  else if(tp==="mix")pool=shuffle(QS);
+  else if(tp==="err")pool=shuffle(QS.filter(q=>S.res[q.id]===false));
+  else if(topic(tp))pool=shuffle(QS.filter(q=>q.t===tp));
+  else pool=[];
+  if(!pool.length){location.hash="#qcm";return}
+  Q={tp,list:pool,i:0,score:0,picked:null,wrongs:[],order:pool.map(q=>q.fr[1].length>2?shuffle(range(q.fr[1].length)):range(q.fr[1].length))};
+  CUR=renderQuiz;renderQuiz();
+}
+function qTag(q){return q.id<100?t("td")+q.id:t("bonusTag")}
+function renderQuiz(){
+  if(!Q)return viewQcm("");
+  if(Q.i>=Q.list.length)return renderQuizEnd();
+  const q=Q.list[Q.i],d=L(q),fr=q.fr,ord=Q.order[Q.i],n=Q.list.length,tp=topic(q.t);
+  const showO=S.lang==="ru"&&S.orig;
+  const opts=ord.map((oi,k)=>{let c="";if(Q.picked!==null){c=oi===q.a?"ok":oi===Q.picked?"bad":"dim"}
+    return `<button class="opt ${c}" data-act="pick" data-v="${oi}" ${Q.picked!==null?"disabled":""}><span class="key">${"ABCD"[k]}</span><span>${esc(d[1][oi])}${showO?`<span class="orig">${esc(fr[1][oi])}</span>`:""}</span></button>`}).join("");
+  const ok=Q.picked===q.a;
+  const expl=Q.picked!==null?`<div class="expl" role="status"><b class="${ok?"okt":"badt"}">${ok?t("good"):t("bad")}</b> ${ok?"":`${t("answer")} <b>${esc(d[1][q.a])}</b>. `}${esc(d[2])}</div>`:"";
+  render(`<div class="quiz" style="--tc:var(--c-${q.t})">
+    <div class="qtop"><a class="btn sm ghost" href="#qcm">← ${t("back")}</a><span class="mono">${Q.i+1}/${n}</span><div class="bar"><i style="width:${(Q.i+(Q.picked!==null?1:0))/n*100}%"></i></div><span class="mono">★ ${Q.score}</span></div>
+    <div class="qcard sheet">
+      <div class="qmeta"><span class="row" style="gap:6px"><span class="chip">${esc(L(tp).t)}</span><span class="chip" style="--tc:var(--muted)">${qTag(q)}</span></span>
+        ${S.lang==="ru"?`<button class="btn sm ghost" data-act="orig">${S.orig?t("origOff"):t("origOn")}</button>`:""}</div>
+      <div class="qtext">${esc(d[0])}${showO?`<span class="orig">${esc(fr[0])}</span>`:""}</div>
+      <div class="opts">${opts}</div>
+      ${expl}
+      <div class="qfoot"><span class="kbd">${t("kbd")}</span>${Q.picked!==null?`<button class="btn pri" data-act="nextq" id="nextq">${Q.i+1<n?t("nextQ"):t("finish")} →</button>`:""}</div>
+    </div></div>`);
+  if(Q.picked!==null){const b=$("#nextq");if(b)b.focus({preventScroll:true})}
+}
+function pickQ(v){
+  if(!Q||Q.picked!==null)return;
+  const q=Q.list[Q.i];Q.picked=+v;const ok=Q.picked===q.a;
+  S.res[q.id]=ok;rec("q"+q.id,q.t,ok);if(ok){Q.score++;addXP(10)}else{Q.wrongs.push(q);save()}
+  renderQuiz();
+}
+function nextQ(){if(!Q||Q.picked===null)return;Q.i++;Q.picked=null;renderQuiz();window.scrollTo(0,0)}
+function ring(p,label){const r=62,c=2*Math.PI*r;return `<div class="ring"><svg viewBox="0 0 150 150"><circle class="bg" cx="75" cy="75" r="${r}"/><circle class="fg" cx="75" cy="75" r="${r}" stroke-dasharray="${c.toFixed(1)}" stroke-dashoffset="${(c*(1-p)).toFixed(1)}"/></svg><b>${label}</b></div>`}
+function verdict(p){return p>=1?t("r100"):p>=.75?t("r75"):p>=.5?t("r50"):t("r0")}
+function renderQuizEnd(){
+  const n=Q.list.length,p=Q.score/n;
+  const rv=Q.wrongs.map(q=>{const d=L(q);return `<div class="rv"><div class="q">${qTag(q)} · ${esc(d[0])}</div><div class="a-ok">✓ ${esc(d[1][q.a])}</div><div class="muted" style="margin-top:4px">${esc(d[2])}</div></div>`}).join("");
+  render(`<div class="result sheet">
+    <span class="eyebrow">${t("score")}</span>${ring(p,Q.score+"/"+n)}<p class="h3">${verdict(p)}</p>
+    <div class="row" style="justify-content:center">${Q.wrongs.length?`<button class="btn pri" data-act="retryw">${t("retryErr")} (${Q.wrongs.length})</button>`:""}<button class="btn" data-act="startq" data-v="${Q.tp}">${t("again")}</button><a class="btn ghost" href="#qcm">${t("other")}</a></div>
+    ${rv?`<div class="review">${rv}</div>`:""}</div>`);
+}
+function retryWrong(){const w=Q.wrongs;Q={tp:Q.tp,list:shuffle(w),i:0,score:0,picked:null,wrongs:[],order:[]};Q.order=Q.list.map(q=>q.fr[1].length>2?shuffle(range(q.fr[1].length)):range(q.fr[1].length));CUR=renderQuiz;renderQuiz();window.scrollTo(0,0)}
+
+/* ================= EXAMEN ================= */
+let E=null,examConfirm=false;
+const EXAM_N=20,EXAM_MIN=20;
+function viewExamen(){
+  if(E&&!E.done){CUR=renderExam;renderExam();startExamTimer();return}
+  if(E&&E.done){CUR=renderExamEnd;renderExamEnd();return}
+  CUR=viewExamen;
+  render(`<div class="result sheet" style="text-align:left;align-items:stretch;--tc:var(--c-leader)">
+    <span class="chip">${EXAM_N} ${t("questions")} · ${EXAM_MIN} min</span>
+    <h1 class="h2">${t("examT")}</h1><p class="lead" style="margin:0">${t("examP")}</p>
+    <ul style="margin:0;padding-left:20px">${t("examRules").map(r=>`<li>${r}</li>`).join("")}</ul>
+    <div class="row"><button class="btn pri" data-act="examgo">${t("examGo")} →</button></div></div>`);
+}
+function examStart(){
+  const list=shuffle(QS).slice(0,EXAM_N);
+  E={list,ans:Array(list.length).fill(null),order:list.map(q=>q.fr[1].length>2?shuffle(range(q.fr[1].length)):range(q.fr[1].length)),i:0,end:Date.now()+EXAM_MIN*60000,done:false,timeUp:false};
+  examConfirm=false;CUR=renderExam;renderExam();startExamTimer();
+}
+function startExamTimer(){clearTimers();every(()=>{if(!E||E.done)return clearTimers();const el=$("#timer");const left=E.end-Date.now();if(left<=0){E.timeUp=true;examFinish();return}if(el){el.textContent=fmt(left);el.classList.toggle("low",left<120000)}},1000)}
+function fmt(ms){const s=Math.max(0,Math.ceil(ms/1000));return String(Math.floor(s/60)).padStart(2,"0")+":"+String(s%60).padStart(2,"0")}
+function renderExam(){
+  const q=E.list[E.i],d=L(q),fr=q.fr,ord=E.order[E.i],showO=S.lang==="ru"&&S.orig;
+  const opts=ord.map((oi,k)=>`<button class="opt ${E.ans[E.i]===oi?"sel":""}" data-act="eans" data-v="${oi}" aria-pressed="${E.ans[E.i]===oi}"><span class="key">${"ABCD"[k]}</span><span>${esc(d[1][oi])}${showO?`<span class="orig">${esc(fr[1][oi])}</span>`:""}</span></button>`).join("");
+  const dots=E.list.map((_,i)=>`<button class="${E.ans[i]!==null?"done":""} ${i===E.i?"cur":""}" data-act="ego" data-v="${i}" aria-label="${t("question")} ${i+1}">${i+1}</button>`).join("");
+  const un=E.ans.filter(a=>a===null).length;const left=E.end-Date.now();
+  render(`<div class="exam-grid" style="--tc:var(--c-leader)">
+    <div class="quiz" style="max-width:none;margin:0">
+      <div class="qtop"><span class="timer ${left<120000?"low":""}" id="timer">${fmt(left)}</span><span class="mono">${t("question")} ${E.i+1}/${E.list.length}</span>
+        ${S.lang==="ru"?`<button class="btn sm ghost" data-act="orig" style="margin-left:auto">${S.orig?t("origOff"):t("origOn")}</button>`:""}</div>
+      <div class="qcard sheet">
+        <div class="qtext">${esc(d[0])}${showO?`<span class="orig">${esc(fr[0])}</span>`:""}</div>
+        <div class="opts">${opts}</div>
+        <div class="qfoot"><button class="btn sm" data-act="ego" data-v="${E.i-1}" ${E.i===0?"disabled":""}>← ${t("prevQ")}</button>
+          ${E.i<E.list.length-1?`<button class="btn sm pri" data-act="ego" data-v="${E.i+1}">${t("nextQ2")} →</button>`:""}</div>
+      </div>
+      <div class="callout row" style="justify-content:space-between">
+        <span>${un?`<b>${un}</b> ${t("unans")}`:"✓"}</span>
+        <button class="btn ${examConfirm?"pri":""}" data-act="efinish">${examConfirm?t("confirmE"):t("finishE")}</button></div>
+    </div>
+    <div class="dots sheet">${dots}</div></div>`);
+}
+function examFinish(){
+  if(!E||E.done)return;
+  E.done=true;clearTimers();
+  E.score=E.list.reduce((s,q,i)=>s+(E.ans[i]===q.a?1:0),0);
+  E.note=Math.round(E.score/E.list.length*200)/10;
+  E.list.forEach((q,i)=>{if(E.ans[i]!==null){S.res[q.id]=E.ans[i]===q.a;rec("q"+q.id,q.t,E.ans[i]===q.a)}});
+  if(S.best.exam==null||E.note>S.best.exam)S.best.exam=E.note;
+  S.exams.push({ts:Date.now(),v:E.note});S.exams=S.exams.slice(-12);
+  addXP(E.score*8);save();CUR=renderExamEnd;renderExamEnd();window.scrollTo(0,0);
+}
+function mention(n){return n>=16?t("m16"):n>=14?t("m14"):n>=12?t("m12"):n>=10?t("m10"):t("m0")}
+function renderExamEnd(){
+  const rv=E.list.map((q,i)=>{const d=L(q),a=E.ans[i],ok=a===q.a;return `<div class="rv" style="border-color:${ok?"var(--ok)":"var(--bad)"}"><div class="q">${i+1}. ${esc(d[0])}</div>${ok?`<div class="a-ok">✓ ${esc(d[1][q.a])}</div>`:`<div>${t("yourAns")} : ${a===null?`<i class="muted">${t("none")}</i>`:`<span class="a-bad">${esc(d[1][a])}</span>`}</div><div class="a-ok">✓ ${esc(d[1][q.a])}</div><div class="muted" style="margin-top:4px">${esc(d[2])}</div>`}</div>`}).join("");
+  render(`<div class="result sheet" style="--tc:var(--c-leader)">
+    ${E.timeUp?`<div class="callout">${t("timeUp")}</div>`:""}
+    <span class="eyebrow">${t("note")}</span><div class="note">${String(E.note).replace(".",",")}<small>/20</small></div>
+    <p class="h3" style="margin:0">${mention(E.note)} · ${E.score}/${E.list.length}</p>
+    <div class="row" style="justify-content:center"><button class="btn pri" data-act="examnew">${t("again")}</button><a class="btn" href="#qcm-err">${t("retryErr")}</a></div>
+    <h2 class="h3" style="align-self:flex-start">${t("correction")}</h2><div class="review">${rv}</div></div>`);
+}
+
+/* ================= JEUX ================= */
+function viewJeux(){CUR=viewJeux;
+  const g=[["cartes","cards","manager","mCards"],["eclair","bolt","gouv","mEclair"],["associer","link","cas","mPairs"],["trier","sort","gm","mSort"]]
+   .map(m=>`<a class="mode sheet" href="#${m[0]}" style="--tc:var(--c-${m[2]})"><span class="ic">${IC[m[1]]}</span><span class="h3">${t(m[3])}</span><p>${t(m[3]+"D")}</p><span class="meta">${t(m[3]+"M")}</span></a>`).join("");
+  const fresh=freshCount();
+  const feat=`<a class="focus feat sheet" href="#marathon" style="--tc:var(--c-leader)"><span class="ic">${IC.flag}</span><span class="focus-t"><span class="eyebrow">${t("mMaraM")}</span><span class="h3">${t("mMara")}</span><span class="muted">${t("mMaraD")} ${fresh} ${t("freshN")}.</span></span><span class="btn sm pri">${M&&!M.end?(M.i+1)+"/"+M.list.length:t("go")} →</span></a>`;
+  render(`<div style="display:flex;flex-direction:column;gap:18px"><div><h1 class="h2">${t("jeuxT")}</h1><p class="lead" style="margin:8px 0 0">${t("jeuxP")}</p></div>${feat}<section class="modes">${g}</section></div>`);
+}
+function gameHead(title,extra){return `<div class="qtop"><a class="btn sm ghost" href="#jeux">← ${t("back")}</a><h1 class="h2" style="font-size:22px">${title}</h1>${extra||""}</div>`}
+
+/* --- Cartes --- */
+let C=null;
+function viewCartes(){if(!C)cardsStart("all");CUR=renderCards;renderCards()}
+function cardsStart(f,subset){const base=subset||CARDS.filter(c=>f==="all"||c[0]===f);C={f,deck:shuffle(base),i:0,flip:false,known:0,again:[]};}
+function renderCards(){
+  const filt=`<div class="tag-row"><button class="tagbtn ${C.f==="all"?"on":""}" data-act="cfilter" data-v="all">${t("allT")}</button>${TOPICS.map(x=>`<button class="tagbtn ${C.f===x.id?"on":""}" data-act="cfilter" data-v="${x.id}">${esc(L(x).t)}</button>`).join("")}</div>`;
+  if(C.i>=C.deck.length){
+    render(`<div class="flash-wrap">${gameHead(t("cardsT"))}${filt}<div class="result sheet" style="--tc:var(--c-manager)">${ring(C.known/C.deck.length,C.known+"/"+C.deck.length)}<p class="h3">${t("cardsDone")} · ${C.known} ${t("known")}</p><div class="row" style="justify-content:center">${C.again.length?`<button class="btn pri" data-act="cagain">${t("onlyReview")} (${C.again.length})</button>`:""}<button class="btn" data-act="cfilter" data-v="${C.f}">${t("restart")}</button></div></div></div>`);return}
+  const c=C.deck[C.i],ru=S.lang==="ru",tp=topic(c[0]);
+  const front=ru?c[3]:c[1],back=ru?c[4]:c[2];
+  render(`<div class="flash-wrap" style="--tc:var(--c-${c[0]})">${gameHead(t("cardsT"),`<span class="mono" style="margin-left:auto">${C.i+1}/${C.deck.length}</span>`)}${filt}
+    <div class="bar"><i style="width:${C.i/C.deck.length*100}%"></i></div>
+    <button class="flash ${C.flip?"flip":""}" data-act="cflip" aria-label="${t("flipHint")}"><div class="flash-in">
+      <div class="face front"><span class="chip">${esc(L(tp).t)}</span><span class="term">${esc(front)}</span>${ru?`<span class="muted">${esc(c[1])}</span>`:""}<span class="hint">${t("flipHint")}</span></div>
+      <div class="face back"><span class="term" style="font-size:18px;opacity:.75">${esc(front)}</span><span class="def">${esc(back)}</span></div>
+    </div></button>
+    <div class="vf"><button class="btn f" data-act="cno">${t("review")}</button><button class="btn v" data-act="cyes">${t("knew")}</button></div></div>`);
+}
+
+/* --- Éclair --- */
+let T=null;
+function viewEclair(){T=null;CUR=renderEclair;renderEclair()}
+function eclairStart(){T={left:60,list:shuffle(range(VF.length)),i:0,score:0,combo:0,errors:[],run:true,fx:""};
+  CUR=renderEclair;renderEclair();clearTimers();
+  every(()=>{if(!T||!T.run)return;T.left--;const tb=$("#tb"),tl=$("#tl");if(tb)tb.style.width=(T.left/60*100)+"%";if(tl)tl.textContent=T.left;if(T.left<=0)eclairEnd()},1000);
+}
+function renderEclair(){
+  if(!T){render(`<div class="eclair" style="--tc:var(--c-gouv)">${gameHead(t("eclairT"))}<div class="result sheet"><span class="chip">60 s</span><p class="lead" style="margin:0">${t("eclairP")}</p><p class="mono">${t("best")} : ${S.best.eclair||0}</p><button class="btn pri" data-act="ego2">${t("go")} →</button></div></div>`);return}
+  if(!T.run){const nb=T.newBest;
+    const er=T.errors.map(k=>{const s=VF[k];return `<div class="rv"><div class="q">${esc(S.lang==="ru"?s[1]:s[0])}</div><div class="a-ok">✓ ${s[2]?t("tTrue"):t("tFalse")}</div></div>`}).join("");
+    render(`<div class="eclair" style="--tc:var(--c-gouv)">${gameHead(t("eclairT"))}<div class="result sheet"><span class="eyebrow">${t("pts")}</span><div class="note">${T.score}</div>${nb?`<p class="h3" style="color:var(--ok)">${t("newBest")}</p>`:`<p class="mono">${t("best")} : ${S.best.eclair||0}</p>`}<button class="btn pri" data-act="ego2">${t("again")}</button>${er?`<h2 class="h3" style="align-self:flex-start">${t("errorsList")}</h2><div class="review">${er}</div>`:""}</div></div>`);return}
+  const s=VF[T.list[T.i%T.list.length]],mult=1+Math.floor(T.combo/3);
+  render(`<div class="eclair" style="--tc:var(--c-gouv)">${gameHead(t("eclairT"))}
+    <div class="timebar"><i id="tb" style="width:${T.left/60*100}%"></i></div>
+    <div class="ec-hud"><div class="sheet"><b id="tl">${T.left}</b><span>${t("time")}</span></div><div class="sheet"><b>${T.score}</b><span>${t("pts")}</span></div><div class="sheet"><b>×${mult}</b><span>${t("combo")} ${T.combo}</span></div></div>
+    <div class="statement sheet ${T.fx}" aria-live="polite">${esc(S.lang==="ru"?s[1]:s[0])}</div>
+    <div class="vf"><button class="btn v" data-act="vf" data-v="1">← ${t("tTrue")}</button><button class="btn f" data-act="vf" data-v="0">${t("tFalse")} →</button></div></div>`);
+}
+function eclairAnswer(v){if(!T||!T.run)return;const k=T.list[T.i%T.list.length],s=VF[k],ok=(+v)===s[2];rec("v"+k,VF_T[k],ok);
+  if(ok){T.combo++;const pts=10*(1+Math.floor((T.combo-1)/3));T.score+=pts;addXP(2)}else{T.combo=0;if(!T.errors.includes(k))T.errors.push(k)}
+  T.fx=ok?"flash-ok":"flash-bad";T.i++;if(T.i%T.list.length===0)T.list=shuffle(T.list);renderEclair()}
+function eclairEnd(){if(!T)return;T.run=false;clearTimers();T.newBest=T.score>(S.best.eclair||0);if(T.newBest)S.best.eclair=T.score;save();renderEclair();hud()}
+
+/* --- Associer --- */
+let A=null;
+function viewAssocier(){if(!A)pairsStart(PAIRS[0].id);CUR=renderPairs;renderPairs()}
+function pairsStart(id){const set=PAIRS.find(p=>p.id===id)||PAIRS[0];const n=set.items.length;A={id:set.id,set,left:shuffle(range(n)),right:shuffle(range(n)),sel:null,done:[],mist:0,err:null,miss:[]}}
+function renderPairs(){
+  const ru=S.lang==="ru",it=A.set.items;
+  const tabs=`<div class="tag-row">${PAIRS.map(p=>`<button class="tagbtn ${A.id===p.id?"on":""}" data-act="pset" data-v="${p.id}">${esc(L(p))}</button>`).join("")}</div>`;
+  const fin=A.done.length===it.length;
+  const left=A.left.map(i=>`<button class="mitem term ${A.done.includes(i)?"done":""} ${A.sel===i?"sel":""}" data-act="pl" data-v="${i}" ${A.done.includes(i)?"disabled":""}>${esc(ru?it[i][2]:it[i][0])}</button>`).join("");
+  const right=A.right.map(i=>`<button class="mitem ${A.done.includes(i)?"done":""} ${A.err===i?"err":""}" data-act="pr" data-v="${i}" ${A.done.includes(i)?"disabled":""}>${esc(ru?it[i][3]:it[i][1])}</button>`).join("");
+  render(`<div style="display:flex;flex-direction:column;gap:14px;max-width:820px;margin:0 auto;--tc:var(--c-cas)">${gameHead(t("pairsT"),`<span class="mono" style="margin-left:auto">${A.done.length}/${it.length} · ${A.mist} ${t("mistakes")}</span>`)}${tabs}
+   ${fin?`<div class="result sheet">${ring(Math.max(0,(it.length-A.mist)/it.length),A.mist+" ✗")}<p class="h3">${t("pairsDone")}</p><div class="row" style="justify-content:center"><button class="btn pri" data-act="pset" data-v="${A.id}">${t("again")}</button>${(()=>{const k=PAIRS.findIndex(p=>p.id===A.id);const nx=PAIRS[k+1];return nx?`<button class="btn" data-act="pset" data-v="${nx.id}">${esc(L(nx))} →</button>`:""})()}</div></div>`
+   :`<p class="muted" style="margin:0">${t("pairsP")}</p><div class="match"><div class="col">${left}</div><div class="col">${right}</div></div>`}</div>`);
+  A.err=null;
+}
+function pairLeft(v){A.sel=+v;renderPairs()}
+function pairRight(v){v=+v;if(A.sel===null){A.err=v;renderPairs();return}
+  if(v===A.sel){A.done.push(v);rec("p:"+A.id+":"+v,PAIR_T[A.id],!A.miss.includes(v));A.sel=null;addXP(5)}else{A.mist++;A.err=v;if(!A.miss.includes(A.sel))A.miss.push(A.sel)}renderPairs()}
+
+/* --- Trier --- */
+let R=null;
+function viewTrier(){if(!R)sortStart(SORTS[0].id);CUR=renderSort;renderSort()}
+function sortStart(id){const d=SORTS.find(s=>s.id===id)||SORTS[0];R={id:d.id,d,items:shuffle(d.items.map((it,i)=>it.concat(i))),i:0,score:0,fb:null}}
+function renderSort(){
+  const ru=S.lang==="ru",bins=L(R.d.bins),cols=["gm","podc","manager","leader"];
+  const tabs=`<div class="tag-row">${SORTS.map(s=>`<button class="tagbtn ${R.id===s.id?"on":""}" data-act="sset" data-v="${s.id}">${esc(L(s))}</button>`).join("")}</div>`;
+  const n=R.items.length;
+  if(R.i>=n){render(`<div class="sort">${gameHead(t("sortT"))}${tabs}<div class="result sheet">${ring(R.score/n,R.score+"/"+n)}<p class="h3">${t("sortDone")}</p><div class="row" style="justify-content:center"><button class="btn pri" data-act="sset" data-v="${R.id}">${t("again")}</button>${(()=>{const k=SORTS.findIndex(s=>s.id===R.id);const nx=SORTS[k+1];return nx?`<button class="btn" data-act="sset" data-v="${nx.id}">${esc(L(nx))} →</button>`:""})()}</div></div></div>`);return}
+  const it=R.items[R.i];
+  const fb=R.fb?`<div class="fb ${R.fb.ok?"ok":"bad"}">${R.fb.ok?"✓ "+t("correct"):"✗ "+t("wrongIs")+" "+esc(bins[R.fb.b])}</div>`:"";
+  render(`<div class="sort">${gameHead(t("sortT"),`<span class="mono" style="margin-left:auto">${R.i+1}/${n} · ★ ${R.score}</span>`)}${tabs}
+    <div class="bar"><i style="width:${R.i/n*100}%"></i></div>
+    <p class="muted" style="margin:0">${t("sortP")}</p>
+    <div class="sitem sheet">${esc(ru?it[1]:it[0])}</div>${fb}
+    <div class="bins n${bins.length}">${bins.map((b,i)=>`<button class="bin" style="--tc:var(--c-${cols[i]})" data-act="sbin" data-v="${i}">${esc(b)}</button>`).join("")}</div></div>`);
+}
+function sortPick(v){const it=R.items[R.i],ok=(+v)===it[2];rec("s:"+R.id+":"+it[3],SORT_META[R.id].t,ok);if(ok){R.score++;addXP(4)}R.fb={ok,b:it[2]};R.i++;renderSort()}
+
+/* --- Marathon 50 --- */
+let M=null;const MARA_N=50;
+const DAY=864e5;
+/* Never-seen items first, then least recently answered (last-wrong ones pulled ~2 days earlier).
+   Round-robin over topics keeps the 50 balanced; one item per concept group. */
+function maraPick(){
+  const byT={};
+  bank().forEach(b=>{const h=S.h[b.k];b.w=h?h[2]-(h[4]?0:2*DAY)+Math.random()*3*DAY:Math.random();(byT[b.t]=byT[b.t]||[]).push(b)});
+  Object.values(byT).forEach(a=>a.sort((x,y)=>x.w-y.w));
+  const ts=shuffle(Object.keys(byT)),out=[],used=new Set();let k=0;
+  while(out.length<MARA_N&&ts.some(tk=>byT[tk].length)){const q=byT[ts[k++%ts.length]];
+    while(q.length&&used.has(q[0].g))q.shift();
+    if(q.length){const b=q.shift();used.add(b.g);out.push(b)}}
+  return shuffle(out);
+}
+function freshCount(){return bank().filter(b=>!S.h[b.k]).length}
+function viewMarathon(){
+  if(M){CUR=renderMara;renderMara();return}
+  CUR=viewMarathon;
+  render(`<div class="result sheet" style="text-align:left;align-items:stretch;--tc:var(--c-leader)">
+    ${gameHead(t("maraT"))}
+    <p class="lead" style="margin:0">${t("maraP")}</p>
+    <ul style="margin:0;padding-left:20px">${t("maraRules").map(r=>`<li>${r}</li>`).join("")}</ul>
+    <div class="row" style="justify-content:space-between"><span class="mono muted">${freshCount()} ${t("freshN")}${S.best.mara?` · ${t("best")} : ${S.best.mara}`:""}</span>
+    <button class="btn pri" data-act="mgo">${t("maraGo")} →</button></div></div>`);
+}
+function maraStart(){const list=maraPick();M={list,i:0,pts:0,ok:0,combo:0,picked:null,wrongs:[],perT:{},end:false,quit:false,
+  order:list.map(b=>b.fr[1].length>2?shuffle(range(b.fr[1].length)):range(b.fr[1].length))};CUR=renderMara;renderMara();window.scrollTo(0,0)}
+function renderMara(){
+  if(!M)return viewMarathon();
+  if(M.end)return renderMaraEnd();
+  const b=M.list[M.i],d=L(b),fr=b.fr,ord=M.order[M.i],n=M.list.length,tp=topic(b.t),showO=S.lang==="ru"&&S.orig,mult=1+Math.floor(M.combo/3);
+  const opts=ord.map((oi,k)=>{let c="";if(M.picked!==null){c=oi===b.a?"ok":oi===M.picked?"bad":"dim"}
+    return `<button class="opt ${c}" data-act="mpick" data-v="${oi}" ${M.picked!==null?"disabled":""}><span class="key">${"ABCD"[k]}</span><span>${esc(d[1][oi])}${showO?`<span class="orig">${esc(fr[1][oi])}</span>`:""}</span></button>`}).join("");
+  const ok=M.picked===b.a;
+  const expl=M.picked!==null?`<div class="expl" role="status"><b class="${ok?"okt":"badt"}">${ok?t("good"):t("bad")}</b> ${ok?"":`${t("answer")} <b>${esc(d[1][b.a])}</b>. `}${esc(d[2])}</div>`:"";
+  render(`<div class="quiz" style="--tc:var(--c-${b.t})">
+    <div class="qtop"><a class="btn sm ghost" href="#jeux">← ${t("back")}</a><span class="mono">${M.i+1}/${n}</span><div class="bar"><i style="width:${(M.i+(M.picked!==null?1:0))/n*100}%"></i></div><span class="mono">★ ${M.pts}</span><span class="xp" style="padding:6px 9px">×${mult}</span></div>
+    <div class="qcard sheet">
+      <div class="qmeta"><span class="row" style="gap:6px"><span class="chip">${esc(L(tp).t)}</span><span class="chip" style="--tc:var(--muted)">${esc(b.tag)}</span></span>
+        ${S.lang==="ru"?`<button class="btn sm ghost" data-act="orig">${S.orig?t("origOff"):t("origOn")}</button>`:""}</div>
+      <div class="qtext">${esc(d[0])}${showO?`<span class="orig">${esc(fr[0])}</span>`:""}</div>
+      <div class="opts">${opts}</div>
+      ${expl}
+      <div class="qfoot"><button class="btn sm ghost" data-act="mquit">${t("quit")}</button>${M.picked!==null?`<button class="btn pri" data-act="mnext" id="nextq">${M.i+1<n?t("nextQ"):t("finish")} →</button>`:`<span class="kbd">${t("kbd")}</span>`}</div>
+    </div></div>`);
+  if(M.picked!==null){const nb=$("#nextq");if(nb)nb.focus({preventScroll:true})}
+}
+function maraAnswer(v){
+  if(!M||M.end||M.picked!==null)return;
+  const b=M.list[M.i];M.picked=+v;const ok=M.picked===b.a;
+  rec(b.k,b.t,ok);if(b.k[0]==="q")S.res[+b.k.slice(1)]=ok;
+  const pt=M.perT[b.t]||(M.perT[b.t]=[0,0]);pt[1]++;
+  if(ok){M.ok++;M.combo++;M.pts+=10*(1+Math.floor((M.combo-1)/3));pt[0]++;addXP(5)}else{M.combo=0;M.wrongs.push(b);save()}
+  renderMara();
+}
+function maraNext(){if(!M||M.picked===null)return;M.i++;M.picked=null;if(M.i>=M.list.length)maraEnd();else{renderMara();window.scrollTo(0,0)}}
+function maraEnd(){M.end=true;S.runs.push({ts:Date.now(),v:Math.round(M.ok/M.list.length*100)});S.runs=S.runs.slice(-12);
+  M.newBest=M.pts>(S.best.mara||0);if(M.newBest)S.best.mara=M.pts;save();renderMaraEnd();window.scrollTo(0,0)}
+function renderMaraEnd(){
+  const n=M.list.length;
+  const per=TOPICS.filter(x=>M.perT[x.id]).map(x=>{const p=M.perT[x.id];return `<div class="tp" style="--tc:var(--c-${x.id});padding:4px 0"><span><span class="chip">${esc(L(x).t)}</span></span><span class="bar"><i style="width:${p[0]/p[1]*100}%"></i></span><span class="mono">${p[0]}/${p[1]}</span></div>`}).join("");
+  const rv=M.wrongs.map(b=>{const d=L(b);return `<div class="rv"><div class="q">${esc(d[0])}</div><div class="a-ok">✓ ${esc(d[1][b.a])}</div><div class="muted" style="margin-top:4px">${esc(d[2])}</div></div>`}).join("");
+  render(`<div class="result sheet" style="--tc:var(--c-leader)">
+    <span class="eyebrow">${t("maraDone")}</span>${ring(M.ok/n,M.ok+"/"+n)}
+    <p class="h3" style="margin:0">${M.pts} ${t("pts")} · ${verdict(M.ok/n)}</p>${M.newBest?`<p class="h3" style="margin:0;color:var(--ok)">${t("newBest")}</p>`:""}
+    <div class="row" style="justify-content:center"><a class="btn pri" href="#analyse">${t("seeAna")} →</a><button class="btn" data-act="mgo">${t("newRun")}</button></div>
+    <h2 class="h3" style="align-self:flex-start">${t("byTopic")}</h2><div class="topics-prog" style="width:100%;text-align:left">${per}</div>
+    ${rv?`<h2 class="h3" style="align-self:flex-start">${t("errorsList")} (${M.wrongs.length})</h2><div class="review">${rv}</div>`:""}</div>`);
+}
+
+/* ================= ANALYSE ================= */
+const fmtNum=v=>String(v).replace(".",",");
+function topicStats(){
+  const tot={};bank().forEach(b=>tot[b.t]=(tot[b.t]||0)+1);PAIRS.forEach(p=>tot[PAIR_T[p.id]]=(tot[PAIR_T[p.id]]||0)+p.items.length);
+  const st={};TOPICS.forEach(x=>st[x.id]={n:0,ok:0,seen:0,tot:tot[x.id]||1});
+  Object.values(S.h).forEach(r=>{const s=st[r[3]];if(!s)return;s.n+=r[0];s.ok+=r[1];s.seen++});
+  TOPICS.forEach(x=>{const s=st[x.id];s.p=s.n?Math.round(s.ok/s.n*100):0;s.cov=Math.min(100,Math.round(s.seen/s.tot*100));s.lvl=s.n<3?0:s.p<50?1:s.p<80?2:3});
+  return st;
+}
+function weakestTopic(){const st=topicStats();const r=TOPICS.filter(x=>st[x.id].lvl===1||st[x.id].lvl===2).sort((a,b)=>st[a.id].p-st[b.id].p)[0];return r?{x:r,p:st[r.id].p}:null}
+function itemText(k){
+  if(k.startsWith("p:")){const [,sid,i]=k.split(":");const p=PAIRS.find(z=>z.id===sid);const it=p&&p.items[+i];if(!it)return null;const ru=S.lang==="ru";return{q:ru?it[2]:it[0],a:ru?it[3]:it[1],e:""}}
+  const b=(itemText.map||(itemText.map=Object.fromEntries(bank().map(z=>[z.k,z]))))[k];if(!b)return null;const d=L(b);return{q:d[0],a:d[1][b.a],e:d[2]};
+}
+function barsChart(arr,max,ref,refLabel,unit,label){
+  if(!arr.length)return `<p class="muted" style="margin:0">${t("noHist")}</p>`;
+  const loc=S.lang==="ru"?"ru-RU":"fr-FR";
+  const bars=arr.map((e,i)=>{const h=Math.max(2,e.v/max*100);let dt="";try{dt=new Date(e.ts).toLocaleDateString(loc,{day:"2-digit",month:"2-digit"})}catch(x){}
+    const lab=`${dt} · ${fmtNum(e.v)}${unit}`;
+    return `<div class="cbar" tabindex="0" data-tip="${esc(lab)}" aria-label="${esc(lab)}"><i style="height:${h}%"></i>${i===arr.length-1?`<b style="bottom:calc(${h}% + 4px)">${fmtNum(e.v)}${unit}</b>`:""}</div>`}).join("");
+  return `<div class="chart" role="group" aria-label="${esc(label)}"><div class="plot"><span class="ref" style="bottom:${ref/max*100}%"><em>${refLabel}</em></span>${bars}</div></div>`;
+}
+const ST_ICON=["○","!","◐","✓"];
+function viewAnalyse(){CUR=viewAnalyse;
+  itemText.map=null;
+  const recs=Object.values(S.h),n=recs.reduce((a,r)=>a+r[0],0),ok=recs.reduce((a,r)=>a+r[1],0);
+  const N=BANK_N+PAIRS.reduce((a,p)=>a+p.items.length,0);
+  const head=`<div><h1 class="h2">${t("anaT")}</h1></div>`;
+  if(!n){render(`<div class="ana">${head}<div class="result sheet"><span class="mode" style="--tc:var(--c-gouv);padding:0"><span class="ic">${IC.analyse}</span></span><p class="lead" style="margin:0">${t("anaEmpty")}</p><div class="row" style="justify-content:center"><a class="btn pri" href="#marathon">${t("maraGo")} →</a><a class="btn" href="#qcm">${t("startQ")}</a></div></div></div>`);return}
+  const st=topicStats(),rank={1:0,2:1,0:2,3:3};
+  const rows=TOPICS.slice().sort((a,b)=>rank[st[a.id].lvl]-rank[st[b.id].lvl]||st[a.id].p-st[b.id].p).map(x=>{const s=st[x.id];
+    return `<div class="ana-row sheet" style="--tc:var(--c-${x.id})">
+      <div class="row" style="gap:8px"><span class="chip">${esc(L(x).t)}</span><span class="pill s${s.lvl}">${ST_ICON[s.lvl]} ${t("st"+s.lvl)}</span></div>
+      <span class="pct">${s.n?s.p+"%":"—"}</span>
+      <div class="full"><div class="tbar" title="${t("target")}"><i style="width:${s.p}%"></i><span class="goal"></span></div></div>
+      <div class="full meta mono">${s.n} ${t("answersW")} · ${s.cov}% ${t("coverage")}</div>
+      <p class="full adv">${t("adv"+s.lvl)}</p>
+      ${s.lvl<3?`<div class="full row"><button class="btn sm" data-act="goess" data-v="${x.id}">${t("btnEss")}</button><a class="btn sm pri" href="#qcm-${x.id}">${t("btnQcm")} →</a></div>`:""}
+    </div>`}).join("");
+  const weak=Object.entries(S.h).filter(([k,r])=>r[4]===0||(r[0]>=2&&r[1]/r[0]<.5)).sort((a,b)=>(b[1][0]-b[1][1])-(a[1][0]-a[1][1])||b[1][2]-a[1][2]).slice(0,8)
+    .map(([k,r])=>{const it=itemText(k);if(!it)return "";const tp=topic(r[3]);
+      return `<div class="rv" style="--tc:var(--c-${r[3]})"><div class="row" style="gap:8px;margin-bottom:6px">${tp?`<span class="chip">${esc(L(tp).t)}</span>`:""}<span class="mono muted" style="font-size:12.5px">${t("missedW")} ${r[0]-r[1]} ${t("outOf")} ${r[0]}${r[4]===0?" · "+t("lastWrong"):""}</span></div><div class="q">${esc(it.q)}</div><div class="a-ok">✓ ${esc(it.a)}</div>${it.e?`<div class="muted" style="margin-top:4px">${esc(it.e)}</div>`:""}</div>`}).join("");
+  const sum=t("anaSum").replace("{n}",n).replace("{p}",Math.round(ok/n*100)).replace("{c}",Object.keys(S.h).length).replace("{N}",N);
+  render(`<div class="ana">${head}
+    <p class="lead" style="margin:-10px 0 0">${sum}</p>
+    <section><div class="sec-h"><div><h2 class="h2">${t("toImprove")}</h2><p class="muted" style="margin:6px 0 0">${t("toImproveP")}</p></div></div><div class="ana-list">${rows}</div></section>
+    <section><div class="sec-h"><div><h2 class="h2">${t("weakQ")}</h2><p class="muted" style="margin:6px 0 0">${t("weakQP")}</p></div></div><div class="review">${weak||`<p class="muted">${t("noWeak")}</p>`}</div></section>
+    <section><div class="sec-h"><h2 class="h2">${t("hist")}</h2></div><div class="charts">
+      <div class="sheet chart-card"><h3 class="h3">${t("examsH")}</h3>${barsChart(S.exams,20,10,"10/20","",t("examsH"))}</div>
+      <div class="sheet chart-card"><h3 class="h3">${t("marasH")}</h3>${barsChart(S.runs,100,80,"80%","%",t("marasH"))}</div>
+    </div></section></div>`);
+}
+
+/* ================= EVENTS ================= */
+const ACT={
+ lang:v=>{S.lang=v;save();shell();if(CUR)CUR();},
+ theme:()=>{S.theme=isDark()?"light":"dark";save();applyTheme();themeIcon()},
+ podc:v=>{podcOpen=podcOpen===+v?-1:+v;viewHome()},
+ reset:(v,b)=>{if(b.dataset.armed){const keep={lang:S.lang,theme:S.theme,orig:S.orig};S=Object.assign({xp:0,res:{},best:{},h:{},exams:[],runs:[]},keep);M=null;save();toast(t("resetDone"));viewHome();shell()}else{b.dataset.armed="1";b.textContent=t("resetC");b.classList.add("pri")}},
+ cmode:v=>{coursMode=v;CUR()},
+ startq:v=>{if(location.hash==="#qcm-"+v)startQuiz(v);else location.hash="#qcm-"+v},
+ pick:v=>pickQ(v),nextq:()=>nextQ(),retryw:()=>retryWrong(),
+ orig:()=>{S.orig=!S.orig;save();CUR()},
+ examgo:()=>examStart(),examnew:()=>{E=null;examStart()},
+ eans:v=>{E.ans[E.i]=+v;examConfirm=false;renderExam()},
+ ego:v=>{v=+v;if(v>=0&&v<E.list.length){E.i=v;examConfirm=false;renderExam()}},
+ efinish:()=>{if(examConfirm)examFinish();else{examConfirm=true;renderExam()}},
+ cflip:()=>{C.flip=!C.flip;const f=$(".flash");if(f)f.classList.toggle("flip",C.flip)},
+ cyes:()=>{const c=C.deck[C.i];rec("c"+CARDS.indexOf(c)+"d",c[0],true);C.known++;addXP(3);C.i++;C.flip=false;renderCards()},
+ cno:()=>{const c=C.deck[C.i];rec("c"+CARDS.indexOf(c)+"d",c[0],false);C.again.push(c);C.i++;C.flip=false;renderCards()},
+ cfilter:v=>{cardsStart(v);renderCards()},
+ cagain:()=>{cardsStart(C.f,C.again);renderCards()},
+ ego2:()=>eclairStart(),
+ vf:v=>eclairAnswer(v),
+ pset:v=>{pairsStart(v);renderPairs()},pl:v=>pairLeft(v),pr:v=>pairRight(v),
+ sset:v=>{sortStart(v);renderSort()},sbin:v=>sortPick(v),
+ mgo:()=>maraStart(),mpick:v=>maraAnswer(v),mnext:()=>maraNext(),
+ mquit:(v,b)=>{if(b.dataset.armed){M=null;viewMarathon()}else{b.dataset.armed="1";b.textContent=t("quitC");b.classList.remove("ghost")}},
+ goess:v=>{coursMode="ess";location.hash="#cours-"+v}
+};
+document.addEventListener("click",e=>{const b=e.target.closest("[data-act]");if(!b||b.disabled)return;const f=ACT[b.dataset.act];if(f){e.preventDefault();f(b.dataset.v,b)}});
+document.addEventListener("keydown",e=>{
+  if(e.ctrlKey||e.metaKey||e.altKey)return;
+  const tag=(e.target.tagName||"").toLowerCase();if(tag==="input"||tag==="textarea")return;
+  const h=(location.hash||"").slice(1);
+  if(h.startsWith("qcm-")&&Q&&Q.i<Q.list.length){
+    const ord=Q.order[Q.i];const k=parseInt(e.key,10);
+    if(Q.picked===null&&k>=1&&k<=ord.length){e.preventDefault();pickQ(ord[k-1])}
+    else if(Q.picked!==null&&e.key==="Enter"){e.preventDefault();nextQ()}
+  }else if(h==="marathon"&&M&&!M.end){
+    const ord=M.order[M.i];const k=parseInt(e.key,10);
+    if(M.picked===null&&k>=1&&k<=ord.length){e.preventDefault();maraAnswer(ord[k-1])}
+    else if(M.picked!==null&&e.key==="Enter"){e.preventDefault();maraNext()}
+  }else if(h==="examen"&&E&&!E.done){
+    const ord=E.order[E.i];const k=parseInt(e.key,10);
+    if(k>=1&&k<=ord.length){E.ans[E.i]=ord[k-1];examConfirm=false;renderExam()}
+    else if(e.key==="ArrowRight"&&E.i<E.list.length-1){E.i++;renderExam()}
+    else if(e.key==="ArrowLeft"&&E.i>0){E.i--;renderExam()}
+  }else if(h==="eclair"&&T&&T.run){
+    if(e.key==="ArrowLeft"){e.preventDefault();eclairAnswer(1)}else if(e.key==="ArrowRight"){e.preventDefault();eclairAnswer(0)}
+  }else if(h==="cartes"&&C&&C.i<C.deck.length&&(e.key===" "||e.key==="Enter")&&tag!=="button"){e.preventDefault();ACT.cflip()}
+});
+if(window.matchMedia){try{matchMedia("(prefers-color-scheme: dark)").addEventListener("change",themeIcon)}catch(e){}}
+window.addEventListener("hashchange",route);
+applyTheme();route();
+</script>
+
+</html>
