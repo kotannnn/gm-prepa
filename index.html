@@ -289,12 +289,15 @@ main{max-width:1120px;margin:0 auto;padding-block:28px 64px;
 
 /* exam */
 .exam-grid{display:grid;grid-template-columns:minmax(0,1fr) 220px;gap:18px;align-items:start}
-@media (max-width:860px){.exam-grid{grid-template-columns:1fr}}
-.dots{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;padding:14px}
-.dots button{aspect-ratio:1;max-width:100%;border:1.5px solid var(--line);background:var(--surface);border-radius:8px;font:700 13px var(--f-mono);cursor:pointer;color:var(--muted)}
+@media (max-width:860px){.exam-grid{grid-template-columns:minmax(0,1fr)}}
+.dots{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;padding:14px;min-width:0}
+.dots button{aspect-ratio:1;max-width:100%;min-width:0;padding:0;border:1.5px solid var(--line);background:var(--surface);border-radius:8px;font:700 13px var(--f-mono);cursor:pointer;color:var(--muted)}
 .dots button.done{background:var(--accent-soft);border-color:var(--accent);color:var(--ink)}
 .dots button.cur{outline:2px solid var(--ink);outline-offset:1px}
-@media (max-width:860px){.dots{grid-template-columns:repeat(10,1fr);order:-1}}
+@media (max-width:860px){.dots{grid-template-columns:repeat(10,minmax(0,1fr));gap:5px;padding:10px;order:-1}.dots button{font-size:12px;border-radius:7px}}
+.dots button.open{border-style:dashed;border-color:color-mix(in srgb,var(--c-gouv) 60%,var(--line))}
+.dots button.open.done{border-style:solid;border-color:var(--c-gouv);background:color-mix(in srgb,var(--c-gouv) 16%,var(--surface))}
+.regrade{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px;margin-top:10px;padding-top:10px;border-top:1px dashed var(--line)}
 .timer{font:700 18px var(--f-mono);padding:8px 14px;border-radius:10px;background:var(--ink);color:var(--surface);font-variant-numeric:tabular-nums}
 .timer.low{background:var(--bad);color:#fff}
 .note{font:800 clamp(52px,10vw,84px)/1 var(--f-display);letter-spacing:-.04em}
@@ -1107,7 +1110,7 @@ fr:{home:"Accueil",cours:"Cours",qcm:"QCM",jeux:"Jeux",examen:"Examen",
  modes:"Choisis ton mode",progress:"Progression par thème",reset:"Effacer ma progression",resetC:"Confirmer l'effacement",resetDone:"Progression effacée",
  mCours:"Fiches de cours",mCoursD:"Tout lire, ou seulement l'essentiel à retenir.",mCoursM:"6 thèmes",
  mQcm:"QCM d'entraînement",mQcmD:"Corrections expliquées après chaque réponse.",mQcmM:"43 du TD + 25 bonus",
- mExam:"Examen blanc",mExamD:"20 questions tirées au hasard, note sur 20.",mExamM:"20 questions · 20 min",
+ mExam:"Examen blanc",mExamD:"20 QCM et 10 questions ouvertes tirées au hasard, note sur 20.",mExamM:"20 QCM + 10 ouvertes · 30 min",openQ:"questions ouvertes",openOne:"Question ouverte",openHint:"Question ouverte : écris ta réponse, sans propositions.",partQcm:"Partie 1 · QCM",partOpen:"Partie 2 · Question ouverte",regradeHint:"Les questions ouvertes sont notées automatiquement d'après les mots clés. Si ta réponse est juste mais formulée autrement, corrige la note dans la correction ci-dessous.",
  mCards:"Cartes mémoire",mCardsD:"Retourne la carte, dis si tu savais.",mCardsM:CARDS.length+" cartes",
  mEclair:"Éclair Vrai / Faux",mEclairD:"Un maximum de bonnes réponses en 60 secondes.",mEclairM:"60 s · combos",
  mPairs:"Associer",mPairsD:"Relie chaque notion à sa définition.",mPairsM:PAIRS.length+" séries",
@@ -1120,7 +1123,7 @@ fr:{home:"Accueil",cours:"Cours",qcm:"QCM",jeux:"Jeux",examen:"Examen",
  origOn:"Voir l'original FR",origOff:"Masquer l'original",kbd:"Touches 1–4, puis Entrée",
  score:"Score",retryErr:"Refaire mes erreurs",again:"Recommencer",other:"Autres séries",
  r100:"Parfait. Tu es prêt·e pour le contrôle.",r75:"Très bien. Revois les erreurs et c'est bon.",r50:"Pas mal. Relis l'essentiel du thème puis recommence.",r0:"Commence par la fiche « L'essentiel », puis réessaie.",
- examT:"Examen blanc",examP:"20 questions tirées au hasard dans le TD et les bonus. Pas de correction pendant l'épreuve. Tu as 20 minutes, comme un vrai contrôle.",examGo:"Commencer l'examen",examRules:["Tu peux naviguer entre les questions et changer d'avis.","À la fin du temps, la copie est ramassée automatiquement.","Le résultat montre ta note sur 20 et la correction de chaque question."],
+ examT:"Examen blanc",examP:"Partie 1 : 20 QCM. Partie 2 : 10 questions ouvertes, sans propositions, auxquelles tu réponds avec tes mots. Pas de correction pendant l'épreuve. Tu as 30 minutes.",examGo:"Commencer l'examen",examRules:["Tu peux naviguer entre les questions et changer d'avis.","À la fin du temps, la copie est ramassée automatiquement.","Le résultat montre ta note sur 20 et la correction de chaque question.","Les questions ouvertes valent 1 point (juste), 0,5 (à moitié) ou 0 : tu peux ajuster leur note dans la correction."],
  finishE:"Rendre la copie",confirmE:"Confirmer : rendre la copie",unans:"question(s) sans réponse",prevQ:"Précédente",nextQ2:"Suivante",note:"Ta note",correction:"Correction",yourAns:"Ta réponse",none:"Pas de réponse",timeUp:"Temps écoulé : copie ramassée.",
  m16:"Très bien",m14:"Bien",m12:"Assez bien",m10:"Passable",m0:"Insuffisant",
  jeuxT:"Mini-jeux",jeuxP:"Des formats courts pour réviser autrement. Chaque bonne réponse rapporte de l'XP.",
@@ -1174,7 +1177,7 @@ ru:{home:"Главная",cours:"Курс",qcm:"QCM",jeux:"Игры",examen:"Э�
  modes:"Выбери режим",progress:"Прогресс по темам",reset:"Сбросить прогресс",resetC:"Подтвердить сброс",resetDone:"Прогресс сброшен",
  mCours:"Конспекты",mCoursD:"Читать всё или только главное для контроля.",mCoursM:"6 тем",
  mQcm:"Тренировка QCM",mQcmD:"Объяснение после каждого ответа.",mQcmM:"43 из TD + 25 бонус",
- mExam:"Пробный экзамен",mExamD:"20 случайных вопросов, оценка из 20.",mExamM:"20 вопросов · 20 мин",
+ mExam:"Пробный экзамен",mExamD:"20 QCM и 10 открытых вопросов, оценка из 20.",mExamM:"20 QCM + 10 открытых · 30 мин",openQ:"открытые вопросы",openOne:"Открытый вопрос",openHint:"Открытый вопрос: напиши ответ своими словами, без вариантов.",partQcm:"Часть 1 · QCM",partOpen:"Часть 2 · Открытый вопрос",regradeHint:"Открытые вопросы оцениваются автоматически по ключевым словам. Если ответ верный, но сформулирован иначе, поправь оценку в разборе ниже.",
  mCards:"Карточки",mCardsD:"Переверни карточку и отметь, знал(а) ли ты.",mCardsM:CARDS.length+" карточек",
  mEclair:"Молния: верно / неверно",mEclairD:"Как можно больше правильных ответов за 60 секунд.",mEclairM:"60 с · комбо",
  mPairs:"Пары",mPairsD:"Соедини понятие с определением.",mPairsM:PAIRS.length+" серий",
@@ -1187,7 +1190,7 @@ ru:{home:"Главная",cours:"Курс",qcm:"QCM",jeux:"Игры",examen:"Э�
  origOn:"Показать оригинал FR",origOff:"Скрыть оригинал",kbd:"Клавиши 1–4, затем Enter",
  score:"Счёт",retryErr:"Повторить ошибки",again:"Ещё раз",other:"Другие серии",
  r100:"Идеально. Ты готов(а) к контролю.",r75:"Очень хорошо. Повтори ошибки — и всё.",r50:"Неплохо. Перечитай главное по теме и попробуй снова.",r0:"Начни с конспекта «Только главное», потом попробуй ещё раз.",
- examT:"Пробный экзамен",examP:"20 случайных вопросов из TD и бонуса. Во время экзамена ответы не показываются. 20 минут, как на настоящем контроле.",examGo:"Начать экзамен",examRules:["Можно переходить между вопросами и менять ответ.","Когда время выйдет, работа сдаётся автоматически.","В конце — оценка из 20 и разбор каждого вопроса."],
+ examT:"Пробный экзамен",examP:"Часть 1: 20 вопросов QCM. Часть 2: 10 открытых вопросов без вариантов — отвечаешь своими словами. Во время экзамена ответы не показываются. Время — 30 минут.",examGo:"Начать экзамен",examRules:["Можно переходить между вопросами и менять ответ.","Когда время выйдет, работа сдаётся автоматически.","В конце — оценка из 20 и разбор каждого вопроса.","Открытый вопрос даёт 1 балл (верно), 0,5 (частично) или 0 — оценку можно поправить в разборе."],
  finishE:"Сдать работу",confirmE:"Подтвердить: сдать работу",unans:"вопрос(ов) без ответа",prevQ:"Предыдущий",nextQ2:"Следующий",note:"Твоя оценка",correction:"Разбор",yourAns:"Твой ответ",none:"Нет ответа",timeUp:"Время вышло: работа сдана.",
  m16:"Очень хорошо (Très bien)",m14:"Хорошо (Bien)",m12:"Довольно хорошо (Assez bien)",m10:"Удовлетворительно (Passable)",m0:"Недостаточно (Insuffisant)",
  jeuxT:"Мини-игры",jeuxP:"Короткие форматы, чтобы повторять по-другому. За каждый правильный ответ — XP.",
@@ -1603,36 +1606,44 @@ function retryWrong(){const w=Q.wrongs;Q={tp:Q.tp,free:Q.free,list:shuffle(w),i:
 
 /* ================= EXAMEN ================= */
 let E=null,examConfirm=false;
-const EXAM_N=20,EXAM_MIN=20;
+/* 20 multiple-choice questions, then 10 open questions answered without options.
+   Open answers are auto-graded from key-word overlap (1 / 0.5 / 0) and can be re-graded in the review. */
+const EXAM_N=20,EXAM_OPEN=10,EXAM_MIN=30;
+const openPts=sim=>sim>=60?1:sim>=30?.5:0;
 function viewExamen(){
   if(E&&!E.done){CUR=renderExam;renderExam();startExamTimer();return}
   if(E&&E.done){CUR=renderExamEnd;renderExamEnd();return}
   CUR=viewExamen;
   render(`<div class="result sheet" style="text-align:left;align-items:stretch;--tc:var(--c-leader)">
-    <span class="chip">${EXAM_N} ${t("questions")} · ${EXAM_MIN} min</span>
+    <span class="chip">${EXAM_N} QCM + ${EXAM_OPEN} ${t("openQ")} · ${EXAM_MIN} min</span>
     <h1 class="h2">${t("examT")}</h1><p class="lead" style="margin:0">${t("examP")}</p>
     <ul style="margin:0;padding-left:20px">${t("examRules").map(r=>`<li>${r}</li>`).join("")}</ul>
     <div class="row"><button class="btn pri" data-act="examgo">${t("examGo")} →</button></div></div>`);
 }
 function examStart(){
-  const list=shuffle(QS).slice(0,EXAM_N);
-  E={list,ans:Array(list.length).fill(null),order:list.map(q=>q.fr[1].length>2?shuffle(range(q.fr[1].length)):range(q.fr[1].length)),i:0,end:Date.now()+EXAM_MIN*60000,done:false,timeUp:false};
+  const mcq=shuffle(QS).slice(0,EXAM_N);
+  const open=shuffle(QS.filter(q=>q.fr[1].length>2&&!mcq.includes(q))).slice(0,EXAM_OPEN);
+  const list=mcq.concat(open);
+  E={list,free:list.map((_,i)=>i>=mcq.length),ans:Array(list.length).fill(null),fg:Array(list.length).fill(null),sim:Array(list.length).fill(0),recOk:Array(list.length).fill(null),
+    order:list.map(q=>q.fr[1].length>2?shuffle(range(q.fr[1].length)):range(q.fr[1].length)),i:0,end:Date.now()+EXAM_MIN*60000,done:false,timeUp:false};
   examConfirm=false;CUR=renderExam;renderExam();startExamTimer();
 }
 function startExamTimer(){clearTimers();every(()=>{if(!E||E.done)return clearTimers();const el=$("#timer");const left=E.end-Date.now();if(left<=0){E.timeUp=true;examFinish();return}if(el){el.textContent=fmt(left);el.classList.toggle("low",left<120000)}},1000)}
 function fmt(ms){const s=Math.max(0,Math.ceil(ms/1000));return String(Math.floor(s/60)).padStart(2,"0")+":"+String(s%60).padStart(2,"0")}
 function renderExam(){
-  const q=E.list[E.i],d=L(q),fr=q.fr,ord=E.order[E.i],showO=S.lang==="ru"&&S.orig;
-  const opts=ord.map((oi,k)=>`<button class="opt ${E.ans[E.i]===oi?"sel":""}" data-act="eans" data-v="${oi}" aria-pressed="${E.ans[E.i]===oi}"><span class="key">${"ABCD"[k]}</span><span>${esc(d[1][oi])}${showO?`<span class="orig">${esc(fr[1][oi])}</span>`:""}</span></button>`).join("");
-  const dots=E.list.map((_,i)=>`<button class="${E.ans[i]!==null?"done":""} ${i===E.i?"cur":""}" data-act="ego" data-v="${i}" aria-label="${t("question")} ${i+1}">${i+1}</button>`).join("");
+  const q=E.list[E.i],d=L(q),fr=q.fr,ord=E.order[E.i],showO=S.lang==="ru"&&S.orig,free=E.free[E.i];
+  const opts=free?`<p class="muted" style="margin:0;font-size:14.5px">${t("openHint")}</p><textarea id="exam-free" class="free-ta" rows="4" placeholder="${t("freePh")}">${esc(E.ans[E.i]||"")}</textarea>`
+    :`<div class="opts">${ord.map((oi,k)=>`<button class="opt ${E.ans[E.i]===oi?"sel":""}" data-act="eans" data-v="${oi}" aria-pressed="${E.ans[E.i]===oi}"><span class="key">${"ABCD"[k]}</span><span>${esc(d[1][oi])}${showO?`<span class="orig">${esc(fr[1][oi])}</span>`:""}</span></button>`).join("")}</div>`;
+  const dots=E.list.map((_,i)=>`<button class="${E.ans[i]!==null?"done":""} ${i===E.i?"cur":""} ${E.free[i]?"open":""}" data-act="ego" data-v="${i}" aria-label="${t("question")} ${i+1}${E.free[i]?" · "+t("openQ"):""}">${i+1}</button>`).join("");
   const un=E.ans.filter(a=>a===null).length;const left=E.end-Date.now();
   render(`<div class="exam-grid" style="--tc:var(--c-leader)">
     <div class="quiz" style="max-width:none;margin:0">
       <div class="qtop"><span class="timer ${left<120000?"low":""}" id="timer">${fmt(left)}</span><span class="mono">${t("question")} ${E.i+1}/${E.list.length}</span>
         ${S.lang==="ru"?`<button class="btn sm ghost" data-act="orig" style="margin-left:auto">${S.orig?t("origOff"):t("origOn")}</button>`:""}</div>
       <div class="qcard sheet">
-        <div class="qtext">${esc(d[0])}${showO?`<span class="orig">${esc(fr[0])}</span>`:""}</div>
-        <div class="opts">${opts}</div>
+        <span class="chip" style="--tc:${free?"var(--c-gouv)":"var(--c-leader)"};align-self:flex-start">${free?t("partOpen"):t("partQcm")}</span>
+        <${free?'label for="exam-free"':"div"} class="qtext">${esc(d[0])}${showO?`<span class="orig">${esc(fr[0])}</span>`:""}</${free?"label":"div"}>
+        ${opts}
         <div class="qfoot"><button class="btn sm" data-act="ego" data-v="${E.i-1}" ${E.i===0?"disabled":""}>← ${t("prevQ")}</button>
           ${E.i<E.list.length-1?`<button class="btn sm pri" data-act="ego" data-v="${E.i+1}">${t("nextQ2")} →</button>`:""}</div>
       </div>
@@ -1642,23 +1653,50 @@ function renderExam(){
     </div>
     <div class="dots sheet">${dots}</div></div>`);
 }
+function examScore(){
+  E.mcq=E.list.reduce((s,q,i)=>s+(!E.free[i]&&E.ans[i]===q.a?1:0),0);
+  E.openScore=E.fg.reduce((s,v,i)=>s+(E.free[i]?v||0:0),0);
+  E.score=E.mcq+E.openScore;
+  E.note=Math.round(E.score/E.list.length*200)/10;
+}
 function examFinish(){
   if(!E||E.done)return;
+  const ta=$("#exam-free");if(ta&&E.free[E.i]){const v=ta.value.trim();E.ans[E.i]=v?v:null}
   E.done=true;clearTimers();
-  E.score=E.list.reduce((s,q,i)=>s+(E.ans[i]===q.a?1:0),0);
-  E.note=Math.round(E.score/E.list.length*200)/10;
-  E.list.forEach((q,i)=>{if(E.ans[i]!==null){S.res[q.id]=E.ans[i]===q.a;rec("q"+q.id,q.t,E.ans[i]===q.a)}});
+  E.list.forEach((q,i)=>{if(E.free[i]){E.sim[i]=E.ans[i]?simScore(E.ans[i],q):0;E.fg[i]=openPts(E.sim[i])}});
+  examScore();
+  E.list.forEach((q,i)=>{if(E.ans[i]===null)return;const ok=E.free[i]?E.fg[i]===1:E.ans[i]===q.a;S.res[q.id]=ok;rec("q"+q.id,q.t,ok);E.recOk[i]=ok});
+  E.prevBest=S.best.exam;
   if(S.best.exam==null||E.note>S.best.exam)S.best.exam=E.note;
-  S.exams.push({ts:Date.now(),v:E.note});S.exams=S.exams.slice(-12);
-  addXP(E.score*8);save();CUR=renderExamEnd;renderExamEnd();window.scrollTo(0,0);
+  E.ts=Date.now();S.exams.push({ts:E.ts,v:E.note});S.exams=S.exams.slice(-12);
+  addXP(Math.round(E.score*8));save();CUR=renderExamEnd;renderExamEnd();window.scrollTo(0,0);
+}
+/* re-grade an open answer from the review: note, best score, exam history and answer history follow */
+function examRegrade(v){
+  const [i,p]=String(v).split("|").map(Number);if(!E||!E.done||!E.free[i])return;
+  E.fg[i]=p;examScore();
+  const q=E.list[i],ok=p===1;
+  if(E.ans[i]!==null&&E.recOk[i]!==ok){const r=S.h["q"+q.id];if(r){r[1]=Math.max(0,r[1]+(ok?1:-1));r[4]=ok?1:0}S.res[q.id]=ok;E.recOk[i]=ok}
+  S.best.exam=E.prevBest==null?E.note:Math.max(E.prevBest,E.note);
+  const ex=S.exams.find(x=>x.ts===E.ts);if(ex)ex.v=E.note;
+  save();const y=window.scrollY;renderExamEnd();window.scrollTo(0,y);
 }
 function mention(n){return n>=16?t("m16"):n>=14?t("m14"):n>=12?t("m12"):n>=10?t("m10"):t("m0")}
 function renderExamEnd(){
-  const rv=E.list.map((q,i)=>{const d=L(q),a=E.ans[i],ok=a===q.a;return `<div class="rv" style="border-color:${ok?"var(--ok)":"var(--bad)"}"><div class="q">${i+1}. ${esc(d[0])}</div>${ok?`<div class="a-ok">✓ ${esc(d[1][q.a])}</div>`:`<div>${t("yourAns")} : ${a===null?`<i class="muted">${t("none")}</i>`:`<span class="a-bad">${esc(d[1][a])}</span>`}</div><div class="a-ok">✓ ${esc(d[1][q.a])}</div><div class="muted" style="margin-top:4px">${esc(d[2])}</div>`}</div>`}).join("");
+  const rv=E.list.map((q,i)=>{const d=L(q),a=E.ans[i];
+    if(E.free[i]){const p=E.fg[i]||0,col=p===1?"var(--ok)":p>0?"var(--warn)":"var(--bad)";
+      const gb=[[1,t("gOk")],[.5,t("gHalf")],[0,t("gNo")]].map(g=>`<button class="tagbtn ${p===g[0]?"on":""}" data-act="eregrade" data-v="${i}|${g[0]}" aria-pressed="${p===g[0]}">${g[1]}</button>`).join("");
+      return `<div class="rv" style="border-color:${col}"><div class="q">${i+1}. <span class="chip" style="--tc:var(--c-gouv)">${t("openOne")}</span> ${esc(d[0])}</div>
+        <div>${t("yourAns")} : ${a===null?`<i class="muted">${t("none")}</i>`:`<i>${esc(a)}</i>`}</div>
+        <div class="a-ok">✓ ${esc(d[1][q.a])}</div><div class="muted" style="margin-top:4px">${esc(d[2])}</div>
+        <div class="regrade"><span class="mono muted" style="font-size:12.5px">${a?t("match").replace("{p}",E.sim[i])+" · ":""}${fmtNum(p)} / 1</span><div class="tag-row">${gb}</div></div></div>`}
+    const ok=a===q.a;return `<div class="rv" style="border-color:${ok?"var(--ok)":"var(--bad)"}"><div class="q">${i+1}. ${esc(d[0])}</div>${ok?`<div class="a-ok">✓ ${esc(d[1][q.a])}</div>`:`<div>${t("yourAns")} : ${a===null?`<i class="muted">${t("none")}</i>`:`<span class="a-bad">${esc(d[1][a])}</span>`}</div><div class="a-ok">✓ ${esc(d[1][q.a])}</div><div class="muted" style="margin-top:4px">${esc(d[2])}</div>`}</div>`}).join("");
   render(`<div class="result sheet" style="--tc:var(--c-leader)">
     ${E.timeUp?`<div class="callout">${t("timeUp")}</div>`:""}
-    <span class="eyebrow">${t("note")}</span><div class="note">${String(E.note).replace(".",",")}<small>/20</small></div>
-    <p class="h3" style="margin:0">${mention(E.note)} · ${E.score}/${E.list.length}</p>
+    <span class="eyebrow">${t("note")}</span><div class="note">${fmtNum(E.note)}<small>/20</small></div>
+    <p class="h3" style="margin:0">${mention(E.note)}</p>
+    <p class="mono" style="margin:0">QCM ${E.mcq}/${EXAM_N} · ${t("openQ")} ${fmtNum(E.openScore)}/${EXAM_OPEN}</p>
+    <p class="muted" style="margin:0;font-size:14px;max-width:52ch">${t("regradeHint")}</p>
     <div class="row" style="justify-content:center"><button class="btn pri" data-act="examnew">${t("again")}</button><a class="btn" href="#qcm-err">${t("retryErr")}</a></div>
     <h2 class="h3" style="align-self:flex-start">${t("correction")}</h2><div class="review">${rv}</div></div>`);
 }
@@ -1907,6 +1945,8 @@ function textCheck(i){
 function textManual(v){const [i,j]=String(v).split("|").map(Number);const x=curText;if(!x)return;const r=S.tr[tKey(x,i)];if(!r)return;r.m[j]=r.m[j]?0:1;r.ts=Date.now();save();rerenderTQ(i)}
 let draftT=null;
 document.addEventListener("input",e=>{if(e.target&&e.target.id==="free-ans"&&Q&&Q.free&&!Q.revealed)Q.text=e.target.value});
+document.addEventListener("input",e=>{if(e.target&&e.target.id==="exam-free"&&E&&!E.done&&E.free[E.i]){const v=e.target.value,was=E.ans[E.i]!==null;E.ans[E.i]=v.trim()?v:null;
+  if(was!==(E.ans[E.i]!==null)){const d=$(`.dots button[data-v="${E.i}"]`);if(d)d.classList.toggle("done",E.ans[E.i]!==null);const c=$(".callout span");const un=E.ans.filter(a=>a===null).length;if(c)c.innerHTML=un?`<b>${un}</b> ${t("unans")}`:"✓"}}});
 document.addEventListener("input",e=>{const ta=e.target.closest&&e.target.closest("textarea[data-key]");if(!ta)return;S.ta[ta.dataset.key]=ta.value;S.taT[ta.dataset.key]=Date.now();clearTimeout(draftT);draftT=setTimeout(save,400)});
 
 /* ================= COMPTE ================= */
@@ -2074,6 +2114,7 @@ const ACT={
  eans:v=>{E.ans[E.i]=+v;examConfirm=false;renderExam()},
  ego:v=>{v=+v;if(v>=0&&v<E.list.length){E.i=v;examConfirm=false;renderExam()}},
  efinish:()=>{if(examConfirm)examFinish();else{examConfirm=true;renderExam()}},
+ eregrade:v=>examRegrade(v),
  cflip:()=>{C.flip=!C.flip;const f=$(".flash");if(f)f.classList.toggle("flip",C.flip)},
  cyes:()=>{const c=C.deck[C.i];if(c[0]!=="vocab")rec("c"+CARDS.indexOf(c)+"d",c[0],true);C.known++;addXP(3);C.i++;C.flip=false;renderCards()},
  cno:()=>{const c=C.deck[C.i];if(c[0]!=="vocab")rec("c"+CARDS.indexOf(c)+"d",c[0],false);C.again.push(c);C.i++;C.flip=false;renderCards()},
@@ -2110,7 +2151,7 @@ document.addEventListener("keydown",e=>{
     else if(M.picked!==null&&e.key==="Enter"){e.preventDefault();maraNext()}
   }else if(h==="examen"&&E&&!E.done){
     const ord=E.order[E.i];const k=parseInt(e.key,10);
-    if(k>=1&&k<=ord.length){E.ans[E.i]=ord[k-1];examConfirm=false;renderExam()}
+    if(!E.free[E.i]&&k>=1&&k<=ord.length){E.ans[E.i]=ord[k-1];examConfirm=false;renderExam()}
     else if(e.key==="ArrowRight"&&E.i<E.list.length-1){E.i++;renderExam()}
     else if(e.key==="ArrowLeft"&&E.i>0){E.i--;renderExam()}
   }else if(h==="eclair"&&T&&T.run){
