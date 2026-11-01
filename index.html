@@ -1109,7 +1109,7 @@ fixS();
    Progress always lives in localStorage first (works offline). With an account, every change is
    also pushed (debounced) to a Google Apps Script web app that stores it in a Google Sheet.
    On login, server and local data are merged so nothing done on either side is lost. */
-const SYNC_URL="";
+const SYNC_URL="https://script.google.com/macros/s/AKfycbx2vjYLztshv-Q9YX_lCzpnK4aL_a3ECLgEK-pnifwg8cnxnrB-RCEAfXSlppu0i71k/exec";
 const AUTH_KEY="gm-prepa-auth";
 let AUTH=null;try{const a=JSON.parse(localStorage.getItem(AUTH_KEY)||"null");if(a&&a.login&&a.token)AUTH=a}catch(e){}
 let syncState=AUTH?"pending":"off",syncTimer=null,lastSync=null,syncBusy=false,syncAgain=false;
