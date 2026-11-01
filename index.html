@@ -78,6 +78,30 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 .seg button.on{background:var(--surface);color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.12)}
 .iconbtn{width:38px;height:38px;border-radius:10px;border:1px solid var(--line);background:var(--surface2);display:grid;place-items:center;cursor:pointer}
 .iconbtn svg{width:18px;height:18px;stroke:var(--ink);fill:none;stroke-width:2}
+.acct{position:relative;text-decoration:none}
+.acct.on{background:var(--accent-soft);border-color:var(--accent)}
+.dot{display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--muted);flex:none}
+.acct .dot{position:absolute;right:-2px;top:-2px;border:2px solid var(--surface);width:12px;height:12px}
+.dot.off{display:none}
+.dot.ok{background:var(--ok)}.dot.pending{background:var(--warn)}.dot.err{background:var(--bad)}
+@media (max-width:420px){.brand span:last-child{display:none}.top-in{gap:8px}.top-r{gap:6px}}
+
+/* compte */
+.acc{max-width:640px;margin:0 auto;display:flex;flex-direction:column;gap:16px}
+.acc-card{padding:20px;display:flex;flex-direction:column;gap:14px;min-width:0}
+.acc-tabs{align-self:flex-start}
+.acc-form{display:flex;flex-direction:column;gap:8px}
+.acc-form label{font-weight:700;font-size:14px;margin-top:6px}
+.acc-form input{width:100%;border:1.5px solid var(--line);border-radius:12px;padding:12px 14px;font:16px var(--f-body);background:var(--surface2);color:var(--ink)}
+.acc-form input:focus{outline:none;border-color:var(--accent);background:var(--surface)}
+.acc-form small{font-size:13px}
+.acc-form .btn{margin-top:6px}
+.ferr{margin:0;min-height:1.2em;color:var(--bad);font-weight:600;font-size:14px}
+.acc-user{display:flex;align-items:center;gap:12px}
+.avatar{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;background:var(--accent);color:var(--accent-ink);font:800 20px var(--f-display)}
+.sync-line{margin:0;display:flex;align-items:center;gap:8px;font-weight:600}
+.vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.localnote{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:12px 16px;margin-bottom:14px;border-radius:var(--r);border:1px dashed color-mix(in srgb,var(--warn) 60%,var(--line));background:var(--warn-bg);color:var(--ink);text-decoration:none;font-weight:600;font-size:14.5px}
 
 /* bottom tabbar (mobile) */
 .tabbar{display:none}
@@ -433,6 +457,7 @@ footer.foot{max-width:1120px;margin:0 auto;padding-block:0 30px;font-size:13px;c
         <button id="lang-ru" data-act="lang" data-v="ru">RU</button>
       </div>
       <button class="iconbtn" id="theme-btn" data-act="theme" aria-label="Thème"><svg viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
+      <a class="iconbtn acct" id="acct-btn" href="#compte" aria-label="Compte"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg><i id="acct-dot" class="dot off"></i></a>
     </div>
   </div>
 </header>
@@ -976,7 +1001,15 @@ fr:{home:"Accueil",cours:"Cours",qcm:"QCM",jeux:"Jeux",examen:"Examen",
  eclairT:"Éclair Vrai / Faux",eclairP:"60 secondes. Réponds vite : 3 bonnes réponses d'affilée = bonus de combo. Clavier : ← Vrai, → Faux.",go:"C'est parti",tTrue:"Vrai",tFalse:"Faux",time:"temps",pts:"points",combo:"combo",best:"Record",newBest:"Nouveau record !",errorsList:"À revoir",
  pairsT:"Associer",pairsP:"Touche une notion à gauche, puis sa définition à droite.",mistakes:"erreurs",pairsDone:"Série terminée",
  sortT:"Trier",sortP:"Dans quelle case va cet élément ?",correct:"Correct",wrongIs:"Non, c'est :",sortDone:"Série terminée",
- analyse:"Analyse",marathon:"Marathon",textes:"Textes",
+ analyse:"Analyse",marathon:"Marathon",textes:"Textes",compte:"Compte",
+ accT:"Mon compte",accP:"Avec un compte, ta progression est sauvegardée en ligne : niveau et XP, réponses aux QCM, examens, marathons, textes et brouillons, analyse. Tu la retrouves sur n'importe quel appareil, même après avoir vidé le navigateur.",
+ tabIn:"Se connecter",tabUp:"Créer un compte",loginL:"Identifiant",passL:"Mot de passe",pass2L:"Répète le mot de passe",loginRules:"3 à 30 caractères : lettres latines, chiffres, point, tiret, tiret bas.",passRules:"6 caractères minimum. Garde-le bien : il n'y a pas de récupération par e-mail.",
+ signIn:"Se connecter",signUp:"Créer mon compte",busy:"Un instant…",
+ e_bad_login:"Identifiant invalide : 3 à 30 caractères (lettres latines, chiffres, . _ -).",e_bad_password:"Mot de passe trop court : 6 caractères minimum.",e_exists:"Cet identifiant est déjà pris.",e_no_user:"Aucun compte avec cet identifiant.",e_wrong_password:"Mot de passe incorrect.",e_auth:"Session expirée : reconnecte-toi.",e_net:"Impossible de joindre le serveur. Ta progression reste enregistrée sur cet appareil.",e_noserver:"La sauvegarde en ligne n'est pas encore activée sur ce site. En attendant, utilise les fichiers de sauvegarde ci-dessous.",e_mismatch:"Les deux mots de passe ne sont pas identiques.",e_too_big:"Données trop volumineuses.",e_server:"Erreur du serveur. Réessaie dans un moment.",e_bad_json:"Erreur de communication.",e_bad_action:"Erreur de communication.",
+ loggedAs:"Connecté·e :",st_ok:"Tout est sauvegardé",st_pending:"Sauvegarde en attente…",st_err:"La dernière sauvegarde a échoué",st_off:"",lastSyncL:"Dernière sauvegarde",syncNow:"Sauvegarder maintenant",logout:"Se déconnecter",logoutC:"Confirmer la déconnexion",
+ logoutP:"À la déconnexion, la progression est retirée de cet appareil. Elle reste dans ton compte.",welcome:"Bienvenue, {u} ! Progression synchronisée.",created:"Compte créé : ta progression est sauvegardée en ligne.",loggedOut:"Déconnecté·e.",
+ backupT:"Fichiers de sauvegarde",backupP:"Télécharge ta progression pour la garder ou l'ouvrir dans Excel / Google Sheets. Ça marche aussi sans compte.",expJson:"Sauvegarde complète (.json)",expCsv:"Historique des réponses (.csv)",expTxt:"Réponses aux textes (.csv)",impJson:"Restaurer depuis un fichier .json",impOk:"Progression restaurée et fusionnée.",impErr:"Ce fichier n'est pas une sauvegarde GM·prépa.",
+ localOnly:"Ta progression n'est enregistrée que sur cet appareil.",localOnlyBtn:"Créer un compte",
  mText:"Études de texte",mTextD:"10 textes à analyser, avec des questions ouvertes comme au contrôle.",mTextM:TEXT_Q_N+" questions ouvertes",
  textesT:"Études de texte",textesP:"Lis le texte, puis réponds aux questions avec tes propres mots, comme au contrôle. Le site repère les idées clés dans ta réponse, puis te montre une réponse modèle.",
  srctd:"Texte du TD",srcfic:"Cas d'entraînement",srcreel:"Cas réel",qDone:"questions traitées",theText:"Le texte",questionsH:"Questions",
@@ -1028,7 +1061,15 @@ ru:{home:"Главная",cours:"Курс",qcm:"QCM",jeux:"Игры",examen:"Э�
  eclairT:"Молния: верно / неверно",eclairP:"60 секунд. Отвечай быстро: 3 правильных подряд = бонус-комбо. Клавиатура: ← верно, → неверно.",go:"Поехали",tTrue:"Верно",tFalse:"Неверно",time:"время",pts:"очки",combo:"комбо",best:"Рекорд",newBest:"Новый рекорд!",errorsList:"Повторить",
  pairsT:"Пары",pairsP:"Нажми понятие слева, затем его определение справа.",mistakes:"ошибок",pairsDone:"Серия пройдена",
  sortT:"Сортировка",sortP:"В какую группу относится этот элемент?",correct:"Верно",wrongIs:"Нет, правильно:",sortDone:"Серия пройдена",
- analyse:"Анализ",marathon:"Марафон",textes:"Тексты",
+ analyse:"Анализ",marathon:"Марафон",textes:"Тексты",compte:"Аккаунт",
+ accT:"Мой аккаунт",accP:"С аккаунтом прогресс сохраняется онлайн: уровень и XP, ответы QCM, экзамены, марафоны, тексты и черновики, анализ. Его можно открыть на любом устройстве, даже после очистки браузера.",
+ tabIn:"Войти",tabUp:"Создать аккаунт",loginL:"Логин",passL:"Пароль",pass2L:"Повтори пароль",loginRules:"3–30 символов: латинские буквы, цифры, точка, дефис, подчёркивание.",passRules:"Минимум 6 символов. Запомни его: восстановления по почте нет.",
+ signIn:"Войти",signUp:"Создать аккаунт",busy:"Секунду…",
+ e_bad_login:"Неверный логин: 3–30 символов (латиница, цифры, . _ -).",e_bad_password:"Слишком короткий пароль: минимум 6 символов.",e_exists:"Такой логин уже занят.",e_no_user:"Аккаунта с таким логином нет.",e_wrong_password:"Неверный пароль.",e_auth:"Сессия истекла: войди снова.",e_net:"Нет связи с сервером. Прогресс сохранён на этом устройстве.",e_noserver:"Онлайн-сохранение на сайте ещё не включено. Пока используй файлы резервной копии ниже.",e_mismatch:"Пароли не совпадают.",e_too_big:"Слишком много данных.",e_server:"Ошибка сервера. Попробуй чуть позже.",e_bad_json:"Ошибка связи.",e_bad_action:"Ошибка связи.",
+ loggedAs:"Вход выполнен:",st_ok:"Всё сохранено",st_pending:"Ожидает сохранения…",st_err:"Последнее сохранение не удалось",st_off:"",lastSyncL:"Последнее сохранение",syncNow:"Сохранить сейчас",logout:"Выйти",logoutC:"Подтвердить выход",
+ logoutP:"При выходе прогресс удаляется с этого устройства, но остаётся в аккаунте.",welcome:"Привет, {u}! Прогресс синхронизирован.",created:"Аккаунт создан: прогресс сохраняется онлайн.",loggedOut:"Выход из аккаунта выполнен.",
+ backupT:"Файлы резервной копии",backupP:"Скачай прогресс, чтобы хранить его или открыть в Excel / Google Таблицах. Работает и без аккаунта.",expJson:"Полная копия (.json)",expCsv:"История ответов (.csv)",expTxt:"Ответы на тексты (.csv)",impJson:"Восстановить из файла .json",impOk:"Прогресс восстановлен и объединён.",impErr:"Это не файл резервной копии GM·prépa.",
+ localOnly:"Прогресс сохраняется только на этом устройстве.",localOnlyBtn:"Создать аккаунт",
  mText:"Анализ текстов",mTextD:"10 текстов с открытыми вопросами, как на контроле.",mTextM:TEXT_Q_N+" открытых вопросов",
  textesT:"Анализ текстов",textesP:"Прочитай текст и ответь на вопросы своими словами, как на контроле. Сайт найдёт в ответе ключевые идеи и покажет образцовый ответ.",
  srctd:"Текст из TD",srcfic:"Учебный кейс",srcreel:"Реальный кейс",qDone:"вопросов пройдено",theText:"Текст",questionsH:"Вопросы",
@@ -1056,14 +1097,79 @@ ru:{home:"Главная",cours:"Курс",qcm:"QCM",jeux:"Игры",examen:"Э�
 const KEY="gm-prepa-v1";
 let S={lang:(navigator.language||"").toLowerCase().startsWith("ru")?"ru":"fr",xp:0,res:{},best:{},theme:null,orig:true};
 try{const r=JSON.parse(localStorage.getItem(KEY)||"null");if(r&&typeof r==="object")S=Object.assign(S,r);}catch(e){}
-if(!S.res||typeof S.res!=="object")S.res={};
-if(!S.best||typeof S.best!=="object")S.best={};
-if(!S.h||typeof S.h!=="object")S.h={};
-if(!Array.isArray(S.exams))S.exams=[];
-if(!Array.isArray(S.runs))S.runs=[];
-if(!S.ta||typeof S.ta!=="object")S.ta={};
-if(!S.tr||typeof S.tr!=="object")S.tr={};
-function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+const isObj=o=>o&&typeof o==="object"&&!Array.isArray(o);
+function fixS(){
+  ["res","best","h","ta","taT","tr"].forEach(k=>{if(!isObj(S[k]))S[k]={}});
+  ["exams","runs"].forEach(k=>{if(!Array.isArray(S[k]))S[k]=[]});
+  if(typeof S.xp!=="number"||!isFinite(S.xp))S.xp=0;
+}
+fixS();
+
+/* ================= ACCOUNT SYNC =================
+   Progress always lives in localStorage first (works offline). With an account, every change is
+   also pushed (debounced) to a Google Apps Script web app that stores it in a Google Sheet.
+   On login, server and local data are merged so nothing done on either side is lost. */
+const SYNC_URL="";
+const AUTH_KEY="gm-prepa-auth";
+let AUTH=null;try{const a=JSON.parse(localStorage.getItem(AUTH_KEY)||"null");if(a&&a.login&&a.token)AUTH=a}catch(e){}
+let syncState=AUTH?"pending":"off",syncTimer=null,lastSync=null,syncBusy=false,syncAgain=false;
+function save(){
+  try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}
+  if(AUTH&&SYNC_URL){syncState="pending";syncDot();clearTimeout(syncTimer);syncTimer=setTimeout(push,3500)}
+}
+async function api(action,payload){
+  if(!SYNC_URL){const e=new Error("noserver");e.code="noserver";throw e}
+  let r;
+  try{r=await fetch(SYNC_URL,{method:"POST",body:JSON.stringify(Object.assign({action},payload)),redirect:"follow"})}
+  catch(x){const e=new Error("net");e.code="net";throw e}
+  let j;try{j=await r.json()}catch(x){const e=new Error("net");e.code="net";throw e}
+  if(!j||!j.ok){const e=new Error((j&&j.error)||"server");e.code=(j&&j.error)||"server";throw e}
+  return j;
+}
+function summary(){const recs=Object.values(S.h);const n=recs.reduce((a,r)=>a+r[0],0),ok=recs.reduce((a,r)=>a+r[1],0);
+  return{xp:S.xp||0,answers:n,accuracy:n?Math.round(ok/n*100):0,bestExam:S.best.exam==null?null:S.best.exam,bestMara:S.best.mara||0}}
+function answerRows(){return Object.entries(S.tr).map(([k,r])=>{const [,xid,i]=k.split(":");const x=TEXTS.find(z=>z.id===xid);if(!x||!x.q[+i])return null;
+  const n=x.q[+i].pts.length,kk=r.f.reduce((a,v,j)=>a+((v||r.m[j])?1:0),0);return{text_id:xid,question:+i+1,answer:r.txt||"",score:Math.round(kk/n*100)}}).filter(Boolean)}
+function savePayload(){return{login:AUTH.login,token:AUTH.token,data:S,summary:summary(),answers:answerRows()}}
+async function push(){
+  if(!AUTH||!SYNC_URL)return;
+  if(syncBusy){syncAgain=true;return}
+  syncBusy=true;clearTimeout(syncTimer);
+  try{await api("save",savePayload());syncState="ok";lastSync=Date.now()}
+  catch(e){syncState="err";if(e.code==="auth"){AUTH=null;try{localStorage.removeItem(AUTH_KEY)}catch(x){};toast(t("e_auth"))}}
+  syncBusy=false;syncDot();
+  if(syncAgain){syncAgain=false;push()}
+  if(curRoute()==="compte"&&CUR)CUR();
+}
+/* newest record wins per item; maxima for scores; union for history lists; local keeps display prefs */
+function mergeData(a,b){
+  if(!isObj(b))return a;
+  const m=Object.assign({},b,a),pick=(x,y,f)=>{const out={};new Set([...Object.keys(x||{}),...Object.keys(y||{})]).forEach(k=>{out[k]=f(k,(x||{})[k],(y||{})[k])});return out};
+  m.xp=Math.max(+a.xp||0,+b.xp||0);
+  m.h=pick(a.h,b.h,(k,x,y)=>!x?y:!y?x:((x[2]||0)>=(y[2]||0)?x:y));
+  m.res=pick(a.res,b.res,(id,x,y)=>{if(x===undefined)return y;if(y===undefined)return x;const hx=(a.h||{})["q"+id],hy=(b.h||{})["q"+id];return hy&&(!hx||hy[2]>hx[2])?y:x});
+  m.best=pick(a.best,b.best,(k,x,y)=>x==null?y:y==null?x:Math.max(x,y));
+  const uni=(x,y)=>{const seen=new Set(),out=[];[].concat(x||[],y||[]).sort((p,q)=>p.ts-q.ts).forEach(e=>{if(e&&!seen.has(e.ts)){seen.add(e.ts);out.push(e)}});return out.slice(-12)};
+  m.exams=uni(a.exams,b.exams);m.runs=uni(a.runs,b.runs);
+  m.taT=pick(a.taT,b.taT,(k,x,y)=>Math.max(x||0,y||0));
+  m.ta=pick(a.ta,b.ta,(k,x,y)=>{const tx=(a.taT||{})[k]||0,ty=(b.taT||{})[k]||0;if(!x)return y;if(!y)return x;return ty>tx?y:x});
+  m.tr=pick(a.tr,b.tr,(k,x,y)=>!x?y:!y?x:((y.ts||0)>(x.ts||0)?y:x));
+  m.lang=a.lang;m.theme=a.theme;m.orig=a.orig;
+  return m;
+}
+function applyData(d){S=d;fixS();try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){};applyTheme();shell();if(CUR)CUR()}
+async function pull(){
+  if(!AUTH||!SYNC_URL)return;
+  try{const j=await api("load",{login:AUTH.login,token:AUTH.token});applyData(mergeData(S,j.data));await push()}
+  catch(e){syncState="err";syncDot();if(e.code==="auth"){AUTH=null;try{localStorage.removeItem(AUTH_KEY)}catch(x){};toast(t("e_auth"));shell()}}
+}
+function flushBeacon(){
+  if(!AUTH||!SYNC_URL||syncState!=="pending"||!navigator.sendBeacon)return;
+  try{navigator.sendBeacon(SYNC_URL,new Blob([JSON.stringify(Object.assign({action:"save"},savePayload()))],{type:"text/plain"}))}catch(e){}
+}
+window.addEventListener("pagehide",flushBeacon);
+document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="hidden")flushBeacon()});
+function syncDot(){const d=$("#acct-dot");if(!d)return;d.className="dot "+(AUTH&&SYNC_URL?syncState:"off")}
 /* answer history per item: [times answered, times correct, last timestamp, topic, last result 1/0] */
 function rec(k,tp,ok){const r=S.h[k]||[0,0,0,tp,0];r[0]++;if(ok)r[1]++;r[2]=Date.now();r[3]=tp;r[4]=ok?1:0;S.h[k]=r;save()}
 const t=k=>(UI[S.lang]&&UI[S.lang][k]!==undefined)?UI[S.lang][k]:UI.fr[k];
@@ -1110,19 +1216,20 @@ function shell(){
   $("#lang-fr").setAttribute("aria-pressed",S.lang==="fr");$("#lang-ru").setAttribute("aria-pressed",S.lang==="ru");
   document.documentElement.lang=S.lang;
   $("#foot").textContent=t("foot");
-  hud();themeIcon();
+  hud();themeIcon();syncDot();
+  const ab=$("#acct-btn");ab.setAttribute("aria-label",t("compte")+(AUTH?" · "+AUTH.login:""));ab.classList.toggle("on",r==="compte");
 }
 function hud(){const l=level();$("#xp").innerHTML=`★ ${S.xp||0}<span class="xp-l">&nbsp;${t("xp")} · ${esc(l.title)}</span>`}
 function isDark(){if(S.theme)return S.theme==="dark";return window.matchMedia&&matchMedia("(prefers-color-scheme: dark)").matches}
 function applyTheme(){if(S.theme)document.documentElement.setAttribute("data-theme",S.theme);else document.documentElement.removeAttribute("data-theme")}
 function themeIcon(){$("#theme-btn").innerHTML=isDark()?IC.sun:IC.moon}
-function curRoute(){const h=(location.hash||"#home").slice(1);const n=h.split("-")[0];const valid=["home","cours","qcm","textes","jeux","examen","analyse","marathon","cartes","eclair","associer","trier"];const m=valid.includes(n)?n:"home";return ["cartes","eclair","associer","trier","marathon"].includes(m)?"jeux":m}
+function curRoute(){const h=(location.hash||"#home").slice(1);const n=h.split("-")[0];const valid=["home","compte","cours","qcm","textes","jeux","examen","analyse","marathon","cartes","eclair","associer","trier"];const m=valid.includes(n)?n:"home";return ["cartes","eclair","associer","trier","marathon"].includes(m)?"jeux":m}
 
 function route(){
   clearTimers();
   const h=(location.hash||"#home").slice(1);
   const i=h.indexOf("-");const name=i<0?h:h.slice(0,i);const arg=i<0?"":h.slice(i+1);
-  const views={home:viewHome,cours:viewCours,qcm:viewQcm,jeux:viewJeux,examen:viewExamen,analyse:viewAnalyse,marathon:viewMarathon,textes:viewTextes,cartes:viewCartes,eclair:viewEclair,associer:viewAssocier,trier:viewTrier};
+  const views={home:viewHome,cours:viewCours,qcm:viewQcm,jeux:viewJeux,examen:viewExamen,analyse:viewAnalyse,marathon:viewMarathon,textes:viewTextes,compte:viewCompte,cartes:viewCartes,eclair:viewEclair,associer:viewAssocier,trier:viewTrier};
   (views[name]||viewHome)(arg);
   shell();
   window.scrollTo(0,0);
@@ -1159,6 +1266,7 @@ function viewHome(){CUR=viewHome;
     <div class="stat sheet"><b>${be}</b><span>${t("bestExam")}</span></div>
     <div class="stat sheet"><b>${S.best.eclair||0}</b><span>${t("bestFlash")}</span></div>
   </section>
+  ${!AUTH&&SYNC_URL?`<a class="localnote" href="#compte"><span>${t("localOnly")}</span><span class="btn sm pri">${t("localOnlyBtn")} →</span></a>`:""}
   ${banner}
   <div class="sec-h"><h2 class="h2">${t("modes")}</h2></div>
   <section class="modes">${modes}</section>
@@ -1561,15 +1669,107 @@ function textCheck(i){
   const a=norm(txt);
   const f=q.pts.map(p=>p[2].split("|").some(s=>s&&a.includes(norm(s)))?1:0);
   const old=S.tr[key];const same=old&&old.txt===txt;
-  S.tr[key]={f,m:same?old.m:f.map(()=>0),txt};
+  S.tr[key]={f,m:same?old.m:f.map(()=>0),txt,ts:Date.now()};
   const sc=tScore(x,i);
   if(!same){rec(key,q.t,sc.p>=.6);if(sc.p>=.6)addXP(15);}
   save();rerenderTQ(i);
   const el=$("#tq-"+i+" .tres");if(el)el.scrollIntoView({behavior:"smooth",block:"nearest"});
 }
-function textManual(v){const [i,j]=String(v).split("|").map(Number);const x=curText;if(!x)return;const r=S.tr[tKey(x,i)];if(!r)return;r.m[j]=r.m[j]?0:1;save();rerenderTQ(i)}
+function textManual(v){const [i,j]=String(v).split("|").map(Number);const x=curText;if(!x)return;const r=S.tr[tKey(x,i)];if(!r)return;r.m[j]=r.m[j]?0:1;r.ts=Date.now();save();rerenderTQ(i)}
 let draftT=null;
-document.addEventListener("input",e=>{const ta=e.target.closest&&e.target.closest("textarea[data-key]");if(!ta)return;S.ta[ta.dataset.key]=ta.value;clearTimeout(draftT);draftT=setTimeout(save,400)});
+document.addEventListener("input",e=>{const ta=e.target.closest&&e.target.closest("textarea[data-key]");if(!ta)return;S.ta[ta.dataset.key]=ta.value;S.taT[ta.dataset.key]=Date.now();clearTimeout(draftT);draftT=setTimeout(save,400)});
+
+/* ================= COMPTE ================= */
+let authMode="in";
+const errText=c=>{const k="e_"+c;return (UI[S.lang]&&UI[S.lang][k])||UI.fr[k]||t("e_server")};
+function viewCompte(){CUR=viewCompte;
+  const backup=`<section class="sheet acc-card"><h2 class="h3">${t("backupT")}</h2><p class="muted" style="margin:0">${t("backupP")}</p>
+    <div class="row"><button class="btn sm" data-act="expjson">${t("expJson")}</button><button class="btn sm" data-act="expcsv">${t("expCsv")}</button><button class="btn sm" data-act="exptxt">${t("expTxt")}</button></div>
+    <div class="row"><label class="btn sm ghost" for="imp-file">${t("impJson")}</label><input type="file" id="imp-file" accept=".json,application/json" class="vh"></div></section>`;
+  let main;
+  if(AUTH){
+    const st=SYNC_URL?t("st_"+syncState):t("e_noserver");
+    let tm="";if(lastSync){try{tm=new Date(lastSync).toLocaleTimeString(S.lang==="ru"?"ru-RU":"fr-FR",{hour:"2-digit",minute:"2-digit"})}catch(e){}}
+    main=`<section class="sheet acc-card">
+      <span class="eyebrow">${t("loggedAs")}</span>
+      <div class="acc-user"><span class="avatar">${esc(AUTH.login.charAt(0).toUpperCase())}</span><span class="h2" style="font-size:22px">${esc(AUTH.login)}</span></div>
+      <p class="sync-line"><i class="dot ${SYNC_URL?syncState:"off"}"></i><span>${st}${tm?` · ${t("lastSyncL")} ${tm}`:""}</span></p>
+      <div class="row"><button class="btn sm pri" data-act="syncnow">${t("syncNow")}</button><button class="btn sm" data-act="logout">${t("logout")}</button></div>
+      <p class="muted" style="margin:0;font-size:13.5px">${t("logoutP")}</p></section>`;
+  }else{
+    const up=authMode==="up";
+    main=`<section class="sheet acc-card">
+      <div class="seg acc-tabs" role="group"><button class="${up?"":"on"}" data-act="amode" data-v="in" aria-pressed="${!up}">${t("tabIn")}</button><button class="${up?"on":""}" data-act="amode" data-v="up" aria-pressed="${up}">${t("tabUp")}</button></div>
+      ${SYNC_URL?"":`<div class="callout">${t("e_noserver")}</div>`}
+      <form id="auth-form" class="acc-form" novalidate>
+        <label for="f-login">${t("loginL")}</label>
+        <input id="f-login" name="username" type="text" autocomplete="username" autocapitalize="none" autocorrect="off" spellcheck="false" maxlength="30" value="${esc(viewCompte.lg||"")}">
+        ${up?`<small class="muted">${t("loginRules")}</small>`:""}
+        <label for="f-pass">${t("passL")}</label>
+        <input id="f-pass" name="password" type="password" autocomplete="${up?"new-password":"current-password"}" maxlength="100">
+        ${up?`<label for="f-pass2">${t("pass2L")}</label><input id="f-pass2" name="password2" type="password" autocomplete="new-password" maxlength="100"><small class="muted">${t("passRules")}</small>`:""}
+        <p id="auth-err" class="ferr" role="alert"></p>
+        <button class="btn pri" type="submit" id="auth-go" ${SYNC_URL?"":"disabled"}>${up?t("signUp"):t("signIn")}</button>
+      </form></section>`;
+  }
+  render(`<div class="acc"><div><h1 class="h2">${t("accT")}</h1><p class="lead" style="margin:8px 0 0">${t("accP")}</p></div>${main}${backup}</div>`);
+}
+async function doAuth(){
+  const lg=$("#f-login").value.trim().toLowerCase(),pw=$("#f-pass").value,err=$("#auth-err"),btn=$("#auth-go"),up=authMode==="up";
+  viewCompte.lg=lg;
+  const fail=c=>{err.textContent=errText(c)};
+  if(!/^[a-z0-9._-]{3,30}$/.test(lg))return fail("bad_login");
+  if(pw.length<6)return fail("bad_password");
+  if(up&&pw!==$("#f-pass2").value)return fail("mismatch");
+  btn.disabled=true;btn.textContent=t("busy");err.textContent="";
+  try{
+    const j=await api(up?"register":"login",{login:lg,password:pw});
+    AUTH={login:j.login||lg,token:j.token};try{localStorage.setItem(AUTH_KEY,JSON.stringify(AUTH))}catch(e){}
+    if(j.data)applyData(mergeData(S,j.data));
+    syncState="pending";await push();
+    toast(up?t("created"):t("welcome").replace("{u}",AUTH.login));
+    shell();if(curRoute()==="compte")viewCompte();
+  }catch(e){fail(e.code||"server");btn.disabled=false;btn.textContent=up?t("signUp"):t("signIn")}
+}
+async function doLogout(){
+  if(syncState==="pending"||syncState==="err"){try{await push()}catch(e){}}
+  AUTH=null;try{localStorage.removeItem(AUTH_KEY)}catch(e){}
+  const keep={lang:S.lang,theme:S.theme,orig:S.orig};S=Object.assign({xp:0},keep);fixS();M=null;E=null;Q=null;
+  syncState="off";save();toast(t("loggedOut"));shell();viewCompte();
+}
+/* file backups */
+function download(name,text,type){
+  const blob=new Blob([text],{type});const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=name;
+  document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},1000);
+}
+const csvCell=v=>{v=v==null?"":String(v);return /[";\n\r,]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v};
+const csv=rows=>"﻿"+rows.map(r=>r.map(csvCell).join(";")).join("\r\n");
+const today=()=>new Date().toISOString().slice(0,10);
+function exportJson(){download("gm-prepa-"+today()+".json",JSON.stringify({app:"gm-prepa",v:1,exported:new Date().toISOString(),login:AUTH?AUTH.login:null,data:S}),"application/json")}
+function exportCsv(){
+  itemText.map=null;
+  const rows=[["item","topic","question","answered","correct","last_result","last_date"]];
+  Object.entries(S.h).sort((a,b)=>b[1][2]-a[1][2]).forEach(([k,r])=>{const it=itemText(k);const tp=topic(r[3]);
+    rows.push([k,tp?L(tp).t:r[3],it?it.q:"",r[0],r[1],r[4]?"ok":"faux",r[2]?new Date(r[2]).toISOString().slice(0,16).replace("T"," "):""])});
+  download("gm-prepa-historique-"+today()+".csv",csv(rows),"text/csv;charset=utf-8");
+}
+function exportTexts(){
+  const rows=[["text","question_no","question","answer","score_pct","date"]];
+  TEXTS.forEach(x=>x.q.forEach((q,i)=>{const k=tKey(x,i),r=S.tr[k],sc=tScore(x,i),draft=S.ta[k];if(!r&&!draft)return;
+    rows.push([L(x).title,i+1,S.lang==="ru"?q.ru:q.fr,(r&&r.txt)||draft||"",sc?Math.round(sc.p*100):"",r&&r.ts?new Date(r.ts).toISOString().slice(0,16).replace("T"," "):""])}));
+  download("gm-prepa-textes-"+today()+".csv",csv(rows),"text/csv;charset=utf-8");
+}
+function importJson(file){
+  return new Promise(res=>{
+    const fr=new FileReader();
+    fr.onload=()=>{try{const j=JSON.parse(fr.result);const d=isObj(j)&&isObj(j.data)?j.data:j;
+        if(!isObj(d)||!(isObj(d.h)||typeof d.xp==="number"))throw new Error("bad");
+        applyData(mergeData(S,d));save();toast(t("impOk"));res(true)}catch(e){toast(t("impErr"));res(false)}};
+    fr.onerror=()=>{toast(t("impErr"));res(false)};fr.readAsText(file);
+  });
+}
+document.addEventListener("submit",e=>{if(e.target&&e.target.id==="auth-form"){e.preventDefault();doAuth()}});
+document.addEventListener("change",e=>{if(e.target&&e.target.id==="imp-file"&&e.target.files&&e.target.files[0]){importJson(e.target.files[0]);e.target.value=""}});
 
 /* ================= ANALYSE ================= */
 const fmtNum=v=>String(v).replace(".",",");
@@ -1653,6 +1853,10 @@ const ACT={
  mquit:(v,b)=>{if(b.dataset.armed){M=null;viewMarathon()}else{b.dataset.armed="1";b.textContent=t("quitC");b.classList.remove("ghost")}},
  goess:v=>{coursMode="ess";location.hash="#cours-"+v},
  tcheck:v=>textCheck(v),tman:v=>textManual(v),
+ amode:v=>{const l=$("#f-login");if(l)viewCompte.lg=l.value;authMode=v;viewCompte()},
+ syncnow:()=>{syncState="pending";syncDot();viewCompte();push()},
+ logout:(v,b)=>{if(b.dataset.armed)doLogout();else{b.dataset.armed="1";b.textContent=t("logoutC");b.classList.add("pri")}},
+ expjson:()=>exportJson(),expcsv:()=>exportCsv(),exptxt:()=>exportTexts(),
  totext:()=>{const el=$("#tx-text");if(el)el.scrollIntoView({behavior:"smooth",block:"start"})}
 };
 document.addEventListener("click",e=>{const b=e.target.closest("[data-act]");if(!b||b.disabled)return;const f=ACT[b.dataset.act];if(f){e.preventDefault();f(b.dataset.v,b)}});
@@ -1680,6 +1884,7 @@ document.addEventListener("keydown",e=>{
 if(window.matchMedia){try{matchMedia("(prefers-color-scheme: dark)").addEventListener("change",themeIcon)}catch(e){}}
 window.addEventListener("hashchange",route);
 applyTheme();route();
+if(AUTH)pull();
 </script>
 
 </html>
